@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalDateTime;
 
-@Document(collation = "admin")
+@Document(collection = "admin")
 @Getter
 @AllArgsConstructor
 @Builder
