@@ -27,13 +27,13 @@ public enum ErrorStatus implements BaseErrorCode {
     PW_NOT_MATCH(HttpStatus.FORBIDDEN,"LOGIN"+HttpStatus.FORBIDDEN.value(),"입력하신 정보가 회원정보와 일치하지 않습니다."),
 
     // 유저 응답
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER4000", "해당 id의 유저를 찾을 수 없습니다."),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER404", "해당 id의 유저를 찾을 수 없습니다."),
 
     // 가게 위치 응답
     SHOP_COORDINATES_NOT_FOUND(HttpStatus.NO_CONTENT, "SHOP_COORDINATES2040" , "가게 위치를 찾을 수 없습니다."),
 
     // 매칭 요청 응답
-    MATCH_NOT_FOUND(HttpStatus.NOT_FOUND, "MATCH404", "요청정보를 찾을 수 없습니다.");
+    MATCH_NOT_FOUND(HttpStatus.NOT_FOUND, "MATCH404", "매칭요청 정보를 찾을 수 없습니다.");
 
 
     private final HttpStatus httpStatus;
