@@ -31,7 +31,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
 
-    public User registerUser(RegistrationDto registrationDto) throws Exception {
+    public void registerUser(RegistrationDto registrationDto) throws UserRegistrationException {
 
         validatePassword(registrationDto.getPassword());
 
@@ -53,12 +53,11 @@ public class UserService {
 
         userRepository.save(newUser);
         sendVerificationEmail(newUser.getEmailId(), newUser.getEmailVerificationToken());
-        return newUser;
     }
 
-    public void verifyEmail(String token) throws UserRegistrationException {
+    public void verifyEmail(String token) throws EmailVerificationException {
         Optional<User> userOptional = userRepository.findByEmailVerificationToken(token);
-        if (!userOptional.isPresent()) {
+        if (userOptional.isEmpty()) {
             throw new EmailVerificationException("Invalid email verification token");
         }
 
@@ -90,7 +89,7 @@ public class UserService {
     }
 
     private void validatePassword(String password) throws UserRegistrationException {
-        String pattern = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
+        String pattern = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$";
         if (StringUtils.isBlank(password) || !Pattern.matches(pattern, password)) {
             throw new UserRegistrationException(
                     "Password does not meet complexity requirements. It must be at least 8 characters long, " +
