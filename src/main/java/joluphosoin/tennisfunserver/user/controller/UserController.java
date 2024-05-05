@@ -1,7 +1,7 @@
 package joluphosoin.tennisfunserver.user.controller;
 
 import joluphosoin.tennisfunserver.user.service.UserService;
-import joluphosoin.tennisfunserver.user.data.dto.ApiResponse;
+import joluphosoin.tennisfunserver.response.ApiResponse;
 import joluphosoin.tennisfunserver.user.data.dto.RegistrationDto;
 import joluphosoin.tennisfunserver.user.exception.EmailVerificationException;
 import joluphosoin.tennisfunserver.user.exception.UserRegistrationException;
