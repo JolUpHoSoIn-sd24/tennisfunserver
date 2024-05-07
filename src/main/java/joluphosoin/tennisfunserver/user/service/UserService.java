@@ -3,6 +3,7 @@ package joluphosoin.tennisfunserver.user.service;
 import joluphosoin.tennisfunserver.user.data.entity.User;
 import joluphosoin.tennisfunserver.user.data.dto.RegistrationDto;
 import joluphosoin.tennisfunserver.user.exception.EmailVerificationException;
+import joluphosoin.tennisfunserver.user.exception.UserLoginException;
 import joluphosoin.tennisfunserver.user.exception.UserRegistrationException;
 import joluphosoin.tennisfunserver.user.repository.UserRepository;
 import jakarta.mail.MessagingException;
@@ -53,6 +54,21 @@ public class UserService {
 
         userRepository.save(newUser);
         sendVerificationEmail(newUser.getEmailId(), newUser.getEmailVerificationToken());
+    }
+
+    public User loginUser(String email, String password) throws UserLoginException {
+        User user = (User) userRepository.findByEmailId(email)
+                .orElseThrow(() -> new UserLoginException("Invalid credentials"));
+
+        if(!user.isEmailVerified()){
+            throw new UserLoginException(("Email not verified"));
+        }
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new UserLoginException("Invalid credentials");
+        }
+
+        return user;
     }
 
     public void verifyEmail(String token) throws EmailVerificationException {

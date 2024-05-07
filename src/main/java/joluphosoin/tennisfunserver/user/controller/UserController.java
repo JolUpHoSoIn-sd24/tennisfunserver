@@ -1,5 +1,9 @@
 package joluphosoin.tennisfunserver.user.controller;
 
+import jakarta.servlet.http.HttpSession;
+import joluphosoin.tennisfunserver.user.data.dto.LoginDto;
+import joluphosoin.tennisfunserver.user.data.entity.User;
+import joluphosoin.tennisfunserver.user.exception.UserLoginException;
 import joluphosoin.tennisfunserver.user.service.UserService;
 import joluphosoin.tennisfunserver.response.ApiResponse;
 import joluphosoin.tennisfunserver.user.data.dto.RegistrationDto;
@@ -33,6 +37,21 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                     new ApiResponse(false, "INTERNAL_SERVER_ERROR", "Internal Server Error", null)
+            );
+        }
+    }
+
+    @PostMapping(value = "/login", produces = "application/json")
+    public ResponseEntity<ApiResponse> loginUser(@Valid @RequestBody LoginDto loginDto, HttpSession session) {
+        try {
+            User user = userService.loginUser(loginDto.getEmail(), loginDto.getPassword());
+            session.setAttribute("user", user.getId());
+            return ResponseEntity.ok(
+                    new ApiResponse(true, "LOGIN200", "Login successful", null)
+            );
+        } catch (UserLoginException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    new ApiResponse(false, "LOGIN401", e.getMessage(), null)
             );
         }
     }
