@@ -9,7 +9,6 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.util.Date;
 import java.util.List;
 
 @Document(collection = "user")
@@ -51,8 +50,5 @@ public class User {
     private boolean emailVerified;
 
     private String emailVerificationToken;
-
-    @Indexed(expireAfterSeconds = 0)
-    private Date expirationDate;
 
 }

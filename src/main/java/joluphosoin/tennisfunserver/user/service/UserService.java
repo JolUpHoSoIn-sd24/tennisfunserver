@@ -16,8 +16,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.apache.commons.lang3.StringUtils;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -33,39 +31,32 @@ public class UserService {
     private final JavaMailSender mailSender;
 
     public void registerUser(RegistrationDto registrationDto) throws UserRegistrationException {
-
         validatePassword(registrationDto.getPassword());
 
-        if(userRepository.existsByEmailId(registrationDto.getEmail())) {
-            throw new UserRegistrationException("Email already in use");
+        Optional<User> existingUserOpt = userRepository.findByEmailId(registrationDto.getEmail());
+
+        if (existingUserOpt.isPresent()) {
+            User existingUser = existingUserOpt.get();
+            if (existingUser.isEmailVerified()) {
+                throw new UserRegistrationException("Email already in use");
+            } else {
+                updateUser(existingUser, registrationDto);
+            }
+        } else {
+            createUser(registrationDto);
         }
-
-        User newUser = User.builder()
-                .emailId(registrationDto.getEmail())
-                .name(registrationDto.getName())
-                .password(passwordEncoder.encode(registrationDto.getPassword()))
-                .ntrp(registrationDto.getNtrp())
-                .age(registrationDto.getAge())
-                .gender(registrationDto.getGender())
-                .emailVerificationToken(UUID.randomUUID().toString())
-                .expirationDate(Timestamp.valueOf(LocalDateTime.now().plusHours(1)))
-                .emailVerified(false)
-                .build();
-
-        userRepository.save(newUser);
-        sendVerificationEmail(newUser.getEmailId(), newUser.getEmailVerificationToken());
     }
 
     public User loginUser(String email, String password) throws UserLoginException {
-        User user = (User) userRepository.findByEmailId(email)
+        User user = userRepository.findByEmailId(email)
                 .orElseThrow(() -> new UserLoginException("Invalid credentials"));
-
-        if(!user.isEmailVerified()){
-            throw new UserLoginException(("Email not verified"));
-        }
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new UserLoginException("Invalid credentials");
+        }
+
+        if(!user.isEmailVerified()){
+            throw new UserLoginException(("Email not verified"));
         }
 
         return user;
@@ -83,8 +74,38 @@ public class UserService {
         }
 
         user.setEmailVerified(true);
-        user.setExpirationDate(null);
         userRepository.save(user);
+    }
+
+    private void updateUser(User user, RegistrationDto registrationDto) throws UserRegistrationException {
+        user.setName(registrationDto.getName());
+        user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
+        user.setNtrp(registrationDto.getNtrp());
+        user.setAge(registrationDto.getAge());
+        user.setGender(registrationDto.getGender());
+
+        user.setEmailVerificationToken(UUID.randomUUID().toString());
+        user.setEmailVerified(false);
+
+        userRepository.save(user);
+        sendVerificationEmail(user.getEmailId(), user.getEmailVerificationToken());
+    }
+
+    private void createUser(RegistrationDto registrationDto) {
+        User newUser = User.builder()
+                .emailId(registrationDto.getEmail())
+                .name(registrationDto.getName())
+                .password(passwordEncoder.encode(registrationDto.getPassword()))
+                .ntrp(registrationDto.getNtrp())
+                .age(registrationDto.getAge())
+                .gender(registrationDto.getGender())
+
+                .emailVerificationToken(UUID.randomUUID().toString())
+                .emailVerified(false)
+                .build();
+
+        userRepository.save(newUser);
+        sendVerificationEmail(newUser.getEmailId(), newUser.getEmailVerificationToken());
     }
 
     private void sendVerificationEmail(String email, String token) {
