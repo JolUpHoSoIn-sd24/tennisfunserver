@@ -1,6 +1,6 @@
 package joluphosoin.tennisfunserver.game.data.entity;
 
-import joluphosoin.tennisfunserver.court.data.entity.TennisCourt;
+import joluphosoin.tennisfunserver.business.data.entity.Court;
 import joluphosoin.tennisfunserver.user.data.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +28,7 @@ public class Game {
     private List<User> players; // 참여 플레이어 정보, User 문서 참조
 
     @DBRef
-    private TennisCourt court; // 테니스장 정보, TennisCourt 문서 참조
+    private Court court; // 테니스장 정보, TennisCourt 문서 참조
 
     private Date dateTime; // 경기 날짜 및 시간
 
@@ -47,7 +47,7 @@ public class Game {
 
 
     public enum GameStatus {
-        PreGame, InPlay, PostGame
+        PREGAME, INPLAY, POSTGAME
     }
 
     public static class Score {
