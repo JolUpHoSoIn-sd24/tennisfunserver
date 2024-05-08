@@ -19,10 +19,10 @@ public class MatchResponseDto {
     private String userId;
 
     @Schema(example = "2024-05-01T10:00:00")
-    private String startTime;
+    private Date startTime;
 
     @Schema(example = "2024-05-01T12:00:00")
-    private String endTime;
+    private Date endTime;
 
     @Schema(example = "RALLY")
     private MatchRequest.MatchObjective objective;

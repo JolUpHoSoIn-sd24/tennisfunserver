@@ -1,5 +1,9 @@
 package joluphosoin.tennisfunserver.match.service;
 
+import joluphosoin.tennisfunserver.match.data.dto.FeedbackReqDto;
+import joluphosoin.tennisfunserver.match.data.dto.MatchResultResDto;
+import joluphosoin.tennisfunserver.match.data.entity.MatchResult;
+import joluphosoin.tennisfunserver.match.repository.MatchResultRepository;
 import joluphosoin.tennisfunserver.payload.code.status.ErrorStatus;
 import joluphosoin.tennisfunserver.payload.exception.GeneralException;
 import joluphosoin.tennisfunserver.match.data.dto.MatchRequestDto;
@@ -12,16 +16,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class MatchServiceImpl implements MatchService {
 
     private final MatchRequestRepository matchRequestRepository;
     private final UserRepository userRepository;
+    private final MatchResultRepository matchResultRepository;
+
     @Override
     public MatchResponseDto getMatchRequest(String requestId) {
 
-        MatchRequest matchRequest = matchRequestRepository.findById(requestId).orElseThrow(() -> new GeneralException(ErrorStatus.MATCH_NOT_FOUND));
+        MatchRequest matchRequest = matchRequestRepository.findById(requestId).orElseThrow(() -> new GeneralException(ErrorStatus.MATCHREQ_NOT_FOUND));
 
         return MatchResponseDto.toDto(matchRequest);
     }
@@ -48,7 +56,7 @@ public class MatchServiceImpl implements MatchService {
     public void deleteMatchRequest(String requestId) {
 
         matchRequestRepository.findById(requestId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MATCH_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MATCHREQ_NOT_FOUND));
 
         matchRequestRepository.deleteById(requestId);
 
@@ -58,12 +66,49 @@ public class MatchServiceImpl implements MatchService {
     @Transactional
     public MatchResponseDto updateMatchRequest(MatchRequestDto matchRequestDto, String requestId) {
         MatchRequest matchRequest = matchRequestRepository.findById(requestId)
-                .orElseThrow(() -> new GeneralException(ErrorStatus.MATCH_NOT_FOUND));
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MATCHREQ_NOT_FOUND));
 
         MatchRequest updateMatchRequest = matchRequest.setEntity(matchRequestDto);
 
         matchRequestRepository.save(updateMatchRequest);
 
         return MatchResponseDto.toDto(matchRequest);
+    }
+
+    @Override
+    @Transactional
+    public MatchResultResDto getMatchResult(String matchRequestId, String userId) {
+        MatchResult matchResult = matchResultRepository.findByMatchRequestId(matchRequestId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MATCHRESULT_NOT_FOUND));
+
+        Map<String, MatchResult.FeedbackStatus> feedback = matchResult.getFeedback();
+
+        if(!feedback.containsKey(userId)){
+            feedback.put(userId, MatchResult.FeedbackStatus.PREMATCH);
+        }
+
+        matchResult.setFeedback(feedback);
+
+        matchResultRepository.save(matchResult);
+
+        return MatchResultResDto.toDto(matchResult,userId);
+
+    }
+
+    @Override
+    @Transactional
+    public void registerFeedback(String matchRequestId, FeedbackReqDto feedbackReqDto) {
+
+        MatchResult matchResult = matchResultRepository.findByMatchRequestId(matchRequestId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.MATCHRESULT_NOT_FOUND));
+
+        Map<String, MatchResult.FeedbackStatus> feedback = matchResult.getFeedback();
+
+        feedback.put(feedbackReqDto.getUserId(), feedbackReqDto.getFeedback());
+
+        matchResult.setFeedback(feedback);
+
+        matchResultRepository.save(matchResult);
+
     }
 }

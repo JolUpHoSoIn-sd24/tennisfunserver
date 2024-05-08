@@ -23,9 +23,9 @@ public class MatchRequest {
 
     private String userId; // 사용자 ID
 
-    private String startTime; // 시작 시간
+    private Date startTime; // 시작 시간
 
-    private String endTime; // 종료 시간
+    private Date endTime; // 종료 시간
 
     private Boolean isSingles; // 단복식 여부 (Singles, Doubles)
 
