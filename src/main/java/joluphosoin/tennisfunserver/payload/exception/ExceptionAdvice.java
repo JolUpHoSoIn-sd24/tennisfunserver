@@ -1,20 +1,18 @@
 package joluphosoin.tennisfunserver.payload.exception;
 
-import joluphosoin.tennisfunserver.payload.ApiResult;
-import joluphosoin.tennisfunserver.payload.code.ErrorReasonDto;
-import joluphosoin.tennisfunserver.payload.code.status.ErrorStatus;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import joluphosoin.tennisfunserver.payload.ApiResult;
+import joluphosoin.tennisfunserver.payload.code.ErrorReasonDto;
+import joluphosoin.tennisfunserver.payload.code.status.ErrorStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -23,7 +21,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -57,7 +54,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> exception(Exception e, WebRequest request) {
         e.printStackTrace();
 
-        return handleExceptionInternalFalse(e, ErrorStatus._INTERNAL_SERVER_ERROR, HttpHeaders.EMPTY, ErrorStatus._INTERNAL_SERVER_ERROR.getHttpStatus(), request, e.getMessage());
+        return handleExceptionInternalFalse(e, ErrorStatus.INTERNAL_SERVER_ERROR, HttpHeaders.EMPTY, ErrorStatus.INTERNAL_SERVER_ERROR.getHttpStatus(), request, e.getMessage());
     }
 
     @ExceptionHandler(value = GeneralException.class)
@@ -75,11 +72,11 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
     }
      */
 
-    @ExceptionHandler(NoSuchElementException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiResult<?> noSuchElementException(Exception e, Model model) {
-        return ApiResult.onFailure(ErrorStatus._BAD_REQUEST.getCode(), e.getMessage(), null);
-    }
+//    @ExceptionHandler(NoSuchElementException.class)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public ApiResult<?> noSuchElementException(Exception e, Model model) {
+//        return ApiResult.onFailure(ErrorStatus.BAD_REQUEST.getCode(), e.getMessage(), null);
+//    }
 
     private ResponseEntity<Object> handleExceptionInternal(Exception e, ErrorReasonDto reason,
                                                            HttpHeaders headers, HttpServletRequest request) {
