@@ -46,7 +46,7 @@ public class UserController {
     public ResponseEntity<ApiResponse> loginUser(@Valid @RequestBody LoginDto loginDto, HttpSession session) {
         try {
             User user = userService.loginUser(loginDto.getEmail(), loginDto.getPassword());
-            session.setAttribute("emailId", user.getEmailId());
+            session.setAttribute("id", user.getId());
             return ResponseEntity.ok(
                     new ApiResponse(true, "LOGIN200", "Login successful", null)
             );
@@ -77,15 +77,15 @@ public class UserController {
 
     @PatchMapping("/location")
     public ResponseEntity<ApiResponse> updateLocation(@RequestBody LocationUpdateDto locationUpdateDto, HttpSession session) {
-        String emailId = (String) session.getAttribute("emailId");
-        if (emailId == null) {
+        String id = (String) session.getAttribute("id");
+        if (id == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
                     new ApiResponse(false, "AUTH001", "User is not logged in", null)
             );
         }
 
         try {
-            userService.updateUserLocation(emailId, locationUpdateDto);
+            userService.updateUserLocation(id, locationUpdateDto);
             return ResponseEntity.ok(
                     new ApiResponse(true, "LOC200", "Location updated successfully", null)
             );
