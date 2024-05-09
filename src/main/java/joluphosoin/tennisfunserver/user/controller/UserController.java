@@ -1,6 +1,7 @@
 package joluphosoin.tennisfunserver.user.controller;
 
 import jakarta.servlet.http.HttpSession;
+import joluphosoin.tennisfunserver.user.data.dto.LocationUpdateDto;
 import joluphosoin.tennisfunserver.user.data.dto.LoginDto;
 import joluphosoin.tennisfunserver.user.data.entity.User;
 import joluphosoin.tennisfunserver.user.exception.UserLoginException;
@@ -45,7 +46,7 @@ public class UserController {
     public ResponseEntity<ApiResponse> loginUser(@Valid @RequestBody LoginDto loginDto, HttpSession session) {
         try {
             User user = userService.loginUser(loginDto.getEmail(), loginDto.getPassword());
-            session.setAttribute("user", user.getId());
+            session.setAttribute("emailId", user.getEmailId());
             return ResponseEntity.ok(
                     new ApiResponse(true, "LOGIN200", "Login successful", null)
             );
@@ -74,5 +75,24 @@ public class UserController {
         }
     }
 
+    @PatchMapping("/location")
+    public ResponseEntity<ApiResponse> updateLocation(@RequestBody LocationUpdateDto locationUpdateDto, HttpSession session) {
+        String emailId = (String) session.getAttribute("emailId");
+        if (emailId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    new ApiResponse(false, "AUTH001", "User is not logged in", null)
+            );
+        }
 
+        try {
+            userService.updateUserLocation(emailId, locationUpdateDto);
+            return ResponseEntity.ok(
+                    new ApiResponse(true, "LOC200", "Location updated successfully", null)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ApiResponse(false, "INTERNAL_ERROR", e.getMessage(), null)
+            );
+        }
+    }
 }

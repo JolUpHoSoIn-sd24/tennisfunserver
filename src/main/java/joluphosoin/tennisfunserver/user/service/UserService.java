@@ -1,8 +1,10 @@
 package joluphosoin.tennisfunserver.user.service;
 
+import joluphosoin.tennisfunserver.user.data.dto.LocationUpdateDto;
 import joluphosoin.tennisfunserver.user.data.entity.User;
 import joluphosoin.tennisfunserver.user.data.dto.RegistrationDto;
 import joluphosoin.tennisfunserver.user.exception.EmailVerificationException;
+import joluphosoin.tennisfunserver.user.exception.LocationUpdateException;
 import joluphosoin.tennisfunserver.user.exception.UserLoginException;
 import joluphosoin.tennisfunserver.user.exception.UserRegistrationException;
 import joluphosoin.tennisfunserver.user.repository.UserRepository;
@@ -74,6 +76,15 @@ public class UserService {
         }
 
         user.setEmailVerified(true);
+        userRepository.save(user);
+    }
+
+    public void updateUserLocation(String emailId, LocationUpdateDto locationUpdateDto) throws LocationUpdateException {
+        User user = userRepository.findByEmailId(emailId)
+                .orElseThrow(() -> new LocationUpdateException("User not found with ID: " + emailId));
+
+        user.setLocation(locationUpdateDto.getLocation());
+        user.setMaxDistance(locationUpdateDto.getMaxDistance());
         userRepository.save(user);
     }
 
