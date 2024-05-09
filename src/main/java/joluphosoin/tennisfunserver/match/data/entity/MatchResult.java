@@ -35,7 +35,7 @@ public class MatchResult {
     private Map<String, FeedbackStatus> feedback; // 사용자별 피드백 정보, 키는 사용자 ID, 값은 "like" 또는 "dislike" 또는 not
 
     public enum FeedbackStatus{
-        LIKE, DISLIKE, PREMATCH
+        NOTSELECTED, LIKE, DISLIKE
     }
 
     // 매치 세부 정보 내부 클래스
