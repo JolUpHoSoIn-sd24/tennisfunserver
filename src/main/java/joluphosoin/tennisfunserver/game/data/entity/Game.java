@@ -23,7 +23,7 @@ public class Game {
 
     private GameStatus gameStatus;
 
-    private List<String> playerId;
+    private List<String> playerIds;
 
     private String courtId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")

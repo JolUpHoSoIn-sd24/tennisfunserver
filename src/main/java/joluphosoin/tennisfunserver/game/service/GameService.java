@@ -19,7 +19,7 @@ public class GameService {
     public void createGame(GameCreationDto gameDto) {
             Game game = Game.builder()
                     .gameStatus(gameDto.getGameStatus())
-                    .playerId(gameDto.getPlayerIds())
+                    .playerIds(gameDto.getPlayerIds())
                     .courtId(gameDto.getCourtId())
                     .dateTime(gameDto.getDateTime())
                     .chatRoomId(gameDto.getChatRoomId())
