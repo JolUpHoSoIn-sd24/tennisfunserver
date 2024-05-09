@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 import java.time.LocalTime;
 import java.util.List;
 
-@Document(collection = "tennisCourt")
+@Document(collection = "court")
 @Getter
 @AllArgsConstructor
 @Builder
