@@ -3,6 +3,7 @@ package joluphosoin.tennisfunserver.business.data.entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
@@ -10,6 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Document(collection = "court")
@@ -36,7 +38,8 @@ public class Court {
 
     private LocalTime closeTime;
 
-    private List<TimeSlot> timeSlots; // 이용 가능 시간 및 단위시간당 비용
+    @Setter
+    private List<TimeSlot> timeSlots =new ArrayList<>(); // 이용 가능 시간 및 단위시간당 비용
     public static class TimeSlot {
         private LocalTime startTime; // 시작 시간
         private Double rentalCostPerHalfHour; // 단위시간당 대여 비용

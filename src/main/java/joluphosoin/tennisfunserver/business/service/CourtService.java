@@ -32,4 +32,15 @@ public class CourtService {
 
         courtRepository.save(court);
     }
+
+    @Transactional
+    public void registerCourtTimeSlot(CourtTimeSlotReqDto courtTimeSlotReqDto) {
+
+        Court court = courtRepository.findById(courtTimeSlotReqDto.getCourtId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.COURT_NOT_FOUND));
+
+        court.setTimeSlots(courtTimeSlotReqDto.getTimeSlots());
+
+        courtRepository.save(court);
+    }
 }

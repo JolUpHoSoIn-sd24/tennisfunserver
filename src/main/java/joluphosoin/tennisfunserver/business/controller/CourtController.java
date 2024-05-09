@@ -23,5 +23,11 @@ public class CourtController {
         return ApiResult.onSuccess("테니스장 정보가 성공적으로 등록되었습니다.");
     }
 
+    @PostMapping("/availability")
+    public ApiResult<String> registerCourtTimeSlot(@RequestBody @Valid CourtTimeSlotReqDto courtTimeSlotReqDto){
+        courtService.registerCourtTimeSlot(courtTimeSlotReqDto);
+        return ApiResult.onSuccess("코트별 대여 가능 시간 및 비용이 성공적으로 등록되었습니다.");
+    }
+
 
 }
