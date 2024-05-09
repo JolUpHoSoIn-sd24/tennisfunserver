@@ -79,9 +79,9 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public void updateUserLocation(String emailId, LocationUpdateDto locationUpdateDto) throws LocationUpdateException {
-        User user = userRepository.findByEmailId(emailId)
-                .orElseThrow(() -> new LocationUpdateException("User not found with ID: " + emailId));
+    public void updateUserLocation(String id, LocationUpdateDto locationUpdateDto) throws LocationUpdateException {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new LocationUpdateException("User not found with ID"));
 
         user.setLocation(locationUpdateDto.getLocation());
         user.setMaxDistance(locationUpdateDto.getMaxDistance());
