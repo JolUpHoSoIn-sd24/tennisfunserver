@@ -24,7 +24,7 @@ public class MatchController {
 
     @PostMapping("/request")
     public ApiResult<MatchResponseDto> registerMatchRequest(@RequestBody MatchRequestDto matchRequestDto) {
-        return ApiResult.onSuccess(SuccessStatus._CREATED, matchService.registermatchRequest(matchRequestDto));
+        return ApiResult.onSuccess(SuccessStatus.CREATED, matchService.registermatchRequest(matchRequestDto));
     }
 
     @PutMapping("/request")

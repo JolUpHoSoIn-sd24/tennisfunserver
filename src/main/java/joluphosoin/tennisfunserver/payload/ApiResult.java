@@ -29,11 +29,11 @@ public class ApiResult<T> {
     2. 커스텀 성공 응답 - 추가
      */
     public static <Void> ApiResult<Void> onSuccess() {
-        return new ApiResult<>(true, SuccessStatus._OK.getCode(), SuccessStatus._OK.getMessage(), null);
+        return new ApiResult<>(true, SuccessStatus.OK.getCode(), SuccessStatus.OK.getMessage(), null);
     }
 
     public static <T> ApiResult<T> onSuccess(T result) {
-        return new ApiResult<>(true, SuccessStatus._OK.getCode(), SuccessStatus._OK.getMessage(), result);
+        return new ApiResult<>(true, SuccessStatus.OK.getCode(), SuccessStatus.OK.getMessage(), result);
     }
 
     public static <T> ApiResult<T> onSuccess(BaseCode code, T result) {
