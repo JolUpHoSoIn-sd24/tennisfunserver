@@ -84,7 +84,7 @@ public class MatchServiceImpl implements MatchService {
         Map<String, MatchResult.FeedbackStatus> feedback = matchResult.getFeedback();
 
         if(!feedback.containsKey(userId)){
-            feedback.put(userId, MatchResult.FeedbackStatus.PREMATCH);
+            feedback.put(userId, MatchResult.FeedbackStatus.NOTSELECTED);
         }
 
         matchResult.setFeedback(feedback);
