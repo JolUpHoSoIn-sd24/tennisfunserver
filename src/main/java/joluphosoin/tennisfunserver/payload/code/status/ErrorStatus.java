@@ -37,7 +37,14 @@ public enum ErrorStatus implements BaseErrorCode {
     MATCHREQ_NOT_FOUND(HttpStatus.NOT_FOUND, "MATCHREQ404", "매칭요청 정보를 찾을 수 없습니다."),
 
     // 매칭 결과 응답
-    MATCHRESULT_NOT_FOUND(HttpStatus.NOT_FOUND, "MATCHRESULT404", "매칭결과 정보를 찾을 수 없습니다.");
+    MATCHRESULT_NOT_FOUND(HttpStatus.NOT_FOUND, "MATCHRESULT404", "매칭결과 정보를 찾을 수 없습니다."),
+
+    // 코트 상태 응답
+    COURT_NOT_FOUND(HttpStatus.NOT_FOUND, "COURT404", "해당 이름을 가진 코트를 찾을 수 없습니다."),
+    COURT_NOT_UNIQUE(HttpStatus.CONFLICT,"COURT409","이미 존재하는 코트입니다."),
+
+    // 사업자 응답
+    BUSINESS_NOT_FOUND(HttpStatus.NOT_FOUND, "BUSINESS404", "해당 id의 사업자를 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

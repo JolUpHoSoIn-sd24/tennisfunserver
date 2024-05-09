@@ -4,9 +4,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import joluphosoin.tennisfunserver.business.data.entity.Court;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.data.geo.Point;
 
 import java.time.LocalTime;
 
@@ -29,14 +31,28 @@ public class CourtReqDto {
 
     private String description;
 
-    private CourtDetails courtDetails;
+    private String ownerId;
 
-    public static class CourtDetails {
-        private String courtType; // 코트 타입
-        private LocalTime startTime; // 시작 시간
-        private LocalTime endTime; // 종료 시간
-        private Integer rentalCost;
-        private String courtName;
+    private Court.CourtType courtType;
 
+    private String courtName;
+
+    private LocalTime openTime;
+
+    private LocalTime closeTime;
+
+
+    public Court toEntity(){
+        Point location = new Point(longitude, latitude);
+
+        return Court.builder()
+                .location(location)
+                .description(description)
+                .ownerId(ownerId)
+                .courtType(courtType)
+                .courtName(courtName)
+                .openTime(openTime)
+                .closeTime(closeTime)
+                .build();
     }
 }
