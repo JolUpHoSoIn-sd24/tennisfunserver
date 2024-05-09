@@ -1,7 +1,6 @@
 package joluphosoin.tennisfunserver.business.service;
 
 import joluphosoin.tennisfunserver.business.data.dto.CourtReqDto;
-import joluphosoin.tennisfunserver.business.data.dto.CourtTimeSlotReqDto;
 import joluphosoin.tennisfunserver.business.data.entity.Court;
 import joluphosoin.tennisfunserver.business.repository.BusinessInfoRepository;
 import joluphosoin.tennisfunserver.business.repository.CourtRepository;

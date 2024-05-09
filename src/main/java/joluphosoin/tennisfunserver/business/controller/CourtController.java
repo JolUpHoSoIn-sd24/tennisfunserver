@@ -2,7 +2,6 @@ package joluphosoin.tennisfunserver.business.controller;
 
 import jakarta.validation.Valid;
 import joluphosoin.tennisfunserver.business.data.dto.CourtReqDto;
-import joluphosoin.tennisfunserver.business.data.dto.CourtTimeSlotReqDto;
 import joluphosoin.tennisfunserver.business.service.CourtService;
 import joluphosoin.tennisfunserver.payload.ApiResult;
 import lombok.RequiredArgsConstructor;
