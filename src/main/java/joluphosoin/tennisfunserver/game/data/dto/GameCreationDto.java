@@ -1,67 +1,44 @@
-package joluphosoin.tennisfunserver.game.data.entity;
+package joluphosoin.tennisfunserver.game.data.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import joluphosoin.tennisfunserver.game.data.entity.Game.GameStatus;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-@Document(collection = "game")
 @Getter
-@AllArgsConstructor
-@Builder
-public class Game {
-
-    @MongoId
-    private String gameId;
-
+@Setter
+public class GameCreationDto {
     private GameStatus gameStatus;
-
-    private List<String> playerId;
-
+    private List<String> playerIds;
     private String courtId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
     private Date dateTime;
 
     private String chatRoomId;
-
     private Double rentalCost;
-
-    private List<Score> scores;
-
+    private List<ScoreDto> scores;
     private boolean scoreConfirmed;
+    private List<NTRPFeedbackDto> ntrpFeedbacks;
+    private List<MannerFeedbackDto> mannerFeedbacks;
 
-    private List<NTRPFeedback> ntrpFeedbacks;
-    private List<MannerFeedback> mannerFeedbacks;
-
-
-    public enum GameStatus {
-        PREGAME, INPLAY, POSTGAME
-    }
     @Getter
     @Setter
-    public static class Score {
+    public static class ScoreDto {
         private String userId;
-        private Map<String, ScoreDetail> scoreDetails;
-
+        private List<ScoreDetailDto> scoreDetails;
     }
     @Getter
     @Setter
-    public static class ScoreDetail {
+    public static class ScoreDetailDto {
         private int userScore;
         private int opponentScore;
-
     }
     @Getter
     @Setter
-    @AllArgsConstructor
-    public static class NTRPFeedback {
+    public static class NTRPFeedbackDto {
         private String userId;
         private String opponentUserId;
         private double ntrp;
@@ -69,8 +46,7 @@ public class Game {
     }
     @Getter
     @Setter
-    @AllArgsConstructor
-    public static class MannerFeedback {
+    public static class MannerFeedbackDto {
         private String userId;
         private String opponentUserId;
         private int mannerScore;
