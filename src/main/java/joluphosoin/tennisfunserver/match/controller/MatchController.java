@@ -8,6 +8,7 @@ import joluphosoin.tennisfunserver.match.service.MatchService;
 import joluphosoin.tennisfunserver.payload.ApiResult;
 import joluphosoin.tennisfunserver.payload.code.status.SuccessStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,6 +24,7 @@ public class MatchController {
     }
 
     @PostMapping("/request")
+    @ResponseStatus(HttpStatus.CREATED)
     public ApiResult<MatchResponseDto> registerMatchRequest(@RequestBody MatchRequestDto matchRequestDto) {
         return ApiResult.onSuccess(SuccessStatus.CREATED, matchService.registermatchRequest(matchRequestDto));
     }
@@ -44,7 +46,7 @@ public class MatchController {
         return ApiResult.onSuccess(matchService.getMatchResult(matchRequestId, userId));
     }
 
-    @PostMapping("/results/{matchId}/feedback")
+    @PostMapping("/results/{matchRequestId}/feedback")
     public ApiResult<String> registerFeedback(@PathVariable String matchRequestId, @RequestBody FeedbackReqDto feedbackReqDto){
         matchService.registerFeedback(matchRequestId,feedbackReqDto);
         return ApiResult.onSuccess("Feedback submitted successfully.");
