@@ -3,6 +3,7 @@ package joluphosoin.tennisfunserver.business.data.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import joluphosoin.tennisfunserver.business.data.entity.Court;
 import lombok.AllArgsConstructor;
@@ -31,14 +32,19 @@ public class CourtReqDto {
 
     private String description;
 
+    @NotBlank
     private String ownerId;
 
+    @NotNull
     private Court.CourtType courtType;
 
+    @NotBlank
     private String courtName;
 
+    @NotNull
     private LocalTime openTime;
 
+    @NotNull
     private LocalTime closeTime;
 
 
