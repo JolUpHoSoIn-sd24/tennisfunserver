@@ -2,6 +2,7 @@ package joluphosoin.tennisfunserver.game.service;
 
 import joluphosoin.tennisfunserver.game.data.dto.GameCreationDto;
 import joluphosoin.tennisfunserver.game.data.entity.Game;
+import joluphosoin.tennisfunserver.game.exception.CreateGameException;
 import joluphosoin.tennisfunserver.game.repository.GameRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,11 @@ public class GameService {
     private final GameRepository gameRepository;
 
     public void createGame(GameCreationDto gameDto) {
+
+        if (checkPlayerInAnyGame(gameDto.getPlayerIds())) {
+            throw new CreateGameException("One or more players are already in an existing game");
+        }
+
             Game game = Game.builder()
                     .gameStatus(gameDto.getGameStatus())
                     .playerIds(gameDto.getPlayerIds())
@@ -24,12 +30,16 @@ public class GameService {
                     .dateTime(gameDto.getDateTime())
                     .chatRoomId(gameDto.getChatRoomId())
                     .rentalCost(gameDto.getRentalCost())
-                    .scores(mapScores(gameDto.getScores()))
-                    .scoreConfirmed(gameDto.isScoreConfirmed())
-                    .ntrpFeedbacks(mapNTRPFeedbacks(gameDto.getNtrpFeedbacks()))
-                    .mannerFeedbacks(mapMannerFeedbacks(gameDto.getMannerFeedbacks()))
+                    .scores(gameDto.getScores() != null ? mapScores(gameDto.getScores()) : null)
+                    .scoreConfirmed(false)
+                    .ntrpFeedbacks(gameDto.getNtrpFeedbacks() != null ? mapNTRPFeedbacks(gameDto.getNtrpFeedbacks()) : null)
+                    .mannerFeedbacks(gameDto.getMannerFeedbacks() != null ? mapMannerFeedbacks(gameDto.getMannerFeedbacks()) : null)
                     .build();
             gameRepository.save(game);
+    }
+
+    private boolean checkPlayerInAnyGame(List<String> playerIds) {
+        return gameRepository.findByPlayerIdsIn(playerIds).stream().anyMatch(game -> !game.getPlayerIds().isEmpty());
     }
 
     private List<Game.Score> mapScores(List<GameCreationDto.ScoreDto> scoreDtos) {
@@ -47,7 +57,7 @@ public class GameService {
             Game.ScoreDetail scoreDetail = new Game.ScoreDetail();
             scoreDetail.setUserScore(detail.getUserScore());
             scoreDetail.setOpponentScore(detail.getOpponentScore());
-            scoreDetails.put("detail", scoreDetail);  // Assuming a key is needed. Modify as necessary.
+            scoreDetails.put("detail", scoreDetail);
         }
         return scoreDetails;
     }

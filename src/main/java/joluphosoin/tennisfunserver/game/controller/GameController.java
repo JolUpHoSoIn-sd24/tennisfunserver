@@ -2,6 +2,7 @@ package joluphosoin.tennisfunserver.game.controller;
 
 import jakarta.servlet.http.HttpSession;
 import joluphosoin.tennisfunserver.game.data.dto.GameCreationDto;
+import joluphosoin.tennisfunserver.game.exception.CreateGameException;
 import joluphosoin.tennisfunserver.game.repository.GameRepository;
 import joluphosoin.tennisfunserver.game.service.GameService;
 import joluphosoin.tennisfunserver.response.ApiResponse;
@@ -25,6 +26,10 @@ public class GameController {
             gameService.createGame(gameDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(
                     new ApiResponse(true, "GAME201", "Game created successfully", null)
+            );
+        } catch (CreateGameException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                    new ApiResponse(false, "GAME409", e.getMessage(), null)
             );
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
