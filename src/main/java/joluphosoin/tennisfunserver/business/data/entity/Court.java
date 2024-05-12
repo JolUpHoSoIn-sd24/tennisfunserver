@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalTime;
-import java.util.List;
 
 @Document(collection = "court")
 @Getter
@@ -36,12 +35,6 @@ public class Court {
 
     private LocalTime closeTime;
 
-    private List<TimeSlot> timeSlots; // 이용 가능 시간 및 단위시간당 비용
-    public static class TimeSlot {
-        private LocalTime startTime; // 시작 시간
-        private Double rentalCostPerHalfHour; // 단위시간당 대여 비용
-        private Boolean isAvailable; // 사용 가능 여부
-    }
 
     public enum CourtType{
         HARD, CLAY, GRASS,

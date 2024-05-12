@@ -11,10 +11,18 @@ import org.springframework.http.HttpStatus;
 public enum SuccessStatus implements BaseCode {
     // 일반적인 응답
     OK(HttpStatus.OK, "COMMON200", "성공입니다."),
-    CREATED(HttpStatus.OK, "COMMON201", "생성 성공입니다."),
-    ACCEPTEED(HttpStatus.OK, "COMMON202", "처리 대기중"),
-    NO_CONTENT(HttpStatus.OK, "COMMON204", "컨텐츠가 없습니다.");
-    // ~~ 관련 응답
+    CREATED(HttpStatus.CREATED, "COMMON201", "생성 성공입니다."),
+    ACCEPTED(HttpStatus.OK, "COMMON202", "처리 대기중"),
+    NO_CONTENT(HttpStatus.OK, "COMMON204", "컨텐츠가 없습니다."),
+
+    // 코트 관련 응답
+    COURT_CREATED(HttpStatus.CREATED, "COURT201", "테니스장 정보가 성공적으로 등록되었습니다."),
+    COURTTIME_CREATED(HttpStatus.CREATED, "COURTTIME201", "코트별 대여 가능 시간 및 비용이 성공적으로 등록되었습니다."),
+
+    // 사업자 관련 응답
+    BUSINESSINFO_CREATED(HttpStatus.CREATED, "BUSINESSINFO201", "사업자 정보가 성공적으로 제출되었습니다. 관리자의 승인을 기다려주세요."),
+    ACCOUNTINFO_CREATED(HttpStatus.CREATED, "ACCOUNTINFO201", "계좌 정보가 성공적으로 등록되었습니다.");
+
     private final HttpStatus httpStatus;
     private final String code;
     private final String message;
