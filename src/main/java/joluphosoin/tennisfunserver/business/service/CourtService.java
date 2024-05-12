@@ -19,16 +19,13 @@ public class CourtService {
 
     @Transactional
     public void registerCourt(CourtReqDto courtReqDto) {
-
         businessInfoRepository.findById(courtReqDto.getOwnerId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.BUSINESS_NOT_FOUND));
 
         if(courtRepository.findByOwnerIdAndCourtName(courtReqDto.getOwnerId(), courtReqDto.getCourtName()).isPresent()){
             throw new GeneralException(ErrorStatus.COURT_NOT_UNIQUE);
         }
-
         Court court = courtReqDto.toEntity();
-
         courtRepository.save(court);
     }
 }
