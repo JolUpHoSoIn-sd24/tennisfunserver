@@ -9,6 +9,7 @@ import joluphosoin.tennisfunserver.business.data.entity.TimeSlot;
 import joluphosoin.tennisfunserver.business.repository.BusinessInfoRepository;
 import joluphosoin.tennisfunserver.business.repository.CourtRepository;
 import joluphosoin.tennisfunserver.business.repository.TimeSlotRepository;
+import joluphosoin.tennisfunserver.game.data.dto.GameDetailsDto;
 import joluphosoin.tennisfunserver.payload.code.status.ErrorStatus;
 import joluphosoin.tennisfunserver.payload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
@@ -59,5 +60,18 @@ public class CourtService {
 
         return CourtResDto.toDTO(court,timeSlots);
 
+    }
+
+    public GameDetailsDto.CourtDetail getCourtDetails(String courtId) {
+        Court court = courtRepository.findById(courtId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.COURT_NOT_FOUND));
+
+        GameDetailsDto.CourtDetail courtDetail = new GameDetailsDto.CourtDetail();
+        courtDetail.setCourtId(court.getId());
+        courtDetail.setName(court.getCourtName());
+        courtDetail.setLocation(court.getLocation().toString());
+        courtDetail.setSurfaceType(court.getCourtType().name());
+
+        return courtDetail;
     }
 }

@@ -2,7 +2,10 @@ package joluphosoin.tennisfunserver.game.controller;
 
 import jakarta.servlet.http.HttpSession;
 import joluphosoin.tennisfunserver.game.data.dto.GameCreationDto;
+import joluphosoin.tennisfunserver.game.data.dto.GameDetailsDto;
+import joluphosoin.tennisfunserver.game.data.entity.Game;
 import joluphosoin.tennisfunserver.game.exception.CreateGameException;
+import joluphosoin.tennisfunserver.game.exception.GetGameException;
 import joluphosoin.tennisfunserver.game.repository.GameRepository;
 import joluphosoin.tennisfunserver.game.service.GameService;
 import joluphosoin.tennisfunserver.response.ApiResponse;
@@ -11,6 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -53,6 +59,43 @@ public class GameController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                     new ApiResponse(false, "INTERNAL_SERVER_ERROR", "Failed to delete games.", null)
+            );
+        }
+    }
+
+    @GetMapping(value = "", produces = "application/json")
+    public ResponseEntity<ApiResponse> getGameDetails(HttpSession session) {
+        String userId = (String) session.getAttribute("id");
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    new ApiResponse(false, "AUTH001", "User is not logged in", null)
+            );
+        }
+
+        try {
+            Game game = gameService.findGameByUserId(userId);
+            if (game == null) {
+                return ResponseEntity.noContent().build();
+            }
+
+            GameDetailsDto gameDetails = gameService.transformGameToDto(game);
+            Map<String, Object> result = new HashMap<>();
+            result.put("gameId", gameDetails.getGameId());
+            result.put("state", gameDetails.getState());
+            result.put("players", gameDetails.getPlayers());
+            result.put("court", gameDetails.getCourt());
+            result.put("dateTime", gameDetails.getDateTime());
+            result.put("chatRoomId", gameDetails.getChatRoomId());
+            result.put("rentalCost", gameDetails.getRentalCost());
+
+            return ResponseEntity.ok(new ApiResponse(true, "GAME200", "Game details retrieved successfully", result));
+        } catch (GetGameException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                    new ApiResponse(false, "GAME404", "Game not found", null)
+            );
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ApiResponse(false, "INTERNAL_SERVER_ERROR", e.getMessage(), null)
             );
         }
     }

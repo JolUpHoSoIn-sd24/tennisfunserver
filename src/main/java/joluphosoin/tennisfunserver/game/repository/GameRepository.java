@@ -3,6 +3,8 @@ package joluphosoin.tennisfunserver.game.repository;
 import joluphosoin.tennisfunserver.game.data.entity.Game;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
 import java.util.List;
 
 public interface GameRepository extends MongoRepository<Game,String> {
@@ -10,4 +12,6 @@ public interface GameRepository extends MongoRepository<Game,String> {
     void deleteByPlayerIdsContaining(String playerId);
 
     List<Game> findByPlayerIdsIn(List<String> playerIds);
+
+    Collection<Game> findByPlayerIdsContaining(String userId);
 }

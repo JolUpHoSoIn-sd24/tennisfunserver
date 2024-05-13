@@ -1,5 +1,6 @@
 package joluphosoin.tennisfunserver.user.service;
 
+import joluphosoin.tennisfunserver.game.data.dto.GameDetailsDto;
 import joluphosoin.tennisfunserver.user.data.dto.LocationUpdateDto;
 import joluphosoin.tennisfunserver.user.data.entity.User;
 import joluphosoin.tennisfunserver.user.data.dto.RegistrationDto;
@@ -18,9 +19,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -146,4 +149,21 @@ public class UserService {
             );
         }
     }
+
+    public List<GameDetailsDto.PlayerDetail> getPlayerDetails(List<String> playerIds) {
+        return userRepository.findByIdIn(playerIds).stream()
+                .map(this::transformToPlayerDetail)
+                .collect(Collectors.toList());
+    }
+
+    private GameDetailsDto.PlayerDetail transformToPlayerDetail(User user) {
+        GameDetailsDto.PlayerDetail playerDetail = new GameDetailsDto.PlayerDetail();
+        playerDetail.setUserId(user.getId());
+        playerDetail.setName(user.getName());
+        playerDetail.setNtrp(user.getNtrp());
+        playerDetail.setAge(user.getAge());
+        playerDetail.setGender(user.getGender());
+        return playerDetail;
+    }
+
 }

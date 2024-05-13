@@ -13,5 +13,5 @@ public class ApiResponse {
     private boolean isSuccess;
     private String code;
     private String message;
-    private Map<String, String> result;
+    private Map<String, Object> result;
 }

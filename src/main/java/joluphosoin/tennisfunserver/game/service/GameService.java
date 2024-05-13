@@ -1,9 +1,13 @@
 package joluphosoin.tennisfunserver.game.service;
 
+import joluphosoin.tennisfunserver.business.service.CourtService;
 import joluphosoin.tennisfunserver.game.data.dto.GameCreationDto;
+import joluphosoin.tennisfunserver.game.data.dto.GameDetailsDto;
 import joluphosoin.tennisfunserver.game.data.entity.Game;
 import joluphosoin.tennisfunserver.game.exception.CreateGameException;
+import joluphosoin.tennisfunserver.game.exception.GetGameException;
 import joluphosoin.tennisfunserver.game.repository.GameRepository;
+import joluphosoin.tennisfunserver.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +20,9 @@ import java.util.Map;
 public class GameService {
 
     private final GameRepository gameRepository;
+    private final UserService userService;
+    private final CourtService courtService;
+
 
     public void createGame(GameCreationDto gameDto) {
 
@@ -36,6 +43,26 @@ public class GameService {
                     .mannerFeedbacks(gameDto.getMannerFeedbacks() != null ? mapMannerFeedbacks(gameDto.getMannerFeedbacks()) : null)
                     .build();
             gameRepository.save(game);
+    }
+
+    public Game findGameByUserId(String userId) {
+        return gameRepository.findByPlayerIdsContaining(userId)
+                .stream()
+                .findFirst()
+                .orElseThrow(() -> new GetGameException("No game found for this user"));
+    }
+
+    public GameDetailsDto transformGameToDto(Game game) {
+        GameDetailsDto dto = new GameDetailsDto();
+        dto.setGameId(game.getGameId());
+        dto.setState(game.getGameStatus().name());
+        dto.setPlayers(userService.getPlayerDetails(game.getPlayerIds()));
+        dto.setCourt(courtService.getCourtDetails(game.getCourtId()));
+        dto.setDateTime(game.getDateTime());
+        dto.setChatRoomId(game.getChatRoomId());
+        dto.setRentalCost(game.getRentalCost());
+
+        return dto;
     }
 
     private boolean checkPlayerInAnyGame(List<String> playerIds) {
