@@ -44,7 +44,10 @@ public enum ErrorStatus implements BaseErrorCode {
     COURT_NOT_UNIQUE(HttpStatus.CONFLICT,"COURT409","이미 존재하는 코트입니다."),
 
     // 사업자 응답
-    BUSINESS_NOT_FOUND(HttpStatus.NOT_FOUND, "BUSINESS404", "해당 id의 사업자를 찾을 수 없습니다.");
+    BUSINESS_NOT_FOUND(HttpStatus.NOT_FOUND, "BUSINESS404", "해당 id의 사업자를 찾을 수 없습니다."),
+
+    // FILE 응답
+    INVALID_URL(HttpStatus.BAD_REQUEST,"FILE4000","URL형식이 올바르지 않습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
