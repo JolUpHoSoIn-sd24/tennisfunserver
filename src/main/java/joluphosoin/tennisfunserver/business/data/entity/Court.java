@@ -9,8 +9,6 @@ import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.time.LocalTime;
-
 @Document(collection = "court")
 @Getter
 @AllArgsConstructor
@@ -31,9 +29,9 @@ public class Court {
 
     private String courtName; // 코트 이름
 
-    private LocalTime openTime;
+    private String openTime;
 
-    private LocalTime closeTime;
+    private String closeTime;
 
 
     public enum CourtType{

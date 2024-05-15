@@ -47,11 +47,9 @@ public class MatchRequest {
     
     @Getter
     public enum MatchObjective {
-        INTENSE,
-        FUN,
-        ANY,
-        RALLY,
-        SERVE;
+        INTENSE, // 진지하게
+        FUN, // 부담없이
+        ANY; // 다 좋아요
     }
 
     public MatchRequest setEntity(MatchRequestDto matchRequestDto){
