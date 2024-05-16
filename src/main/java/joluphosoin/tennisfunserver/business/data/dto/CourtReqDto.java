@@ -11,7 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.geo.Point;
 
-import java.time.LocalTime;
+import java.util.List;
 
 @Getter
 @Builder
@@ -41,12 +41,9 @@ public class CourtReqDto {
     @NotBlank
     private String courtName;
 
-    @NotNull
-    private LocalTime openTime;
+    private List<CourtHoursDto> businessHours;
 
-    @NotNull
-    private LocalTime closeTime;
-
+    private Double rentalCostPerHalfHour;
 
     public Court toEntity(){
         Point location = new Point(longitude, latitude);
@@ -57,8 +54,8 @@ public class CourtReqDto {
                 .ownerId(ownerId)
                 .courtType(courtType)
                 .courtName(courtName)
-                .openTime(openTime)
-                .closeTime(closeTime)
+                .businessHours(businessHours)
+                .rentalCostPerHalfHour(rentalCostPerHalfHour)
                 .build();
     }
 }

@@ -46,6 +46,9 @@ public enum ErrorStatus implements BaseErrorCode {
     // 사업자 응답
     BUSINESS_NOT_FOUND(HttpStatus.NOT_FOUND, "BUSINESS404", "해당 id의 사업자를 찾을 수 없습니다."),
 
+    // 코트 일정 관련 응답
+    TIMESLOT_NOT_FOUND(HttpStatus.NOT_FOUND, "COURTTIMESLOT404", "이 코트에 할당 된 시간을 찾을 수 없습니다."),
+
     // FILE 응답
     INVALID_URL(HttpStatus.BAD_REQUEST,"FILE4000","URL형식이 올바르지 않습니다.");
 

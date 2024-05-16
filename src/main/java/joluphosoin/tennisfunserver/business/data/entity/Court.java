@@ -1,5 +1,6 @@
 package joluphosoin.tennisfunserver.business.data.entity;
 
+import joluphosoin.tennisfunserver.business.data.dto.CourtHoursDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,6 +9,8 @@ import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
+
+import java.util.List;
 
 @Document(collection = "court")
 @Getter
@@ -29,9 +32,9 @@ public class Court {
 
     private String courtName; // 코트 이름
 
-    private String openTime;
+    private List<CourtHoursDto> businessHours;
 
-    private String closeTime;
+    private Double rentalCostPerHalfHour;
 
 
     public enum CourtType{

@@ -13,9 +13,6 @@ import java.util.List;
 public class CourtTimeSlotReqDto {
 
     @NotBlank
-    private String ownerId;
-
-    @NotBlank
     private String courtId;
 
     private List<TimeSlotDto> timeSlots;

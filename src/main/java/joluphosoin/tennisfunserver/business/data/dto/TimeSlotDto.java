@@ -1,6 +1,5 @@
 package joluphosoin.tennisfunserver.business.data.dto;
 
-import joluphosoin.tennisfunserver.business.data.entity.TimeSlot;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,15 +14,22 @@ public class TimeSlotDto {
 
     private Double rentalCostPerHalfHour;
 
-    private Boolean isAvailable;
+    private String status;
 
-    public static TimeSlot toEntity(TimeSlotDto timeSlotDto,CourtTimeSlotReqDto courtTimeSlotReqDto){
-        return TimeSlot.builder()
-                .ownerId(courtTimeSlotReqDto.getOwnerId())
-                .courtId(courtTimeSlotReqDto.getCourtId())
-                .startTime(timeSlotDto.getStartTime())
-                .rentalCostPerHalfHour(timeSlotDto.getRentalCostPerHalfHour())
-                .isAvailable(timeSlotDto.getIsAvailable())
-                .build();
-    }
+//    public static TimeSlot toEntity(TimeSlotDto timeSlotDto, Court court){
+//
+//        LocalDate localDate = timeSlotDto.getStartTime()
+//                .toInstant()
+//                .atZone(ZoneId.of("Asia/Seoul"))
+//                .toLocalDate();
+//
+//        return TimeSlot.builder()
+//                .ownerId(court.getOwnerId())
+//                .courtId(court.getId())
+//                .date(localDate)
+//                .startTime(timeSlotDto.getStartTime())
+//                .rentalCostPerHalfHour(timeSlotDto.getRentalCostPerHalfHour())
+//                .status(TimeSlot.ReservationStatus.valueOf(timeSlotDto.getStatus()))
+//                .build();
+//    }
 }
