@@ -78,28 +78,50 @@ public class MatchServiceImpl implements MatchService {
     @Override
     @Transactional
     public MatchResultResDto getMatchResult(String matchRequestId, String userId) {
-        MatchResult matchResult = matchResultRepository.findByMatchRequestId(matchRequestId)
+
+        MatchResult matchResult = matchResultRepository
+                .findByUserMatchRequestsContains(userId,matchRequestId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MATCHRESULT_NOT_FOUND));
 
+        setFeedback(userId, matchResult);
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        User opponent = getOpponent(userId, matchResult);
+
+        return MatchResultResDto.toDto(matchResult,user,opponent);
+    }
+
+    private User getOpponent(String userId, MatchResult matchResult) {
+        Map<String, String> userAndMatchRequests = matchResult.getUserMatchRequests();
+
+        String opponentId = userAndMatchRequests.keySet().stream()
+                .filter(id -> !id.equals(userId))
+                .findAny()
+                .orElse(null);
+
+        assert opponentId != null;
+
+        return userRepository.findById(opponentId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+    }
+
+    private void setFeedback(String userId, MatchResult matchResult) {
         Map<String, MatchResult.FeedbackStatus> feedback = matchResult.getFeedback();
 
         if(!feedback.containsKey(userId)){
             feedback.put(userId, MatchResult.FeedbackStatus.NOTSELECTED);
         }
-
         matchResult.setFeedback(feedback);
-
         matchResultRepository.save(matchResult);
-
-        return MatchResultResDto.toDto(matchResult,userId);
-
     }
 
     @Override
     @Transactional
     public void registerFeedback(String matchRequestId, FeedbackReqDto feedbackReqDto) {
 
-        MatchResult matchResult = matchResultRepository.findByMatchRequestId(matchRequestId)
+        MatchResult matchResult = matchResultRepository.findByUserMatchRequestsContains(matchRequestId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MATCHRESULT_NOT_FOUND));
 
         Map<String, MatchResult.FeedbackStatus> feedback = matchResult.getFeedback();

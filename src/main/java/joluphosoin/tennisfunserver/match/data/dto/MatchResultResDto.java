@@ -22,20 +22,18 @@ public class MatchResultResDto {
 
     private MatchResult.FeedbackStatus status;
 
-    public static MatchResultResDto toDto(MatchResult matchResult,String userId){
-
-        List<User> users = matchResult.getUsers();
-
-        User opponent=users.stream()
-                .filter(user -> !user.getId().equals(userId))
-                .findAny()
-                .orElse(null);
+    public static MatchResultResDto toDto(MatchResult matchResult,User user,User opponent){
 
         Map<String, MatchResult.FeedbackStatus> feedback = matchResult.getFeedback();
-        MatchResult.FeedbackStatus status = feedback.get(userId);
+        MatchResult.FeedbackStatus status = feedback.get(user.getId());
+
+
+        Map<String, String> userAndMatchRequests = matchResult.getUserMatchRequests();
+
+        String matchRequestId = userAndMatchRequests.get(user.getId());
 
         return MatchResultResDto.builder()
-                .matchRequestId(matchResult.getMatchRequestId())
+                .matchRequestId(matchRequestId)
                 .opponent(opponent)
                 .matchDetails(matchResult.getMatchDetails())
                 .status(status)

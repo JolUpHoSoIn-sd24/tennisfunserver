@@ -1,6 +1,5 @@
 package joluphosoin.tennisfunserver.match.data.entity;
 
-import joluphosoin.tennisfunserver.user.data.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,12 +7,11 @@ import lombok.Setter;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 @Document(collection = "matchResult")
@@ -24,10 +22,7 @@ public class MatchResult {
     @MongoId
     private String id;
 
-    private String matchRequestId;
-
-    @DBRef
-    private List<User> users;
+    private Map<String,String> userMatchRequests=new HashMap<>();
 
     private MatchDetails matchDetails; // 매칭 세부 사항
 
