@@ -55,6 +55,15 @@ public class MatchRequestDto {
     @NotNull
     private Double maxDistance;
 
+    @Schema(example ="30")
+    private Integer minTime;
+
+    @Schema(example ="120")
+    private Integer maxTime;
+
+    @Schema(example = "courtId")
+    private String reservationCourtId;
+
     @Schema(example ="2024-05-01")
     private Date reservationDate;
 
@@ -81,7 +90,8 @@ public class MatchRequestDto {
 
         if (reservationDate != null && rentalCost != null) {
             builder.reservationDate(reservationDate)
-                    .rentalCost(rentalCost);
+                    .rentalCost(rentalCost)
+                    .reservationCourtId(reservationCourtId);
         }
 
         return builder.build();

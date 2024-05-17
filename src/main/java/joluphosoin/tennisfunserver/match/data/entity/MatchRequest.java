@@ -38,11 +38,17 @@ public class MatchRequest {
 
     private List<String> dislikedCourts; // 선호하지 않는 코트 ID 목록
 
+    private Integer minTime;
+
+    private Integer maxTime;
+
     // 사전예약 관련 정보
+    private String reservationCourtId;
+
     private Date reservationDate; // 예약 날짜
 
     private Integer rentalCost; // 코트 대여 비용
-    
+
     private String description; // 한줄 메시지
     
     @Getter
@@ -63,6 +69,7 @@ public class MatchRequest {
         this.dislikedCourts = matchRequestDto.getDislikedCourts();
         this.description = matchRequestDto.getDescription();
         if (reservationDate != null && rentalCost != null) {
+            this.reservationCourtId= matchRequestDto.getReservationCourtId();
             this.reservationDate = matchRequestDto.getReservationDate();
             this.rentalCost = matchRequestDto.getRentalCost();
         }

@@ -42,6 +42,15 @@ public class MatchResponseDto {
     @Schema(example = "2.8")
     private Double maxDistance;
 
+    @Schema(example ="30")
+    private Integer minTime;
+
+    @Schema(example ="120")
+    private Integer maxTime;
+
+    @Schema(example = "courtId")
+    private String reservationCourtId;
+
     @Schema(example = "2024-05-01")
     private Date reservationDate;
 
@@ -68,7 +77,8 @@ public class MatchResponseDto {
 
         if (matchRequest.getReservationDate() != null && matchRequest.getRentalCost() != null) {
             builder.reservationDate(matchRequest.getReservationDate())
-                    .rentalCost(matchRequest.getRentalCost());
+                    .rentalCost(matchRequest.getRentalCost())
+                    .reservationCourtId(matchRequest.getReservationCourtId());
         }
         return builder.build();
     }
