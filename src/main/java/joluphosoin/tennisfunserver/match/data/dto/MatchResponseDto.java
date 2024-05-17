@@ -73,6 +73,8 @@ public class MatchResponseDto {
                 .y(matchRequest.getLocation().getY())
                 .dislikedCourts(matchRequest.getDislikedCourts())
                 .maxDistance(matchRequest.getMaxDistance())
+                .minTime(matchRequest.getMinTime())
+                .maxTime(matchRequest.getMaxTime())
                 .description(matchRequest.getDescription());
 
         if (matchRequest.getReservationDate() != null && matchRequest.getRentalCost() != null) {

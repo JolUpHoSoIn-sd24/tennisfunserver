@@ -38,10 +38,10 @@ public class MatchServiceImpl implements MatchService {
     @Transactional
     public MatchResponseDto registermatchRequest(MatchRequestDto matchRequestDto) {
 
-        MatchRequest matchRequest = matchRequestDto.toEntity();
-
         User user = userRepository.findById(matchRequestDto.getUserId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        MatchRequest matchRequest = matchRequestDto.toEntity(user);
 
         user.setAvoidCourtLocation(matchRequest.getDislikedCourts());
 
@@ -68,7 +68,10 @@ public class MatchServiceImpl implements MatchService {
         MatchRequest matchRequest = matchRequestRepository.findById(requestId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MATCHREQ_NOT_FOUND));
 
-        MatchRequest updateMatchRequest = matchRequest.setEntity(matchRequestDto);
+        User user = userRepository.findById(matchRequest.getUserId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        MatchRequest updateMatchRequest = matchRequest.setEntity(matchRequestDto,user);
 
         matchRequestRepository.save(updateMatchRequest);
 

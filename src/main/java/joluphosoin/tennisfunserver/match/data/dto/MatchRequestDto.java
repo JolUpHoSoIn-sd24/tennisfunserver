@@ -1,15 +1,12 @@
 package joluphosoin.tennisfunserver.match.data.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import joluphosoin.tennisfunserver.match.data.entity.MatchRequest;
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import joluphosoin.tennisfunserver.user.data.entity.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.geo.Point;
 
 import java.util.Date;
 import java.util.List;
@@ -36,24 +33,8 @@ public class MatchRequestDto {
     @NotBlank(message = "isSingles is required")
     private Boolean isSingles;
 
-    @Min(-90)
-    @Max(90)
-    @NotNull
-    @Schema(example ="37.5204279064529")
-    private Double latitude;
-
-    @Min(-180)
-    @Max(180)
-    @NotNull
-    @Schema(example ="126.887847771379")
-    private Double longitude;
-
-    @Schema(example ="[\"court1\", \"court2\"]")
+     @Schema(example ="[\"court1\", \"court2\"]")
     private List<String> dislikedCourts;
-
-    @Schema(example ="2.8")
-    @NotNull
-    private Double maxDistance;
 
     @Schema(example ="30")
     private Integer minTime;
@@ -73,9 +54,7 @@ public class MatchRequestDto {
     @Schema(example ="테니스 랠리 연습을 위한 매치 요청")
     private String description;
 
-    public MatchRequest toEntity(){
-
-        Point location = new Point(longitude, latitude);
+    public MatchRequest toEntity(User user){
 
         MatchRequest.MatchRequestBuilder builder = MatchRequest.builder()
                 .userId(userId)
@@ -83,9 +62,11 @@ public class MatchRequestDto {
                 .endTime(endTime)
                 .isSingles(isSingles)
                 .objective(objective)
-                .location(location)
-                .maxDistance(maxDistance)
+                .location(user.getLocation())
+                .maxDistance(user.getMaxDistance())
                 .dislikedCourts(dislikedCourts)
+                .minTime(minTime)
+                .maxTime(maxTime)
                 .description(description);
 
         if (reservationDate != null && rentalCost != null) {

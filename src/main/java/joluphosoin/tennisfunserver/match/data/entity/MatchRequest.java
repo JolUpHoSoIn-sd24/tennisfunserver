@@ -1,6 +1,7 @@
 package joluphosoin.tennisfunserver.match.data.entity;
 
 import joluphosoin.tennisfunserver.match.data.dto.MatchRequestDto;
+import joluphosoin.tennisfunserver.user.data.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -58,16 +59,18 @@ public class MatchRequest {
         ANY; // 다 좋아요
     }
 
-    public MatchRequest setEntity(MatchRequestDto matchRequestDto){
+    public MatchRequest setEntity(MatchRequestDto matchRequestDto, User user){
 
         this.startTime = matchRequestDto.getStartTime();
         this.endTime = matchRequestDto.getEndTime();
         this.isSingles = matchRequestDto.getIsSingles();
         this.objective = matchRequestDto.getObjective();
-        this.location = new Point(matchRequestDto.getLongitude(), matchRequestDto.getLatitude());
-        this.maxDistance = matchRequestDto.getMaxDistance();
+        this.maxDistance = user.getMaxDistance();
         this.dislikedCourts = matchRequestDto.getDislikedCourts();
         this.description = matchRequestDto.getDescription();
+        this.location = user.getLocation();
+        this.minTime = matchRequestDto.getMinTime();
+        this.maxTime = matchRequestDto.getMaxTime();
         if (reservationDate != null && rentalCost != null) {
             this.reservationCourtId= matchRequestDto.getReservationCourtId();
             this.reservationDate = matchRequestDto.getReservationDate();
