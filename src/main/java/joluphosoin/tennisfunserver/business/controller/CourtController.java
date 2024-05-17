@@ -1,9 +1,7 @@
 package joluphosoin.tennisfunserver.business.controller;
 
 import jakarta.validation.Valid;
-import joluphosoin.tennisfunserver.business.data.dto.CourtReqDto;
-import joluphosoin.tennisfunserver.business.data.dto.CourtResDto;
-import joluphosoin.tennisfunserver.business.data.dto.CourtTimeSlotReqDto;
+import joluphosoin.tennisfunserver.business.data.dto.*;
 import joluphosoin.tennisfunserver.business.service.CourtService;
 import joluphosoin.tennisfunserver.payload.ApiResult;
 import joluphosoin.tennisfunserver.payload.code.status.SuccessStatus;
@@ -23,11 +21,32 @@ public class CourtController {
         return ApiResult.onSuccess(SuccessStatus.COURT_CREATED,courtService.registerCourt(courtReqDto));
     }
 
-    @PostMapping("/availability")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ApiResult<CourtResDto> registerCourtTimeSlot(@RequestBody @Valid CourtTimeSlotReqDto courtTimeSlotReqDto){
-        return ApiResult.onSuccess(SuccessStatus.COURTTIME_CREATED,courtService.registerCourtTimeSlot(courtTimeSlotReqDto));
-    }
+//    @PostMapping("/availability")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public ApiResult<CourtResDto> registerCourtTimeSlot(@RequestBody @Valid CourtTimeSlotReqDto courtTimeSlotReqDto){
+//        return ApiResult.onSuccess(SuccessStatus.COURTTIME_CREATED,courtService.registerCourtTimeSlot(courtTimeSlotReqDto));
+//    }
 
+    @PostMapping("/auto-match")
+    public ApiResult<String> applyAutoMatching(@RequestBody @Valid AutoMatchApplyDto autoMatchApplyDto){
+        courtService.applyAutoMatching(autoMatchApplyDto);
+        return ApiResult.onSuccess("코트 예약 자동 매칭이 성공적으로 신청되었습니다.");
+    }
+//    @GetMapping("/reservations")
+//    public ApiResult<SimpleCourtResDto> getReservationCourts(@RequestParam @Valid String courtId){
+//        return ApiResult.onSuccess(courtService.getReservationCourts(courtId));
+//    }
+//    @GetMapping("/reservations/pending")
+//    public ApiResult<SimpleCourtResDto> getPendingReservationCourts(@RequestParam @Valid String courtId){
+//        return ApiResult.onSuccess(courtService.getPendingReservationCourts(courtId));
+//    }
+//    @DeleteMapping("/reservations/cancel")
+//    public ApiResult<String> cancelReservationCourts(@RequestBody SimpleTimeSlotDto timeSlotDto){
+//        return ApiResult.onSuccess(courtService.cancelReservationCourts(timeSlotDto));
+//    }
+//    @PatchMapping("/reservations/block-times")
+//    public ApiResult<String> blockReservationCourts(@RequestBody SimpleTimeSlotDto timeSlotDto){
+//        return ApiResult.onSuccess(courtService.blockReservationCourts(timeSlotDto));
+//    }
 
 }

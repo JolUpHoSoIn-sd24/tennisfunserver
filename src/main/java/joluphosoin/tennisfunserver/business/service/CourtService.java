@@ -1,6 +1,9 @@
 package joluphosoin.tennisfunserver.business.service;
 
-import joluphosoin.tennisfunserver.business.data.dto.*;
+import joluphosoin.tennisfunserver.business.data.dto.AutoMatchApplyDto;
+import joluphosoin.tennisfunserver.business.data.dto.CourtHoursDto;
+import joluphosoin.tennisfunserver.business.data.dto.CourtReqDto;
+import joluphosoin.tennisfunserver.business.data.dto.CourtResDto;
 import joluphosoin.tennisfunserver.business.data.entity.Court;
 import joluphosoin.tennisfunserver.business.data.entity.DayTimeSlot;
 import joluphosoin.tennisfunserver.business.repository.BusinessInfoRepository;
@@ -13,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.time.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -86,13 +90,12 @@ public class CourtService {
                                 .atZone(ZoneId.of(ZONE_ID_ASIA_SEOUL))
                                 .toInstant());
 
-                Map<Date, DayTimeSlot.ReservationStatus> timeSlots = new HashMap<>();
+                Map<String, DayTimeSlot.ReservationStatus> timeSlots = new HashMap<>();
 
                 while (openDateTime.before(closeDateTime)) {
-                    timeSlots.put(openDateTime, DayTimeSlot.ReservationStatus.NOT_OPEN);
+                    timeSlots.put(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(openDateTime), DayTimeSlot.ReservationStatus.NOT_OPEN);
                     openDateTime = new Date(openDateTime.getTime() + TimeUnit.MINUTES.toMillis(30));
                 }
-
                 DayTimeSlot dayTimeSlot = DayTimeSlot.toEntity(court, date, timeSlots);
                 dayTimeSlotRepository.save(dayTimeSlot);
             }
@@ -132,26 +135,28 @@ public class CourtService {
         return courtDetail;
     }
 
-//    @Transactional
-//    public void applyAutoMatching(AutoMatchApplyDto autoMatchApplyDto) {
-//
-//        List<LocalDate> dates = autoMatchApplyDto.getDates();
-//
-//        dates.forEach(date -> {
-//
-//            List<TimeSlot> timeSlots = timeSlotRepository.findAllByCourtIdAndDate(autoMatchApplyDto.getCourtId(), date)
-//                    .orElseThrow(() -> new GeneralException(ErrorStatus.TIMESLOT_NOT_FOUND));
-//
-//            timeSlots.forEach(timeSlot -> {
-//                if (timeSlot.getStatus() == TimeSlot.ReservationStatus.NOT_OPEN) {
-//                    timeSlot.setStatus(TimeSlot.ReservationStatus.BEFORE);
-//                }
-//                timeSlotRepository.save(timeSlot);
-//            });
-//
-//        });
-//    }
-//
+    @Transactional
+    public void applyAutoMatching(AutoMatchApplyDto autoMatchApplyDto) {
+
+        List<String> dates = autoMatchApplyDto.getDates();
+
+        dates.forEach(date->{
+            DayTimeSlot dayTimeSlot = dayTimeSlotRepository.findByCourtIdAndDate(autoMatchApplyDto.getCourtId(),date)
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.TIMESLOT_NOT_FOUND));
+
+            Map<String, DayTimeSlot.ReservationStatus> timeSlots = dayTimeSlot.getTimeSlots();
+
+            timeSlots.forEach((key, value) -> {
+                if (value == DayTimeSlot.ReservationStatus.NOT_OPEN) {
+                    timeSlots.put(key, DayTimeSlot.ReservationStatus.BEFORE);
+                }
+
+            });
+            dayTimeSlot.setTimeSlots(timeSlots);
+            dayTimeSlotRepository.save(dayTimeSlot);
+        });
+    }
+
 //    public SimpleCourtResDto getReservationCourts(String courtId) {
 //
 //        List<TimeSlot> timeSlots = timeSlotRepository.findAllByCourtIdAndStatus(courtId, TimeSlot.ReservationStatus.CONFIRMED)
