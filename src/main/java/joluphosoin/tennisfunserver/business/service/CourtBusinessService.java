@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
-public class CourtService {
+public class CourtBusinessService {
 
     private final BusinessInfoRepository businessInfoRepository;
     private final CourtRepository courtRepository;

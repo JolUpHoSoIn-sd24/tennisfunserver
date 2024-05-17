@@ -2,7 +2,7 @@ package joluphosoin.tennisfunserver.business.controller;
 
 import jakarta.validation.Valid;
 import joluphosoin.tennisfunserver.business.data.dto.*;
-import joluphosoin.tennisfunserver.business.service.CourtService;
+import joluphosoin.tennisfunserver.business.service.CourtBusinessService;
 import joluphosoin.tennisfunserver.payload.ApiResult;
 import joluphosoin.tennisfunserver.payload.code.status.SuccessStatus;
 import lombok.RequiredArgsConstructor;
@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/business/courts")
-public class CourtController {
-    private final CourtService courtService;
+public class CourtBusinessController {
+    private final CourtBusinessService courtBusinessService;
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResult<CourtResDto> registerCourt(@RequestBody @Valid CourtReqDto courtReqDto){
-        return ApiResult.onSuccess(SuccessStatus.COURT_CREATED,courtService.registerCourt(courtReqDto));
+        return ApiResult.onSuccess(SuccessStatus.COURT_CREATED, courtBusinessService.registerCourt(courtReqDto));
     }
 
 //    @PostMapping("/availability")
@@ -29,7 +29,7 @@ public class CourtController {
 
     @PostMapping("/auto-match")
     public ApiResult<String> applyAutoMatching(@RequestBody @Valid AutoMatchApplyDto autoMatchApplyDto){
-        courtService.applyAutoMatching(autoMatchApplyDto);
+        courtBusinessService.applyAutoMatching(autoMatchApplyDto);
         return ApiResult.onSuccess("코트 예약 자동 매칭이 성공적으로 신청되었습니다.");
     }
 //    @GetMapping("/reservations")

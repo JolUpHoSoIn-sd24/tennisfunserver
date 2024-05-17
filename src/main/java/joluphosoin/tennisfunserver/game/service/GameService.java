@@ -1,6 +1,6 @@
 package joluphosoin.tennisfunserver.game.service;
 
-import joluphosoin.tennisfunserver.business.service.CourtService;
+import joluphosoin.tennisfunserver.business.service.CourtBusinessService;
 import joluphosoin.tennisfunserver.game.data.dto.GameCreationDto;
 import joluphosoin.tennisfunserver.game.data.dto.GameDetailsDto;
 import joluphosoin.tennisfunserver.game.data.entity.Game;
@@ -21,7 +21,7 @@ public class GameService {
 
     private final GameRepository gameRepository;
     private final UserService userService;
-    private final CourtService courtService;
+    private final CourtBusinessService courtBusinessService;
 
 
     public void createGame(GameCreationDto gameDto) {
@@ -57,7 +57,7 @@ public class GameService {
         dto.setGameId(game.getGameId());
         dto.setState(game.getGameStatus().name());
         dto.setPlayers(userService.getPlayerDetails(game.getPlayerIds()));
-        dto.setCourt(courtService.getCourtDetails(game.getCourtId()));
+        dto.setCourt(courtBusinessService.getCourtDetails(game.getCourtId()));
         dto.setDateTime(game.getDateTime());
         dto.setChatRoomId(game.getChatRoomId());
         dto.setRentalCost(game.getRentalCost());
