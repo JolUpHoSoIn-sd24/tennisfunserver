@@ -9,9 +9,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 @Document(collection = "timeslot")
 @Getter
@@ -29,7 +27,7 @@ public class DayTimeSlot {
     private String date;
 
     @Setter
-    private Map<Date,ReservationStatus> timeSlots;
+    private Map<String,ReservationStatus> timeSlots;
 
     private Double rentalCostPerHalfHour;
 
@@ -41,10 +39,9 @@ public class DayTimeSlot {
         USED // 사용 완료
     }
 
-    public static DayTimeSlot toEntity(Court court, Date date, Map<Date,ReservationStatus> timeSlots){
+    public static DayTimeSlot toEntity(Court court, Date date, Map<String,ReservationStatus> timeSlots){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateString = sdf.format(date);
-
         return DayTimeSlot.builder()
                 .ownerId(court.getOwnerId())
                 .courtId(court.getId())
