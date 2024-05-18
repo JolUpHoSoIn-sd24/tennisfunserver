@@ -39,7 +39,7 @@ public class Game {
 
     private List<NTRPFeedback> ntrpFeedbacks;
     private List<MannerFeedback> mannerFeedbacks;
-
+    private Map<String, Boolean> paymentStatus;
 
     public enum GameStatus {
         PREGAME, INPLAY, POSTGAME
