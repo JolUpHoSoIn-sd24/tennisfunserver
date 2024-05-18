@@ -30,19 +30,25 @@ public class GameService {
             throw new CreateGameException("One or more players are already in an existing game");
         }
 
-            Game game = Game.builder()
-                    .gameStatus(gameDto.getGameStatus())
-                    .playerIds(gameDto.getPlayerIds())
-                    .courtId(gameDto.getCourtId())
-                    .dateTime(gameDto.getDateTime())
-                    .chatRoomId(gameDto.getChatRoomId())
-                    .rentalCost(gameDto.getRentalCost())
-                    .scores(gameDto.getScores() != null ? mapScores(gameDto.getScores()) : null)
-                    .scoreConfirmed(false)
-                    .ntrpFeedbacks(gameDto.getNtrpFeedbacks() != null ? mapNTRPFeedbacks(gameDto.getNtrpFeedbacks()) : null)
-                    .mannerFeedbacks(gameDto.getMannerFeedbacks() != null ? mapMannerFeedbacks(gameDto.getMannerFeedbacks()) : null)
-                    .build();
-            gameRepository.save(game);
+        Map<String, Boolean> paymentStatusMap = new HashMap<>();
+        for (String playerId : gameDto.getPlayerIds()) {
+            paymentStatusMap.put(playerId, false);
+        }
+
+        Game game = Game.builder()
+                .playerIds(gameDto.getPlayerIds())
+                .courtId(gameDto.getCourtId())
+                .dateTime(gameDto.getDateTime())
+                .chatRoomId(gameDto.getChatRoomId())
+                .rentalCost(gameDto.getRentalCost())
+                .scores(gameDto.getScores() != null ? mapScores(gameDto.getScores()) : null)
+                .scoreConfirmed(false)
+                .paymentStatus(paymentStatusMap)
+                .gameStatus(Game.GameStatus.PREGAME)
+                .ntrpFeedbacks(gameDto.getNtrpFeedbacks() != null ? mapNTRPFeedbacks(gameDto.getNtrpFeedbacks()) : null)
+                .mannerFeedbacks(gameDto.getMannerFeedbacks() != null ? mapMannerFeedbacks(gameDto.getMannerFeedbacks()) : null)
+                .build();
+        gameRepository.save(game);
     }
 
     public Game findGameByUserId(String userId) {
