@@ -21,6 +21,12 @@ public class CourtBusinessController {
         return ApiResult.onSuccess(SuccessStatus.COURT_CREATED, courtBusinessService.registerCourt(courtReqDto));
     }
 
+    @PostMapping("/timeslot")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ApiResult<CourtResDto> registerCourtTime(@RequestParam String courtId){
+        return ApiResult.onSuccess(SuccessStatus.COURT_CREATED, courtBusinessService.registerCourtTime(courtId));
+    }
+
 //    @PostMapping("/availability")
 //    @ResponseStatus(HttpStatus.CREATED)
 //    public ApiResult<CourtResDto> registerCourtTimeSlot(@RequestBody @Valid CourtTimeSlotReqDto courtTimeSlotReqDto){

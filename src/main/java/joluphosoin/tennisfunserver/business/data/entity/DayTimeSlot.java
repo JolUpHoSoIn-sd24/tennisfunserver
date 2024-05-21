@@ -1,5 +1,6 @@
 package joluphosoin.tennisfunserver.business.data.entity;
 
+import joluphosoin.tennisfunserver.business.data.dto.TimeSlotDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Document(collection = "timeslot")
@@ -27,7 +29,7 @@ public class DayTimeSlot {
     private String date;
 
     @Setter
-    private Map<String,ReservationStatus> timeSlots;
+    private List<TimeSlotDto> timeSlots;
 
     private Double rentalCostPerHalfHour;
 
@@ -39,7 +41,7 @@ public class DayTimeSlot {
         USED // 사용 완료
     }
 
-    public static DayTimeSlot toEntity(Court court, Date date, Map<String,ReservationStatus> timeSlots){
+    public static DayTimeSlot toEntity(Court court, Date date, List<TimeSlotDto> timeSlots){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateString = sdf.format(date);
         return DayTimeSlot.builder()

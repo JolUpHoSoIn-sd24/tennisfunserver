@@ -1,8 +1,10 @@
 package joluphosoin.tennisfunserver.business.data.dto;
 
+import joluphosoin.tennisfunserver.business.data.entity.DayTimeSlot;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 @Getter
@@ -12,24 +14,13 @@ public class TimeSlotDto {
 
     private Date startTime;
 
-    private Double rentalCostPerHalfHour;
+    @Setter
+    private DayTimeSlot.ReservationStatus status;
 
-    private String status;
-
-//    public static TimeSlot toEntity(TimeSlotDto timeSlotDto, Court court){
-//
-//        LocalDate localDate = timeSlotDto.getStartTime()
-//                .toInstant()
-//                .atZone(ZoneId.of("Asia/Seoul"))
-//                .toLocalDate();
-//
-//        return TimeSlot.builder()
-//                .ownerId(court.getOwnerId())
-//                .courtId(court.getId())
-//                .date(localDate)
-//                .startTime(timeSlotDto.getStartTime())
-//                .rentalCostPerHalfHour(timeSlotDto.getRentalCostPerHalfHour())
-//                .status(TimeSlot.ReservationStatus.valueOf(timeSlotDto.getStatus()))
-//                .build();
-//    }
+    public static TimeSlotDto toDto(Date startTime){
+        return TimeSlotDto.builder()
+                .startTime(startTime)
+                .status(DayTimeSlot.ReservationStatus.NOT_OPEN)
+                .build();
+    }
 }
