@@ -39,6 +39,7 @@ public class MatchResult {
         private Date endTime; // 종료 시간
         @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
         private Point location;
+        private String courtId;
         private String courtType; // 코트 타입
 
     }
