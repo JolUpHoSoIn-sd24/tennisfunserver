@@ -1,5 +1,6 @@
 package joluphosoin.tennisfunserver.match.controller;
 
+import jakarta.validation.Valid;
 import joluphosoin.tennisfunserver.match.data.dto.FeedbackReqDto;
 import joluphosoin.tennisfunserver.match.data.dto.MatchRequestDto;
 import joluphosoin.tennisfunserver.match.data.dto.MatchResponseDto;
@@ -25,7 +26,7 @@ public class MatchController {
 
     @PostMapping("/request")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResult<MatchResponseDto> registerMatchRequest(@RequestBody MatchRequestDto matchRequestDto,@SessionAttribute(name="id") String userId) {
+    public ApiResult<MatchResponseDto> registerMatchRequest(@RequestBody @Valid MatchRequestDto matchRequestDto, @SessionAttribute(name="id") String userId) {
         return ApiResult.onSuccess(SuccessStatus.CREATED, matchService.registermatchRequest(matchRequestDto,userId));
     }
 

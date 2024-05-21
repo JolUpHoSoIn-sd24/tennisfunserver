@@ -1,7 +1,7 @@
 package joluphosoin.tennisfunserver.match.data.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import joluphosoin.tennisfunserver.match.data.entity.MatchRequest;
 import joluphosoin.tennisfunserver.user.data.entity.User;
 import lombok.AccessLevel;
@@ -15,28 +15,30 @@ import java.util.List;
 public class MatchRequestDto {
 
     @Schema(example ="2024-05-01T10:00:00")
-    @NotBlank(message = "startTime is required")
+    @NotNull
     private Date startTime;
 
     @Schema(example ="2024-05-01T12:00:00")
-    @NotBlank(message = "endTime is required")
+    @NotNull
     private Date endTime;
 
     @Schema(example ="RALLY")
-    @NotBlank(message = "objective is required")
+    @NotNull
     private MatchRequest.MatchObjective objective;
 
     @Schema(example ="true")
-    @NotBlank(message = "isSingles is required")
+    @NotNull
     private Boolean isSingles;
 
-     @Schema(example ="[\"court1\", \"court2\"]")
+    @Schema(example ="[\"court1\", \"court2\"]")
     private List<String> dislikedCourts;
 
     @Schema(example ="30")
+    @NotNull
     private Integer minTime;
 
     @Schema(example ="120")
+    @NotNull
     private Integer maxTime;
 
     @Schema(example = "courtId")
