@@ -23,7 +23,7 @@ public enum ErrorStatus implements BaseErrorCode {
     NICKNAME_NOT_UNIQUE(HttpStatus.CONFLICT,JOIN_PREFIX+HttpStatus.CONFLICT.value(),"이미 존재하는 닉네임입니다."),
 
     // 로그인 응답
-    SESSION_EXPIRED(HttpStatus.UNAUTHORIZED,LOGIN_PREFIX+HttpStatus.UNAUTHORIZED.value(),"세션이 만료되었습니다."),
+    SESSION_EXPIRED(HttpStatus.UNAUTHORIZED,LOGIN_PREFIX+HttpStatus.UNAUTHORIZED.value(),"다시 로그인 해주세요."),
     ID_NOT_EXIST(HttpStatus.NOT_FOUND,LOGIN_PREFIX+HttpStatus.NOT_FOUND.value(),"ID를 잘못 입력하셨습니다."),
     PW_NOT_MATCH(HttpStatus.FORBIDDEN,LOGIN_PREFIX+HttpStatus.FORBIDDEN.value(),"입력하신 정보가 회원정보와 일치하지 않습니다."),
 
