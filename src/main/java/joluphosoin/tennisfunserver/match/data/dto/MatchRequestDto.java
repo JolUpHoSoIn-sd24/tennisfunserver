@@ -4,14 +4,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import joluphosoin.tennisfunserver.match.data.entity.MatchRequest;
 import joluphosoin.tennisfunserver.user.data.entity.User;
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class MatchRequestDto {
 
     @Schema(example ="2024-05-01T10:00:00")
@@ -55,6 +55,9 @@ public class MatchRequestDto {
 
     public MatchRequest toEntity(User user){
 
+        if(dislikedCourts==null){
+            dislikedCourts = new ArrayList<>();
+        }
         MatchRequest.MatchRequestBuilder builder = MatchRequest.builder()
                 .userId(user.getId())
                 .startTime(startTime)

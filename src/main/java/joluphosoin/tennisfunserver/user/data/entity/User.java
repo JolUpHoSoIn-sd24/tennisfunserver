@@ -39,7 +39,7 @@ public class User {
 
     private Double maxDistance;
 
-    private List<String> avoidCourtLocation;
+    private List<String> dislikedCourts;
 
     private double ntrp;
 

@@ -43,7 +43,7 @@ public class MatchServiceImpl implements MatchService {
 
         MatchRequest matchRequest = matchRequestDto.toEntity(user);
 
-        user.setAvoidCourtLocation(matchRequest.getDislikedCourts());
+        user.setDislikedCourts(matchRequest.getDislikedCourts());
 
         matchRequestRepository.save(matchRequest);
 
