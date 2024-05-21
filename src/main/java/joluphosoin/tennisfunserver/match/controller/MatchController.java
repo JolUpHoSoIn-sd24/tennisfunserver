@@ -1,6 +1,7 @@
 package joluphosoin.tennisfunserver.match.controller;
 
 import jakarta.validation.Valid;
+import joluphosoin.tennisfunserver.match.data.dto.FeedbackReqDto;
 import joluphosoin.tennisfunserver.match.data.dto.MatchRequestDto;
 import joluphosoin.tennisfunserver.match.data.dto.MatchResponseDto;
 import joluphosoin.tennisfunserver.match.data.dto.MatchResultResDto;
@@ -48,11 +49,11 @@ public class MatchController {
         return ApiResult.onSuccess(matchService.getMatchResult(userId));
     }
 
-//    @PostMapping("/results/{matchResultId}/feedback")
-//    public ApiResult<String> registerFeedback(@PathVariable String matchResultId, @RequestBody @Valid FeedbackReqDto feedbackReqDto){
-//        matchService.registerFeedback(matchResultId,feedbackReqDto);
-//        return ApiResult.onSuccess("Feedback submitted successfully.");
-//    }
+    @PostMapping("/results/{matchResultId}/feedback")
+    public ApiResult<String> registerFeedback(@PathVariable String matchResultId, @RequestBody @Valid FeedbackReqDto feedbackReqDto){
+        matchService.registerFeedback(matchResultId,feedbackReqDto);
+        return ApiResult.onSuccess("Feedback submitted successfully.");
+    }
 }
 
 
