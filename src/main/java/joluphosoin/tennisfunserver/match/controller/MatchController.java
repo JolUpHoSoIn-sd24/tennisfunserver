@@ -31,7 +31,7 @@ public class MatchController {
     }
 
     @PutMapping("/request")
-    public ApiResult<MatchResponseDto> updateMatchRequest(@RequestBody MatchRequestDto matchRequestDto, @RequestParam String requestId,@SessionAttribute(name="id") String userId) {
+    public ApiResult<MatchResponseDto> updateMatchRequest(@RequestBody @Valid MatchRequestDto matchRequestDto, @RequestParam String requestId,@SessionAttribute(name="id") String userId) {
         return ApiResult.onSuccess(matchService.updateMatchRequest(matchRequestDto, requestId,userId));
     }
 
@@ -49,7 +49,7 @@ public class MatchController {
     }
 
     @PostMapping("/results/{matchRequestId}/feedback")
-    public ApiResult<String> registerFeedback(@PathVariable String matchRequestId, @RequestBody FeedbackReqDto feedbackReqDto){
+    public ApiResult<String> registerFeedback(@PathVariable String matchRequestId, @RequestBody @Valid FeedbackReqDto feedbackReqDto){
         matchService.registerFeedback(matchRequestId,feedbackReqDto);
         return ApiResult.onSuccess("Feedback submitted successfully.");
     }
