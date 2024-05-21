@@ -27,18 +27,18 @@ public class MatchServiceImpl implements MatchService {
     private final MatchResultRepository matchResultRepository;
 
     @Override
-    public MatchResponseDto getMatchRequest(String requestId) {
+    public MatchResponseDto getMatchRequest(String requestId, String userId) {
 
         MatchRequest matchRequest = matchRequestRepository.findById(requestId).orElseThrow(() -> new GeneralException(ErrorStatus.MATCHREQ_NOT_FOUND));
 
-        return MatchResponseDto.toDto(matchRequest);
+        return MatchResponseDto.toDto(matchRequest,userId);
     }
 
     @Override
     @Transactional
-    public MatchResponseDto registermatchRequest(MatchRequestDto matchRequestDto) {
+    public MatchResponseDto registermatchRequest(MatchRequestDto matchRequestDto, String userId) {
 
-        User user = userRepository.findById(matchRequestDto.getUserId())
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
         MatchRequest matchRequest = matchRequestDto.toEntity(user);
@@ -49,22 +49,20 @@ public class MatchServiceImpl implements MatchService {
 
         userRepository.save(user);
 
-        return MatchResponseDto.toDto(matchRequest);
+        return MatchResponseDto.toDto(matchRequest,userId);
     }
 
     @Override
     public void deleteMatchRequest(String requestId) {
-
         matchRequestRepository.findById(requestId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MATCHREQ_NOT_FOUND));
 
         matchRequestRepository.deleteById(requestId);
-
     }
 
     @Override
     @Transactional
-    public MatchResponseDto updateMatchRequest(MatchRequestDto matchRequestDto, String requestId) {
+    public MatchResponseDto updateMatchRequest(MatchRequestDto matchRequestDto, String requestId, String userId) {
         MatchRequest matchRequest = matchRequestRepository.findById(requestId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MATCHREQ_NOT_FOUND));
 
@@ -75,7 +73,7 @@ public class MatchServiceImpl implements MatchService {
 
         matchRequestRepository.save(updateMatchRequest);
 
-        return MatchResponseDto.toDto(matchRequest);
+        return MatchResponseDto.toDto(matchRequest,userId);
     }
 
     @Override

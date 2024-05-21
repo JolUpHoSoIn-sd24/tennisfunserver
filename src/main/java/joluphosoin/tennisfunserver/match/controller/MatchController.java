@@ -19,19 +19,19 @@ public class MatchController {
     private final MatchService matchService;
 
     @GetMapping("/request")
-    public ApiResult<MatchResponseDto> getMatchRequest(@RequestParam String requestId) {
-        return ApiResult.onSuccess(matchService.getMatchRequest(requestId));
+    public ApiResult<MatchResponseDto> getMatchRequest(@RequestParam String requestId,@SessionAttribute(name="id") String userId) {
+        return ApiResult.onSuccess(matchService.getMatchRequest(requestId,userId));
     }
 
     @PostMapping("/request")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResult<MatchResponseDto> registerMatchRequest(@RequestBody MatchRequestDto matchRequestDto) {
-        return ApiResult.onSuccess(SuccessStatus.CREATED, matchService.registermatchRequest(matchRequestDto));
+    public ApiResult<MatchResponseDto> registerMatchRequest(@RequestBody MatchRequestDto matchRequestDto,@SessionAttribute(name="id") String userId) {
+        return ApiResult.onSuccess(SuccessStatus.CREATED, matchService.registermatchRequest(matchRequestDto,userId));
     }
 
     @PutMapping("/request")
-    public ApiResult<MatchResponseDto> updateMatchRequest(@RequestBody MatchRequestDto matchRequestDto, @RequestParam String requestId) {
-        return ApiResult.onSuccess(matchService.updateMatchRequest(matchRequestDto, requestId));
+    public ApiResult<MatchResponseDto> updateMatchRequest(@RequestBody MatchRequestDto matchRequestDto, @RequestParam String requestId,@SessionAttribute(name="id") String userId) {
+        return ApiResult.onSuccess(matchService.updateMatchRequest(matchRequestDto, requestId,userId));
     }
 
     @DeleteMapping("/request")
@@ -42,7 +42,8 @@ public class MatchController {
     }
 
     @GetMapping("/results")
-    public ApiResult<MatchResultResDto> getMatchResult(@RequestParam String matchRequestId, @RequestParam String userId) {
+    public ApiResult<MatchResultResDto> getMatchResult(@RequestParam String matchRequestId, @SessionAttribute(name="id")
+    String userId) {
         return ApiResult.onSuccess(matchService.getMatchResult(matchRequestId, userId));
     }
 

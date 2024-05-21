@@ -6,13 +6,13 @@ import joluphosoin.tennisfunserver.match.data.dto.MatchResponseDto;
 import joluphosoin.tennisfunserver.match.data.dto.MatchResultResDto;
 
 public interface MatchService {
-    MatchResponseDto registermatchRequest(MatchRequestDto matchRequestDto);
+    MatchResponseDto registermatchRequest(MatchRequestDto matchRequestDto, String userId);
 
     void deleteMatchRequest(String requestId);
 
-    MatchResponseDto updateMatchRequest(MatchRequestDto matchRequestDto, String requestId);
+    MatchResponseDto updateMatchRequest(MatchRequestDto matchRequestDto, String requestId, String userId);
 
-    MatchResponseDto getMatchRequest(String requestId);
+    MatchResponseDto getMatchRequest(String requestId, String userId);
 
     MatchResultResDto getMatchResult(String matchRequestId, String userId);
 

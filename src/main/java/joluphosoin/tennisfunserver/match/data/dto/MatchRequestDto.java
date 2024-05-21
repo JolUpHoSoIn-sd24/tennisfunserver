@@ -13,9 +13,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MatchRequestDto {
-    @Schema(example ="662cda25e5c4314e868188d3")
-    @NotBlank(message = "userId is required")
-    private String userId;
 
     @Schema(example ="2024-05-01T10:00:00")
     @NotBlank(message = "startTime is required")
@@ -57,7 +54,7 @@ public class MatchRequestDto {
     public MatchRequest toEntity(User user){
 
         MatchRequest.MatchRequestBuilder builder = MatchRequest.builder()
-                .userId(userId)
+                .userId(user.getId())
                 .startTime(startTime)
                 .endTime(endTime)
                 .isSingles(isSingles)

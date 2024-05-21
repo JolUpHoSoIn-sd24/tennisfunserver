@@ -60,11 +60,11 @@ public class MatchResponseDto {
     @Schema(example = "테니스 랠리 연습을 위한 매치 요청")
     private String description;
 
-    public static MatchResponseDto toDto(MatchRequest matchRequest) {
+    public static MatchResponseDto toDto(MatchRequest matchRequest,String userId) {
 
         MatchResponseDto.MatchResponseDtoBuilder builder = MatchResponseDto.builder()
                 .id(matchRequest.getId())
-                .userId(matchRequest.getUserId())
+                .userId(userId)
                 .startTime(matchRequest.getStartTime())
                 .endTime(matchRequest.getEndTime())
                 .objective(matchRequest.getObjective())
