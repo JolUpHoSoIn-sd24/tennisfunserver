@@ -16,6 +16,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -27,9 +30,9 @@ public class MatchServiceImpl implements MatchService {
     private final MatchResultRepository matchResultRepository;
 
     @Override
-    public MatchResponseDto getMatchRequest(String requestId, String userId) {
+    public MatchResponseDto getMatchRequest(String userId) {
 
-        MatchRequest matchRequest = matchRequestRepository.findById(requestId).orElseThrow(() -> new GeneralException(ErrorStatus.MATCHREQ_NOT_FOUND));
+        MatchRequest matchRequest = matchRequestRepository.findByUserId(userId).orElseThrow(() -> new GeneralException(ErrorStatus.MATCHREQ_NOT_FOUND));
 
         return MatchResponseDto.toDto(matchRequest,userId);
     }
@@ -78,20 +81,34 @@ public class MatchServiceImpl implements MatchService {
 
     @Override
     @Transactional
-    public MatchResultResDto getMatchResult(String matchRequestId, String userId) {
+    public List<MatchResultResDto> getMatchResult(String userId) {
 
-        MatchResult matchResult = matchResultRepository
-                .findByUserMatchRequestsContains(userId,matchRequestId)
+        List<MatchResult> matchResults = matchResultRepository
+                .findAllByUserMatchRequestsContains(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MATCHRESULT_NOT_FOUND));
 
-        setFeedback(userId, matchResult);
+        List<MatchResultResDto> matchResultResDtos = new ArrayList<>();
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
-        User opponent = getOpponent(userId, matchResult);
+        getMatchResults(user, matchResults, matchResultResDtos);
 
-        return MatchResultResDto.toDto(matchResult,user,opponent);
+
+        matchResultResDtos.sort(Comparator.comparingDouble(matchResultResDto ->
+                Math.abs(user.getNtrp() - matchResultResDto.getOpponent().getNtrp())
+        ));
+
+        return matchResultResDtos;
+    }
+
+    private void getMatchResults(User user, List<MatchResult> matchResults, List<MatchResultResDto> matchResultResDtos) {
+        for (MatchResult matchResult : matchResults) {
+            setFeedback(user.getId(), matchResult);
+
+            User opponent = getOpponent(user.getId(), matchResult);
+            matchResultResDtos.add(MatchResultResDto.toDto(matchResult,user,opponent));
+        }
     }
 
     private User getOpponent(String userId, MatchResult matchResult) {
@@ -120,9 +137,9 @@ public class MatchServiceImpl implements MatchService {
 
     @Override
     @Transactional
-    public void registerFeedback(String matchRequestId, FeedbackReqDto feedbackReqDto) {
+    public void registerFeedback(String matchResultId, FeedbackReqDto feedbackReqDto) {
 
-        MatchResult matchResult = matchResultRepository.findByUserMatchRequestsContains(matchRequestId)
+        MatchResult matchResult = matchResultRepository.findById(matchResultId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MATCHRESULT_NOT_FOUND));
 
         Map<String, MatchResult.FeedbackStatus> feedback = matchResult.getFeedback();

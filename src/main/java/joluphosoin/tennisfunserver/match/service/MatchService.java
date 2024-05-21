@@ -5,6 +5,8 @@ import joluphosoin.tennisfunserver.match.data.dto.MatchRequestDto;
 import joluphosoin.tennisfunserver.match.data.dto.MatchResponseDto;
 import joluphosoin.tennisfunserver.match.data.dto.MatchResultResDto;
 
+import java.util.List;
+
 public interface MatchService {
     MatchResponseDto registermatchRequest(MatchRequestDto matchRequestDto, String userId);
 
@@ -12,9 +14,9 @@ public interface MatchService {
 
     MatchResponseDto updateMatchRequest(MatchRequestDto matchRequestDto, String requestId, String userId);
 
-    MatchResponseDto getMatchRequest(String requestId, String userId);
+    MatchResponseDto getMatchRequest(String userId);
 
-    MatchResultResDto getMatchResult(String matchRequestId, String userId);
+    List<MatchResultResDto> getMatchResult(String userId);
 
     void registerFeedback(String matchRequestId, FeedbackReqDto feedbackReqDto);
 

@@ -1,7 +1,6 @@
 package joluphosoin.tennisfunserver.match.controller;
 
 import jakarta.validation.Valid;
-import joluphosoin.tennisfunserver.match.data.dto.FeedbackReqDto;
 import joluphosoin.tennisfunserver.match.data.dto.MatchRequestDto;
 import joluphosoin.tennisfunserver.match.data.dto.MatchResponseDto;
 import joluphosoin.tennisfunserver.match.data.dto.MatchResultResDto;
@@ -12,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/match")
@@ -20,8 +21,8 @@ public class MatchController {
     private final MatchService matchService;
 
     @GetMapping("/request")
-    public ApiResult<MatchResponseDto> getMatchRequest(@RequestParam String requestId,@SessionAttribute(name="id") String userId) {
-        return ApiResult.onSuccess(matchService.getMatchRequest(requestId,userId));
+    public ApiResult<MatchResponseDto> getMatchRequest(@SessionAttribute(name="id") String userId) {
+        return ApiResult.onSuccess(matchService.getMatchRequest(userId));
     }
 
     @PostMapping("/request")
@@ -43,16 +44,15 @@ public class MatchController {
     }
 
     @GetMapping("/results")
-    public ApiResult<MatchResultResDto> getMatchResult(@RequestParam String matchRequestId, @SessionAttribute(name="id")
-    String userId) {
-        return ApiResult.onSuccess(matchService.getMatchResult(matchRequestId, userId));
+    public ApiResult<List<MatchResultResDto>> getMatchResult(@SessionAttribute(name="id") String userId) {
+        return ApiResult.onSuccess(matchService.getMatchResult(userId));
     }
 
-    @PostMapping("/results/{matchRequestId}/feedback")
-    public ApiResult<String> registerFeedback(@PathVariable String matchRequestId, @RequestBody @Valid FeedbackReqDto feedbackReqDto){
-        matchService.registerFeedback(matchRequestId,feedbackReqDto);
-        return ApiResult.onSuccess("Feedback submitted successfully.");
-    }
+//    @PostMapping("/results/{matchResultId}/feedback")
+//    public ApiResult<String> registerFeedback(@PathVariable String matchResultId, @RequestBody @Valid FeedbackReqDto feedbackReqDto){
+//        matchService.registerFeedback(matchResultId,feedbackReqDto);
+//        return ApiResult.onSuccess("Feedback submitted successfully.");
+//    }
 }
 
 
