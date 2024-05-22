@@ -6,9 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 @Getter
 @Builder
@@ -26,5 +26,11 @@ public class TimeSlotDto {
                 .startTime(isoFormat.format(startTime))
                 .status(DayTimeSlot.ReservationStatus.NOT_OPEN)
                 .build();
+    }
+
+    // String 형식의 startTime을 Date 객체로 변환하는 메소드 필요 시
+    public static Date convertStringToDate(String startTime) throws ParseException {
+        SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        return isoFormat.parse(startTime);
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -55,7 +56,7 @@ public class MatchController {
     public ApiResult<String> registerFeedback(@PathVariable String matchResultId,
                                               @RequestBody @Valid FeedbackReqDto feedbackReqDto,
                                               @SessionAttribute("id") String userId
-    ) throws IOException {
+    ) throws IOException, ParseException {
         matchService.registerFeedback(matchResultId,feedbackReqDto,userId);
         return ApiResult.onSuccess("Feedback submitted successfully.");
     }
