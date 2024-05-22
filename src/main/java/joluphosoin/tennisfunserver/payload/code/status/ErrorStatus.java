@@ -50,7 +50,10 @@ public enum ErrorStatus implements BaseErrorCode {
     TIMESLOT_NOT_FOUND(HttpStatus.NOT_FOUND, "COURTTIMESLOT404", "이 코트에 할당 된 시간을 찾을 수 없습니다."),
 
     // FILE 응답
-    INVALID_URL(HttpStatus.BAD_REQUEST,"FILE4000","URL형식이 올바르지 않습니다.");
+    INVALID_URL(HttpStatus.BAD_REQUEST,"FILE4000","URL형식이 올바르지 않습니다."),
+
+    WEBSOCKETID_NOT_FOUND(HttpStatus.NOT_FOUND,"SOCKET404","웹 소켓 아이디가 존재하지 않습니다");
+
 
     private final HttpStatus httpStatus;
     private final String code;

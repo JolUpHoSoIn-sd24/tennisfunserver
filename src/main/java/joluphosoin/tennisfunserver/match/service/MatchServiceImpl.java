@@ -200,7 +200,6 @@ public class MatchServiceImpl implements MatchService {
                 setTimeSlotToPending(matchResult, court, matchDetails);
 
                 // matchRequest 각자 삭제
-
                 Map<String, String> userAndMatchRequests = matchResult.getUserAndMatchRequests();
                 Collection<String> matchRequestIds = userAndMatchRequests.values();
 
@@ -216,7 +215,12 @@ public class MatchServiceImpl implements MatchService {
                 User user = userRepository.findById(userId)
                         .orElseThrow(()->new GeneralException(ErrorStatus.USER_NOT_FOUND));
                 String notification = "Both users liked the match. New game created.";
-                webSocketHandler.sendNotification(user.getWebSocketId(), notification); // sessionId에는 해당 세션의 ID를 넣어야 합니다.
+                if(user.getWebSocketId()!=null){
+                    webSocketHandler.sendNotification(user.getWebSocketId(), notification); // sessionId에는 해당 세션의 ID를 넣어야 합니다.
+                }
+                else{
+                    throw new GeneralException(ErrorStatus.WEBSOCKETID_NOT_FOUND);
+                }
             }
 
         }
