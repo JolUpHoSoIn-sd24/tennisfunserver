@@ -1,13 +1,12 @@
 package joluphosoin.tennisfunserver.match.data.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import joluphosoin.tennisfunserver.match.data.entity.MatchResult;
+import joluphosoin.tennisfunserver.user.data.dto.UserResDto;
 import joluphosoin.tennisfunserver.user.data.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.List;
 import java.util.Map;
 
 @Builder
@@ -16,7 +15,7 @@ import java.util.Map;
 public class MatchResultResDto {
     private String matchRequestId;
 
-    private User opponent;
+    private UserResDto opponent;
 
     private MatchResult.MatchDetails matchDetails;
 
@@ -28,13 +27,13 @@ public class MatchResultResDto {
         MatchResult.FeedbackStatus status = feedback.get(user.getId());
 
 
-        Map<String, String> userAndMatchRequests = matchResult.getUserMatchRequests();
+        Map<String, String> userAndMatchRequests = matchResult.getUserAndMatchRequests();
 
         String matchRequestId = userAndMatchRequests.get(user.getId());
 
         return MatchResultResDto.builder()
                 .matchRequestId(matchRequestId)
-                .opponent(opponent)
+                .opponent(UserResDto.toDto(opponent))
                 .matchDetails(matchResult.getMatchDetails())
                 .status(status)
                 .build();

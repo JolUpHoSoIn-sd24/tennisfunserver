@@ -95,21 +95,16 @@ public class MatchServiceImpl implements MatchService {
     public List<MatchResultResDto> getMatchResult(String userId) {
 
         List<MatchResult> matchResults = matchResultRepository
-                .findAllByUserMatchRequestsContains(userId)
+                .findAllByUserAndMatchRequests(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MATCHRESULT_NOT_FOUND));
-
         List<MatchResultResDto> matchResultResDtos = new ArrayList<>();
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
-
         getMatchResults(user, matchResults, matchResultResDtos);
-
-
         matchResultResDtos.sort(Comparator.comparingDouble(matchResultResDto ->
                 Math.abs(user.getNtrp() - matchResultResDto.getOpponent().getNtrp())
         ));
-
         return matchResultResDtos;
     }
 
@@ -123,7 +118,7 @@ public class MatchServiceImpl implements MatchService {
     }
 
     private User getOpponent(String userId, MatchResult matchResult) {
-        Map<String, String> userAndMatchRequests = matchResult.getUserMatchRequests();
+        Map<String, String> userAndMatchRequests = matchResult.getUserAndMatchRequests();
 
         String opponentId = userAndMatchRequests.keySet().stream()
                 .filter(id -> !id.equals(userId))
@@ -137,12 +132,14 @@ public class MatchServiceImpl implements MatchService {
     }
 
     private void setFeedback(String userId, MatchResult matchResult) {
-        Map<String, MatchResult.FeedbackStatus> feedback = matchResult.getFeedback();
 
-        if(!feedback.containsKey(userId)){
-            feedback.put(userId, MatchResult.FeedbackStatus.NOTSELECTED);
-        }
+        Map<String, MatchResult.FeedbackStatus> feedback = matchResult.getFeedback() == null ?
+                new HashMap<>() : matchResult.getFeedback();
+
+        feedback.computeIfAbsent(userId, k -> MatchResult.FeedbackStatus.NOTSELECTED);
+
         matchResult.setFeedback(feedback);
+
         matchResultRepository.save(matchResult);
     }
 
