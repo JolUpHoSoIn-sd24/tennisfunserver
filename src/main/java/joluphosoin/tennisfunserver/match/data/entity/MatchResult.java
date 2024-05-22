@@ -29,6 +29,10 @@ public class MatchResult {
     @Setter
     private Map<String, FeedbackStatus> feedback=new HashMap<>(); // 사용자별 피드백 정보, 키는 사용자 ID, 값은 "like" 또는 "dislike" 또는 not
 
+    @Setter
+    private Boolean isConfirmed;
+
+
     public enum FeedbackStatus{
         NOTSELECTED, LIKE, DISLIKE
     }
