@@ -13,7 +13,8 @@ public class GameDetailsDto {
     private String state;
     private List<PlayerDetail> players;
     private CourtDetail court;
-    private Date dateTime;
+    private Date startTime;
+    private Date endTime;
     private String chatRoomId;
     private Double rentalCost;
 

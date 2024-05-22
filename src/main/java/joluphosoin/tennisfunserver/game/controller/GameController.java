@@ -84,7 +84,8 @@ public class GameController {
             result.put("state", gameDetails.getState());
             result.put("players", gameDetails.getPlayers());
             result.put("court", gameDetails.getCourt());
-            result.put("dateTime", gameDetails.getDateTime());
+            result.put("startTime", gameDetails.getStartTime());
+            result.put("endTime", gameDetails.getEndTime());
             result.put("chatRoomId", gameDetails.getChatRoomId());
             result.put("rentalCost", gameDetails.getRentalCost());
 

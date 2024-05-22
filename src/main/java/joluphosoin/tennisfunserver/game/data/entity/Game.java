@@ -26,8 +26,12 @@ public class Game {
     private List<String> playerIds;
 
     private String courtId;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
-    private Date dateTime;
+    private Date startTime;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+    private Date endTime;
 
     private String chatRoomId;
 
@@ -38,7 +42,9 @@ public class Game {
     private boolean scoreConfirmed;
 
     private List<NTRPFeedback> ntrpFeedbacks;
+
     private List<MannerFeedback> mannerFeedbacks;
+
     private Map<String, Boolean> paymentStatus;
 
     public enum GameStatus {

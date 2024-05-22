@@ -37,7 +37,8 @@ public class GameService {
         Game game = Game.builder()
                 .playerIds(gameDto.getPlayerIds())
                 .courtId(gameDto.getCourtId())
-                .dateTime(gameDto.getDateTime())
+                .startTime(gameDto.getStartTime())
+                .endTime(gameDto.getEndTime())
                 .chatRoomId(gameDto.getChatRoomId())
                 .rentalCost(gameDto.getRentalCost())
                 .scores(gameDto.getScores() != null ? mapScores(gameDto.getScores()) : null)
@@ -63,7 +64,8 @@ public class GameService {
         dto.setState(game.getGameStatus().name());
         dto.setPlayers(userService.getPlayerDetails(game.getPlayerIds()));
         dto.setCourt(courtBusinessService.getCourtDetails(game.getCourtId()));
-        dto.setDateTime(game.getDateTime());
+        dto.setStartTime(game.getStartTime());
+        dto.setEndTime(game.getEndTime());
         dto.setChatRoomId(game.getChatRoomId());
         dto.setRentalCost(game.getRentalCost());
 
