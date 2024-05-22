@@ -5,6 +5,7 @@ import joluphosoin.tennisfunserver.match.data.dto.MatchRequestDto;
 import joluphosoin.tennisfunserver.match.data.dto.MatchResponseDto;
 import joluphosoin.tennisfunserver.match.data.dto.MatchResultResDto;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface MatchService {
@@ -18,6 +19,6 @@ public interface MatchService {
 
     List<MatchResultResDto> getMatchResult(String userId);
 
-    void registerFeedback(String matchRequestId, FeedbackReqDto feedbackReqDto,String userId);
+    void registerFeedback(String matchRequestId, FeedbackReqDto feedbackReqDto,String userId) throws IOException;
 
 }
