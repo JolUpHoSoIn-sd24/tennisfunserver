@@ -63,7 +63,7 @@ public class GameController {
         }
     }
 
-    @GetMapping(value = "", produces = "application/json")
+    @GetMapping(value = "", produces = "application/json; charset=utf-8")
     public ResponseEntity<ApiResponse> getGameDetails(HttpSession session) {
         String userId = (String) session.getAttribute("id");
         if (userId == null) {
