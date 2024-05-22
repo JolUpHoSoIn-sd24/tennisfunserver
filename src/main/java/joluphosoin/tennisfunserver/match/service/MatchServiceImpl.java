@@ -67,17 +67,17 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public void deleteMatchRequest(String requestId) {
-        matchRequestRepository.findById(requestId)
+    public void deleteMatchRequest(String userId) {
+        MatchRequest matchRequest = matchRequestRepository.findByUserId(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MATCHREQ_NOT_FOUND));
 
-        matchRequestRepository.deleteById(requestId);
+        matchRequestRepository.delete(matchRequest);
     }
 
     @Override
     @Transactional
-    public MatchResponseDto updateMatchRequest(MatchRequestDto matchRequestDto, String requestId, String userId) {
-        MatchRequest matchRequest = matchRequestRepository.findById(requestId)
+    public MatchResponseDto updateMatchRequest(MatchRequestDto matchRequestDto, String userId) {
+        MatchRequest matchRequest = matchRequestRepository.findByUserId(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MATCHREQ_NOT_FOUND));
 
         User user = userRepository.findById(matchRequest.getUserId())

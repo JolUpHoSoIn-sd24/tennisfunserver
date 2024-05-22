@@ -33,14 +33,14 @@ public class MatchController {
     }
 
     @PutMapping("/request")
-    public ApiResult<MatchResponseDto> updateMatchRequest(@RequestBody @Valid MatchRequestDto matchRequestDto, @RequestParam String requestId,@SessionAttribute(name="id") String userId) {
-        return ApiResult.onSuccess(matchService.updateMatchRequest(matchRequestDto, requestId,userId));
+    public ApiResult<MatchResponseDto> updateMatchRequest(@RequestBody @Valid MatchRequestDto matchRequestDto,@SessionAttribute(name="id") String userId) {
+        return ApiResult.onSuccess(matchService.updateMatchRequest(matchRequestDto,userId));
     }
 
     @DeleteMapping("/request")
-    public ApiResult<String> deleteMatchRequest(@RequestParam String requestId) {
+    public ApiResult<String> deleteMatchRequest(@SessionAttribute(name="id") String userId) {
 
-        matchService.deleteMatchRequest(requestId);
+        matchService.deleteMatchRequest(userId);
         return ApiResult.onSuccess("Match request cancelled successfully.");
     }
 

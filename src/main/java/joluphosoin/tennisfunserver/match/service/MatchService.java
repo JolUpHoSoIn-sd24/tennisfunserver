@@ -12,7 +12,7 @@ public interface MatchService {
 
     void deleteMatchRequest(String requestId);
 
-    MatchResponseDto updateMatchRequest(MatchRequestDto matchRequestDto, String requestId, String userId);
+    MatchResponseDto updateMatchRequest(MatchRequestDto matchRequestDto, String userId);
 
     MatchResponseDto getMatchRequest(String userId);
 
