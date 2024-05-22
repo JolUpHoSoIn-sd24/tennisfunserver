@@ -77,7 +77,6 @@ public class GameController {
             if (game == null) {
                 return ResponseEntity.noContent().build();
             }
-
             GameDetailsDto gameDetails = gameService.transformGameToDto(game);
             Map<String, Object> result = new HashMap<>();
             result.put("gameId", gameDetails.getGameId());
@@ -86,9 +85,11 @@ public class GameController {
             result.put("court", gameDetails.getCourt());
             result.put("startTime", gameDetails.getStartTime());
             result.put("endTime", gameDetails.getEndTime());
-            result.put("chatRoomId", gameDetails.getChatRoomId());
             result.put("rentalCost", gameDetails.getRentalCost());
 
+            if(gameDetails.getChatRoomId()!=null){
+                result.put("chatRoomId", gameDetails.getChatRoomId());
+            }
             return ResponseEntity.ok(new ApiResponse(true, "GAME200", "Game details retrieved successfully", result));
         } catch (GetGameException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(

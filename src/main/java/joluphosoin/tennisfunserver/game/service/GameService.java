@@ -66,8 +66,12 @@ public class GameService {
         dto.setCourt(courtBusinessService.getCourtDetails(game.getCourtId()));
         dto.setStartTime(game.getStartTime());
         dto.setEndTime(game.getEndTime());
-        dto.setChatRoomId(game.getChatRoomId());
-        dto.setRentalCost(game.getRentalCost());
+        if(game.getChatRoomId()!=null){
+            dto.setChatRoomId(game.getChatRoomId());
+        }
+        if(game.getRentalCost()!=null){
+            dto.setRentalCost(game.getRentalCost());
+        }
 
         return dto;
     }
