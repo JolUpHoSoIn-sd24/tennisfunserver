@@ -15,7 +15,8 @@ import java.util.Map;
 @Getter
 @AllArgsConstructor
 public class MatchResultResDto {
-    private String matchRequestId;
+
+    private String id;
 
     private UserResDto opponent;
 
@@ -30,13 +31,8 @@ public class MatchResultResDto {
         Map<String, MatchResult.FeedbackStatus> feedback = matchResult.getFeedback();
         MatchResult.FeedbackStatus status = feedback.get(user.getId());
 
-
-        Map<String, String> userAndMatchRequests = matchResult.getUserAndMatchRequests();
-
-        String matchRequestId = userAndMatchRequests.get(user.getId());
-
         return MatchResultResDto.builder()
-                .matchRequestId(matchRequestId)
+                .id(matchResult.getId())
                 .opponent(UserResDto.toDto(opponent))
                 .matchDetails(matchResult.getMatchDetails())
                 .court(CourtResDto.toDTO(court))
