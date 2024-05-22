@@ -21,7 +21,7 @@ public class MatchController {
 
     private final MatchService matchService;
 
-    @GetMapping("/request")
+    @GetMapping(value = "/request",produces = "application/json; charset=utf-8")
     public ApiResult<MatchResponseDto> getMatchRequest(@SessionAttribute(name="id") String userId) {
         return ApiResult.onSuccess(matchService.getMatchRequest(userId));
     }
@@ -44,7 +44,7 @@ public class MatchController {
         return ApiResult.onSuccess("Match request cancelled successfully.");
     }
 
-    @GetMapping("/results")
+    @GetMapping(value = "/results",produces = "application/json; charset=utf-8")
     public ApiResult<List<MatchResultResDto>> getMatchResult(@SessionAttribute(name="id") String userId) {
         return ApiResult.onSuccess(matchService.getMatchResult(userId));
     }
