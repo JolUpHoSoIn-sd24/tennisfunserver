@@ -1,5 +1,7 @@
 package joluphosoin.tennisfunserver.match.service;
 
+import joluphosoin.tennisfunserver.business.data.entity.Court;
+import joluphosoin.tennisfunserver.business.repository.CourtRepository;
 import joluphosoin.tennisfunserver.match.data.dto.FeedbackReqDto;
 import joluphosoin.tennisfunserver.match.data.dto.MatchResultResDto;
 import joluphosoin.tennisfunserver.match.data.entity.MatchResult;
@@ -25,7 +27,7 @@ public class MatchServiceImpl implements MatchService {
     private final MatchRequestRepository matchRequestRepository;
     private final UserRepository userRepository;
     private final MatchResultRepository matchResultRepository;
-
+    private final CourtRepository courtRepository;
     @Override
     public MatchResponseDto getMatchRequest(String userId) {
 
@@ -101,6 +103,7 @@ public class MatchServiceImpl implements MatchService {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
         getMatchResults(user, matchResults, matchResultResDtos);
         matchResultResDtos.sort(Comparator.comparingDouble(matchResultResDto ->
                 Math.abs(user.getNtrp() - matchResultResDto.getOpponent().getNtrp())
@@ -109,11 +112,17 @@ public class MatchServiceImpl implements MatchService {
     }
 
     private void getMatchResults(User user, List<MatchResult> matchResults, List<MatchResultResDto> matchResultResDtos) {
+
         for (MatchResult matchResult : matchResults) {
             setFeedback(user.getId(), matchResult);
 
             User opponent = getOpponent(user.getId(), matchResult);
-            matchResultResDtos.add(MatchResultResDto.toDto(matchResult,user,opponent));
+
+            Court court = courtRepository.findById(matchResult.getMatchDetails().getCourtId())
+                    .orElseThrow(() -> new GeneralException(ErrorStatus.COURT_NOT_FOUND));
+
+
+            matchResultResDtos.add(MatchResultResDto.toDto(matchResult,user,opponent,court));
         }
     }
 
