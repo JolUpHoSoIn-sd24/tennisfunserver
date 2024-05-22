@@ -7,7 +7,5 @@ import lombok.Getter;
 @Getter
 public class FeedbackReqDto {
     @NotBlank
-    String userId;
-    @NotBlank
     MatchResult.FeedbackStatus feedback;
 }

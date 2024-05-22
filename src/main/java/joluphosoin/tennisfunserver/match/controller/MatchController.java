@@ -51,8 +51,11 @@ public class MatchController {
     }
 
     @PostMapping("/results/{matchResultId}/feedback")
-    public ApiResult<String> registerFeedback(@PathVariable String matchResultId, @RequestBody @Valid FeedbackReqDto feedbackReqDto){
-        matchService.registerFeedback(matchResultId,feedbackReqDto);
+    public ApiResult<String> registerFeedback(@PathVariable String matchResultId,
+                                              @RequestBody @Valid FeedbackReqDto feedbackReqDto,
+                                              @SessionAttribute("id") String userId
+    ){
+        matchService.registerFeedback(matchResultId,feedbackReqDto,userId);
         return ApiResult.onSuccess("Feedback submitted successfully.");
     }
 }

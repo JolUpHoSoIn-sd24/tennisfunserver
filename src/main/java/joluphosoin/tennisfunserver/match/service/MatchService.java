@@ -18,6 +18,6 @@ public interface MatchService {
 
     List<MatchResultResDto> getMatchResult(String userId);
 
-    void registerFeedback(String matchRequestId, FeedbackReqDto feedbackReqDto);
+    void registerFeedback(String matchRequestId, FeedbackReqDto feedbackReqDto,String userId);
 
 }

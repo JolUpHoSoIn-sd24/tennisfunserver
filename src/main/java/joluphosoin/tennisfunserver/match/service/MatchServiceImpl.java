@@ -154,14 +154,14 @@ public class MatchServiceImpl implements MatchService {
 
     @Override
     @Transactional
-    public void registerFeedback(String matchResultId, FeedbackReqDto feedbackReqDto) {
+    public void registerFeedback(String matchResultId, FeedbackReqDto feedbackReqDto,String userId) {
 
         MatchResult matchResult = matchResultRepository.findById(matchResultId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MATCHRESULT_NOT_FOUND));
 
         Map<String, MatchResult.FeedbackStatus> feedback = matchResult.getFeedback();
 
-        feedback.put(feedbackReqDto.getUserId(), feedbackReqDto.getFeedback());
+        feedback.put(userId, feedbackReqDto.getFeedback());
 
         matchResult.setFeedback(feedback);
 
