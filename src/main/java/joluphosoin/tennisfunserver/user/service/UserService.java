@@ -113,9 +113,9 @@ public class UserService {
                 .ntrp(registrationDto.getNtrp())
                 .age(registrationDto.getAge())
                 .gender(registrationDto.getGender())
-
                 .emailVerificationToken(UUID.randomUUID().toString())
                 .emailVerified(false)
+                .mannerScore(36.5)
                 .build();
 
         userRepository.save(newUser);
