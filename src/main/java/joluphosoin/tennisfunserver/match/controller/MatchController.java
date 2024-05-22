@@ -1,5 +1,6 @@
 package joluphosoin.tennisfunserver.match.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import joluphosoin.tennisfunserver.match.data.dto.FeedbackReqDto;
 import joluphosoin.tennisfunserver.match.data.dto.MatchRequestDto;
@@ -28,7 +29,7 @@ public class MatchController {
 
     @PostMapping("/request")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResult<MatchResponseDto> registerMatchRequest(@RequestBody @Valid MatchRequestDto matchRequestDto, @SessionAttribute(name="id") String userId) {
+    public ApiResult<MatchResponseDto> registerMatchRequest(@RequestBody @Valid MatchRequestDto matchRequestDto, @SessionAttribute(name="id") @Parameter(hidden = true) String userId) {
         return ApiResult.onSuccess(SuccessStatus.CREATED, matchService.registerMatchRequest(matchRequestDto,userId));
     }
 
