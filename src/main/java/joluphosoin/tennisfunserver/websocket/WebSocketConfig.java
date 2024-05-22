@@ -1,5 +1,6 @@
 package joluphosoin.tennisfunserver.websocket;
 
+import joluphosoin.tennisfunserver.user.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
@@ -11,7 +12,12 @@ import org.springframework.web.socket.server.support.HttpSessionHandshakeInterce
 @Configuration
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketConfigurer {
+    private final UserRepository userRepository; // UserRepository 필드 추가
 
+    // UserRepository를 생성자 주입
+    public WebSocketConfig(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         //웹 소켓 endpoint 등록
@@ -24,7 +30,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Bean
     public WebSocketHandler webSocketHandler() {
         //websocket handler를 빈으로 생성하여 등록한다.
-        return new WebSocketHandler();
+        return new WebSocketHandler(userRepository);
     }
 
     @Bean

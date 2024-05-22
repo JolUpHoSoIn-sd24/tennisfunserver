@@ -1,6 +1,12 @@
 package joluphosoin.tennisfunserver.websocket;
 
+import joluphosoin.tennisfunserver.payload.code.status.ErrorStatus;
+import joluphosoin.tennisfunserver.payload.exception.GeneralException;
+import joluphosoin.tennisfunserver.user.data.entity.User;
+import joluphosoin.tennisfunserver.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -14,12 +20,26 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WebSocketHandler extends TextWebSocketHandler {
 
     private final Map<String, WebSocketSession> sessionMap = new ConcurrentHashMap<>();
+    private final UserRepository userRepository;
 
+    public WebSocketHandler(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
     //websocket handshake가 완료되어 연결이 수립될 때 호출
     @Override
+    @Transactional
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        String userId = (String) session.getAttributes().get("id");
+
         log.info("connection established, session id={}", session.getId());
         sessionMap.putIfAbsent(session.getId(), session);
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        user.setWebSocketId(session.getId());
+
+        userRepository.save(user);
+
     }
 
     //websocket 오류가 발생했을 때 호출
