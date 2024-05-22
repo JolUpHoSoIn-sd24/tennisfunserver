@@ -16,10 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -39,20 +36,34 @@ public class MatchServiceImpl implements MatchService {
 
     @Override
     @Transactional
-    public MatchResponseDto registermatchRequest(MatchRequestDto matchRequestDto, String userId) {
+    public MatchResponseDto registerMatchRequest(MatchRequestDto matchRequestDto, String userId) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
-        MatchRequest matchRequest = matchRequestDto.toEntity(user);
+        Optional<MatchRequest> optionalMatchRequest = matchRequestRepository.findByUserId(userId);
+
+        MatchRequest matchRequest;
+
+        if(optionalMatchRequest.isPresent()){
+            matchRequest = optionalMatchRequest.get();
+            matchRequest.setEntity(matchRequestDto, user);
+        }
+        else{
+            matchRequest = matchRequestDto.toEntity(user);
+        }
+
+        saveMatchRequestAndUser(matchRequest, user);
+
+        return MatchResponseDto.toDto(matchRequest,userId);
+    }
+
+    private void saveMatchRequestAndUser(MatchRequest matchRequest, User user) {
+        matchRequestRepository.save(matchRequest);
 
         user.setDislikedCourts(matchRequest.getDislikedCourts());
 
-        matchRequestRepository.save(matchRequest);
-
         userRepository.save(user);
-
-        return MatchResponseDto.toDto(matchRequest,userId);
     }
 
     @Override
@@ -74,7 +85,7 @@ public class MatchServiceImpl implements MatchService {
 
         MatchRequest updateMatchRequest = matchRequest.setEntity(matchRequestDto,user);
 
-        matchRequestRepository.save(updateMatchRequest);
+        saveMatchRequestAndUser(updateMatchRequest, user);
 
         return MatchResponseDto.toDto(matchRequest,userId);
     }

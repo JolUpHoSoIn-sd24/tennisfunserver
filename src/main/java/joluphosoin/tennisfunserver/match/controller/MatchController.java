@@ -29,7 +29,7 @@ public class MatchController {
     @PostMapping("/request")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResult<MatchResponseDto> registerMatchRequest(@RequestBody @Valid MatchRequestDto matchRequestDto, @SessionAttribute(name="id") String userId) {
-        return ApiResult.onSuccess(SuccessStatus.CREATED, matchService.registermatchRequest(matchRequestDto,userId));
+        return ApiResult.onSuccess(SuccessStatus.CREATED, matchService.registerMatchRequest(matchRequestDto,userId));
     }
 
     @PutMapping("/request")

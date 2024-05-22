@@ -8,7 +8,7 @@ import joluphosoin.tennisfunserver.match.data.dto.MatchResultResDto;
 import java.util.List;
 
 public interface MatchService {
-    MatchResponseDto registermatchRequest(MatchRequestDto matchRequestDto, String userId);
+    MatchResponseDto registerMatchRequest(MatchRequestDto matchRequestDto, String userId);
 
     void deleteMatchRequest(String requestId);
 
