@@ -1,8 +1,7 @@
 package joluphosoin.tennisfunserver.game.service;
 
 import joluphosoin.tennisfunserver.business.service.CourtBusinessService;
-import joluphosoin.tennisfunserver.game.data.dto.GameCreationDto;
-import joluphosoin.tennisfunserver.game.data.dto.GameDetailsDto;
+import joluphosoin.tennisfunserver.game.data.dto.*;
 import joluphosoin.tennisfunserver.game.data.entity.Game;
 import joluphosoin.tennisfunserver.game.exception.CreateGameException;
 import joluphosoin.tennisfunserver.game.exception.GetGameException;
@@ -75,7 +74,7 @@ public class GameService {
         return gameRepository.findByPlayerIdsIn(playerIds).stream().anyMatch(game -> !game.getPlayerIds().isEmpty());
     }
 
-    private List<Game.Score> mapScores(List<GameCreationDto.ScoreDto> scoreDtos) {
+    private List<Game.Score> mapScores(List<ScoreDto> scoreDtos) {
         return scoreDtos.stream().map(dto -> {
             Game.Score score = new Game.Score();
             score.setUserId(dto.getUserId());
@@ -84,9 +83,9 @@ public class GameService {
         }).toList();
     }
 
-    private Map<String, Game.ScoreDetail> mapScoreDetails(List<GameCreationDto.ScoreDetailDto> details) {
+    private Map<String, Game.ScoreDetail> mapScoreDetails(List<ScoreDetailDto> details) {
         Map<String, Game.ScoreDetail> scoreDetails = new HashMap<>();
-        for (GameCreationDto.ScoreDetailDto detail : details) {
+        for (ScoreDetailDto detail : details) {
             Game.ScoreDetail scoreDetail = new Game.ScoreDetail();
             scoreDetail.setUserScore(detail.getUserScore());
             scoreDetail.setOpponentScore(detail.getOpponentScore());
@@ -95,7 +94,7 @@ public class GameService {
         return scoreDetails;
     }
 
-    private List<Game.NTRPFeedback> mapNTRPFeedbacks(List<GameCreationDto.NTRPFeedbackDto> feedbackDtos) {
+    private List<Game.NTRPFeedback> mapNTRPFeedbacks(List<NTRPFeedbackDto> feedbackDtos) {
         return feedbackDtos.stream().map(dto -> new Game.NTRPFeedback(
                 dto.getUserId(),
                 dto.getOpponentUserId(),
@@ -104,7 +103,7 @@ public class GameService {
         )).toList();
     }
 
-    private List<Game.MannerFeedback> mapMannerFeedbacks(List<GameCreationDto.MannerFeedbackDto> feedbackDtos) {
+    private List<Game.MannerFeedback> mapMannerFeedbacks(List<MannerFeedbackDto> feedbackDtos) {
         return feedbackDtos.stream().map(dto -> new Game.MannerFeedback(
                 dto.getUserId(),
                 dto.getOpponentUserId(),

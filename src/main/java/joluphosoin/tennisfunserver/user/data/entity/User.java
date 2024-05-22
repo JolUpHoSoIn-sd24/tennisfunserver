@@ -51,4 +51,6 @@ public class User {
 
     private String emailVerificationToken;
 
+    private String webSocketId;
+
 }
