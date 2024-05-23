@@ -13,6 +13,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.geo.Point;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -116,6 +117,8 @@ public class UserService {
                 .emailVerificationToken(UUID.randomUUID().toString())
                 .emailVerified(false)
                 .mannerScore(36.5)
+                .maxDistance(5.5)
+                .location(new Point(127.0443767,37.2843727))
                 .build();
 
         userRepository.save(newUser);

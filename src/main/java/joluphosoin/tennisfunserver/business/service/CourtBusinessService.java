@@ -44,12 +44,12 @@ public class CourtBusinessService {
         return CourtResDto.toDTO(court);
     }
 
-    private void saveTimeSlot(Court court) {
+    private void saveTimeSlot(Court court){
 
         List<CourtHoursDto> businessHours = court.getBusinessHours();
         final String ZONE_ID_ASIA_SEOUL = "Asia/Seoul";
         Date now = new Date();
-        Date endDate = new Date(now.getTime() + TimeUnit.DAYS.toMillis(60));
+        Date endDate = new Date(now.getTime() + TimeUnit.DAYS.toMillis(7));
 
         Map<DayOfWeek, CourtHoursDto> hoursMap = new EnumMap<>(DayOfWeek.class);
 

@@ -19,7 +19,6 @@ import joluphosoin.tennisfunserver.payload.code.status.ErrorStatus;
 import joluphosoin.tennisfunserver.payload.exception.GeneralException;
 import joluphosoin.tennisfunserver.user.data.entity.User;
 import joluphosoin.tennisfunserver.user.repository.UserRepository;
-import joluphosoin.tennisfunserver.websocket.WebSocketHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +40,6 @@ public class MatchServiceImpl implements MatchService {
     private final DayTimeSlotRepository dayTimeSlotRepository;
 
     private final GameService gameService;
-    private final WebSocketHandler webSocketHandler;
     @Override
     public MatchResponseDto getMatchRequest(String userId) {
 
@@ -212,15 +210,15 @@ public class MatchServiceImpl implements MatchService {
                 matchResultRepository.save(matchResult);
 
                 // 소켓 알림 전송
-                User user = userRepository.findById(userId)
-                        .orElseThrow(()->new GeneralException(ErrorStatus.USER_NOT_FOUND));
-                String notification = "Both users liked the match. New game created.";
-                if(user.getWebSocketId()!=null){
-                    webSocketHandler.sendNotification(user.getWebSocketId(), notification); // sessionId에는 해당 세션의 ID를 넣어야 합니다.
-                }
-                else{
-                    throw new GeneralException(ErrorStatus.WEBSOCKETID_NOT_FOUND);
-                }
+//                User user = userRepository.findById(userId)
+//                        .orElseThrow(()->new GeneralException(ErrorStatus.USER_NOT_FOUND));
+//                String notification = "Both users liked the match. New game created.";
+//                if(user.getWebSocketId()!=null){
+//                    webSocketHandler.sendNotification(user.getWebSocketId(), notification); // sessionId에는 해당 세션의 ID를 넣어야 합니다.
+//                }
+//                else{
+//                    throw new GeneralException(ErrorStatus.WEBSOCKETID_NOT_FOUND);
+//                }
             }
 
         }
@@ -228,6 +226,7 @@ public class MatchServiceImpl implements MatchService {
 
     private void setTimeSlotToPending(MatchResult matchResult, Court court, MatchResult.MatchDetails matchDetails) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
         DayTimeSlot dayTimeSlot = dayTimeSlotRepository
                 .findByCourtIdAndDate(court.getId(),
@@ -236,21 +235,28 @@ public class MatchServiceImpl implements MatchService {
 
         List<TimeSlotDto> timeSlotDtos = dayTimeSlot.getTimeSlots();
 
-        Date startTime = matchDetails.getStartTime();
-        Date endTime = matchDetails.getEndTime();
+        Date startTime = isoFormat.parse(matchDetails.getStartTime().toString());
+        Date endTime = isoFormat.parse(matchDetails.getEndTime().toString());
         boolean flag = false;
 
         for (int i = 0; i < timeSlotDtos.size(); i++) {
             TimeSlotDto currentSlot = timeSlotDtos.get(i);
             Date currentSlotStartTime = convertStringToDate(currentSlot.getStartTime());
+            System.out.println("for문 들어왔습니다");
 
-            if(currentSlotStartTime==startTime){
+            System.out.println(startTime);
+            System.out.println(currentSlotStartTime);
+            if(currentSlotStartTime.equals(startTime)){
+                System.out.println("flag 들어왔습니다");
                 flag = true;
             }
 
             if(flag){
                 currentSlot.setStatus(DayTimeSlot.ReservationStatus.PENDING);
-                if (currentSlotStartTime == endTime) {
+                System.out.println("pending 설정!");
+
+                if (currentSlotStartTime.equals(endTime)) {
+                    System.out.println("종료합니다");
                     break;
                 }
             }
