@@ -1,7 +1,10 @@
 package joluphosoin.tennisfunserver.user.service;
 
 import joluphosoin.tennisfunserver.game.data.dto.GameDetailsDto;
+import joluphosoin.tennisfunserver.payload.code.status.ErrorStatus;
+import joluphosoin.tennisfunserver.payload.exception.GeneralException;
 import joluphosoin.tennisfunserver.user.data.dto.LocationUpdateDto;
+import joluphosoin.tennisfunserver.user.data.dto.UserResDto;
 import joluphosoin.tennisfunserver.user.data.entity.User;
 import joluphosoin.tennisfunserver.user.data.dto.RegistrationDto;
 import joluphosoin.tennisfunserver.user.exception.EmailVerificationException;
@@ -55,14 +58,14 @@ public class UserService {
 
     public User loginUser(String email, String password) throws UserLoginException {
         User user = userRepository.findByEmailId(email)
-                .orElseThrow(() -> new UserLoginException("Invalid credentials"));
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new UserLoginException("Invalid credentials");
+            throw new GeneralException(ErrorStatus.PW_NOT_MATCH);
         }
 
         if(!user.isEmailVerified()){
-            throw new UserLoginException(("Email not verified"));
+            throw new GeneralException(ErrorStatus.EMAIL_NOT_VAILD);
         }
 
         return user;
@@ -169,4 +172,10 @@ public class UserService {
         return playerDetail;
     }
 
+    public UserResDto getUserInfo(String userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        return UserResDto.toDto(user);
+
+    }
 }

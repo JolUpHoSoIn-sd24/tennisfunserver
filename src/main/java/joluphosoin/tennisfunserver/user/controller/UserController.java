@@ -1,21 +1,22 @@
 package joluphosoin.tennisfunserver.user.controller;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
+import joluphosoin.tennisfunserver.payload.ApiResult;
+import joluphosoin.tennisfunserver.response.ApiResponse;
 import joluphosoin.tennisfunserver.user.data.dto.LocationUpdateDto;
 import joluphosoin.tennisfunserver.user.data.dto.LoginDto;
-import joluphosoin.tennisfunserver.user.data.entity.User;
-import joluphosoin.tennisfunserver.user.exception.UserLoginException;
-import joluphosoin.tennisfunserver.user.service.UserService;
-import joluphosoin.tennisfunserver.response.ApiResponse;
 import joluphosoin.tennisfunserver.user.data.dto.RegistrationDto;
+import joluphosoin.tennisfunserver.user.data.dto.UserResDto;
+import joluphosoin.tennisfunserver.user.data.entity.User;
 import joluphosoin.tennisfunserver.user.exception.EmailVerificationException;
 import joluphosoin.tennisfunserver.user.exception.UserRegistrationException;
+import joluphosoin.tennisfunserver.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,18 +44,11 @@ public class UserController {
     }
 
     @PostMapping(value = "/login", produces = "application/json")
-    public ResponseEntity<ApiResponse> loginUser(@Valid @RequestBody LoginDto loginDto, HttpSession session) {
-        try {
-            User user = userService.loginUser(loginDto.getEmail(), loginDto.getPassword());
-            session.setAttribute("id", user.getId());
-            return ResponseEntity.ok(
-                    new ApiResponse(true, "LOGIN200", "Login successful", null)
-            );
-        } catch (UserLoginException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                    new ApiResponse(false, "LOGIN401", e.getMessage(), null)
-            );
-        }
+    public ApiResult<UserResDto> loginUser(@Valid @RequestBody LoginDto loginDto, HttpSession session) {
+        User user = userService.loginUser(loginDto.getEmail(), loginDto.getPassword());
+        session.setAttribute("id", user.getId());
+
+        return ApiResult.onSuccess(UserResDto.toDto(user));
     }
 
     @GetMapping("/verify-email")
@@ -94,5 +88,9 @@ public class UserController {
                     new ApiResponse(false, "INTERNAL_ERROR", e.getMessage(), null)
             );
         }
+    }
+    @GetMapping("")
+    public ApiResult<UserResDto> getUserInfo(@SessionAttribute("id")String userId){
+        return ApiResult.onSuccess(userService.getUserInfo(userId));
     }
 }

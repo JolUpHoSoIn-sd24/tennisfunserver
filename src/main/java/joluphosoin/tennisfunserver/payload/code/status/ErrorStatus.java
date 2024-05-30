@@ -26,6 +26,7 @@ public enum ErrorStatus implements BaseErrorCode {
     SESSION_EXPIRED(HttpStatus.UNAUTHORIZED,LOGIN_PREFIX+HttpStatus.UNAUTHORIZED.value(),"다시 로그인 해주세요."),
     ID_NOT_EXIST(HttpStatus.NOT_FOUND,LOGIN_PREFIX+HttpStatus.NOT_FOUND.value(),"ID를 잘못 입력하셨습니다."),
     PW_NOT_MATCH(HttpStatus.FORBIDDEN,LOGIN_PREFIX+HttpStatus.FORBIDDEN.value(),"입력하신 정보가 회원정보와 일치하지 않습니다."),
+    EMAIL_NOT_VAILD(HttpStatus.UNAUTHORIZED,"LOGIN401","Email not verified"),
 
     // 유저 응답
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER404", "해당 id의 유저를 찾을 수 없습니다."),
