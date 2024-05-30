@@ -3,6 +3,7 @@ package joluphosoin.tennisfunserver.user.controller;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import joluphosoin.tennisfunserver.payload.ApiResult;
+import joluphosoin.tennisfunserver.payload.code.status.SuccessStatus;
 import joluphosoin.tennisfunserver.response.ApiResponse;
 import joluphosoin.tennisfunserver.user.data.dto.LocationUpdateDto;
 import joluphosoin.tennisfunserver.user.data.dto.LoginDto;
@@ -48,7 +49,7 @@ public class UserController {
         User user = userService.loginUser(loginDto.getEmail(), loginDto.getPassword());
         session.setAttribute("id", user.getId());
 
-        return ApiResult.onSuccess(UserResDto.toDto(user));
+        return ApiResult.onSuccess(SuccessStatus.LOGIN_OK,UserResDto.toDto(user));
     }
 
     @GetMapping("/verify-email")
