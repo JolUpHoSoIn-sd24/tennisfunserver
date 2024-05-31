@@ -1,6 +1,7 @@
 package joluphosoin.tennisfunserver.business.controller;
 
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import joluphosoin.tennisfunserver.business.data.dto.AccountReqDto;
 import joluphosoin.tennisfunserver.business.data.dto.BusinessReqDto;
@@ -8,6 +9,7 @@ import joluphosoin.tennisfunserver.business.data.dto.BusinessResDto;
 import joluphosoin.tennisfunserver.business.service.BusinessService;
 import joluphosoin.tennisfunserver.payload.ApiResult;
 import joluphosoin.tennisfunserver.payload.code.status.SuccessStatus;
+import joluphosoin.tennisfunserver.user.data.dto.LoginDto;
 import joluphosoin.tennisfunserver.user.exception.EmailVerificationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -49,5 +51,12 @@ public class BusinessController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType(MediaType.TEXT_HTML).body(htmlResponse);
         }
     }
+    @PostMapping(value = "/login", produces = "application/json")
+    public ApiResult<BusinessResDto> loginBusiness(@Valid @RequestBody LoginDto loginDto, HttpSession session) {
+        BusinessResDto businessResDto = businessService.loginBusiness(loginDto.getEmail(), loginDto.getPassword());
 
+        session.setAttribute("businessId", businessResDto.getId());
+
+        return ApiResult.onSuccess(SuccessStatus.LOGIN_OK,businessResDto);
+    }
 }

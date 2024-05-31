@@ -15,7 +15,7 @@ public enum SuccessStatus implements BaseCode {
     ACCEPTED(HttpStatus.OK, "COMMON202", "처리 대기중"),
     NO_CONTENT(HttpStatus.OK, "COMMON204", "컨텐츠가 없습니다."),
 
-    // 유저 관련 응답
+    // 로그인 관련 응답
     LOGIN_OK(HttpStatus.OK, "LOGIN200", "Login Successful"),
 
     // 코트 관련 응답

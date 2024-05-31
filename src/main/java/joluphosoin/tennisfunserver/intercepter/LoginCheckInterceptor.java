@@ -13,13 +13,16 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
         // 1. 세션에서 회원 정보 조회
         HttpSession session = request.getSession();
+
         String userId = (String) session.getAttribute("id");
+        String businessId = (String) session.getAttribute("businessId");
 
         // 2. 회원 정보 체크
-        if (userId == null) {
+        if (userId == null && businessId == null) {
             response.sendRedirect("/auth/expired");
             return false;
         }
+
 
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }

@@ -105,4 +105,17 @@ public class BusinessService {
         }
     }
 
+    public BusinessResDto loginBusiness(String email, String password) {
+        Business business = businessRepository.findByEmailId(email)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.BUSINESS_NOT_FOUND));
+
+        if (!passwordEncoder.matches(password, business.getPassword())) {
+            throw new GeneralException(ErrorStatus.PW_NOT_MATCH);
+        }
+
+        if(!business.isEmailVerified()){
+            throw new GeneralException(ErrorStatus.EMAIL_NOT_VAILD);
+        }
+        return BusinessResDto.toDto(business);
+    }
 }
