@@ -38,9 +38,9 @@ public class PaymentService {
         requestBody.add("total_amount", Integer.toString(amount));
         requestBody.add("vat_amount", "0");
         requestBody.add("tax_free_amount", "0");
-        requestBody.add("approval_url", "https://tennisfun-rrrlqvarua-du.a.run.app/success");
-        requestBody.add("fail_url", "https://tennisfun-rrrlqvarua-du.a.run.app/fail");
-        requestBody.add("cancel_url", "https://tennisfun-rrrlqvarua-du.a.run.app/cancel");
+        requestBody.add("approval_url", "https://tennisfun-rrrlqvarua-du.a.run.app/success.html");
+        requestBody.add("fail_url", "https://tennisfun-rrrlqvarua-du.a.run.app/fail.html");
+        requestBody.add("cancel_url", "https://tennisfun-rrrlqvarua-du.a.run.app/cancel.html");
 
         try {
             return webClient.post()
