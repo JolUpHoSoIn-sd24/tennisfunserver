@@ -1,5 +1,6 @@
 package joluphosoin.tennisfunserver.match.data.dto;
 
+import jakarta.validation.constraints.NotNull;
 import joluphosoin.tennisfunserver.match.data.entity.MatchRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,7 @@ import java.util.List;
 @Builder
 @Getter
 @AllArgsConstructor
-public class MatchResponseDto {
+public class MatchRequestResDto {
     @Schema(example = "662cda25e5c4314006800000")
     private String id;
     @Schema(example = "662cda25e5c4314e868188d3")
@@ -36,17 +37,21 @@ public class MatchResponseDto {
     @Schema(example = "37.5204279064529")
     private Double y;
 
-    @Schema(example = "[\"court1\", \"court2\"]")
-    private List<String> dislikedCourts;
-
     @Schema(example = "2.8")
     private Double maxDistance;
+
+    @Schema(example = "[\"court1\", \"court2\"]")
+    private List<String> dislikedCourts;
 
     @Schema(example ="30")
     private Integer minTime;
 
     @Schema(example ="120")
     private Integer maxTime;
+
+    @Schema(example = "false")
+    @NotNull
+    private Boolean isReserved;
 
     @Schema(example = "courtId")
     private String reservationCourtId;
@@ -60,9 +65,9 @@ public class MatchResponseDto {
     @Schema(example = "테니스 랠리 연습을 위한 매치 요청")
     private String description;
 
-    public static MatchResponseDto toDto(MatchRequest matchRequest,String userId) {
+    public static MatchRequestResDto toDto(MatchRequest matchRequest, String userId) {
 
-        MatchResponseDto.MatchResponseDtoBuilder builder = MatchResponseDto.builder()
+        MatchRequestResDto.MatchRequestResDtoBuilder builder = MatchRequestResDto.builder()
                 .id(matchRequest.getId())
                 .userId(userId)
                 .startTime(matchRequest.getStartTime())
@@ -75,9 +80,10 @@ public class MatchResponseDto {
                 .maxDistance(matchRequest.getMaxDistance())
                 .minTime(matchRequest.getMinTime())
                 .maxTime(matchRequest.getMaxTime())
-                .description(matchRequest.getDescription());
+                .description(matchRequest.getDescription())
+                .isReserved(matchRequest.getIsReserved());
 
-        if (matchRequest.getReservationDate() != null && matchRequest.getRentalCost() != null) {
+        if (Boolean.TRUE.equals(matchRequest.getIsReserved())) {
             builder.reservationDate(matchRequest.getReservationDate())
                     .rentalCost(matchRequest.getRentalCost())
                     .reservationCourtId(matchRequest.getReservationCourtId());

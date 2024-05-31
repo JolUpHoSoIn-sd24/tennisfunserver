@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import joluphosoin.tennisfunserver.match.data.dto.FeedbackReqDto;
 import joluphosoin.tennisfunserver.match.data.dto.MatchRequestDto;
-import joluphosoin.tennisfunserver.match.data.dto.MatchResponseDto;
+import joluphosoin.tennisfunserver.match.data.dto.MatchRequestResDto;
 import joluphosoin.tennisfunserver.match.data.dto.MatchResultResDto;
 import joluphosoin.tennisfunserver.match.service.MatchService;
 import joluphosoin.tennisfunserver.payload.ApiResult;
@@ -25,18 +25,18 @@ public class MatchController {
     private final MatchService matchService;
 
     @GetMapping(value = "/request",produces = "application/json; charset=utf-8")
-    public ApiResult<MatchResponseDto> getMatchRequest(@SessionAttribute(name="id") String userId) {
+    public ApiResult<MatchRequestResDto> getMatchRequest(@SessionAttribute(name="id") String userId) {
         return ApiResult.onSuccess(matchService.getMatchRequest(userId));
     }
 
     @PostMapping("/request")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResult<MatchResponseDto> registerMatchRequest(@RequestBody @Valid MatchRequestDto matchRequestDto, @SessionAttribute(name="id") @Parameter(hidden = true) String userId) {
+    public ApiResult<MatchRequestResDto> registerMatchRequest(@RequestBody @Valid MatchRequestDto matchRequestDto, @SessionAttribute(name="id") @Parameter(hidden = true) String userId) {
         return ApiResult.onSuccess(SuccessStatus.CREATED, matchService.registerMatchRequest(matchRequestDto,userId));
     }
 
     @PutMapping("/request")
-    public ApiResult<MatchResponseDto> updateMatchRequest(@RequestBody @Valid MatchRequestDto matchRequestDto,@SessionAttribute(name="id") String userId) {
+    public ApiResult<MatchRequestResDto> updateMatchRequest(@RequestBody @Valid MatchRequestDto matchRequestDto, @SessionAttribute(name="id") String userId) {
         return ApiResult.onSuccess(matchService.updateMatchRequest(matchRequestDto,userId));
     }
 
