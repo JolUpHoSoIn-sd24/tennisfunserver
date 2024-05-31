@@ -1,6 +1,7 @@
 package joluphosoin.tennisfunserver.game.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import joluphosoin.tennisfunserver.game.data.dto.GameCreationDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,12 +38,15 @@ public class Game {
 
     private Double rentalCost;
 
+    @Setter
     private List<Score> scores;
 
     private boolean scoreConfirmed;
 
+    @Setter
     private List<NTRPFeedback> ntrpFeedbacks;
 
+    @Setter
     private List<MannerFeedback> mannerFeedbacks;
 
     private Map<String, Boolean> paymentStatus;
@@ -82,4 +86,20 @@ public class Game {
         private int mannerScore;
         private String comments;
     }
+
+    public static Game toEntity(GameCreationDto gameDto,
+                                Map<String, Boolean> paymentStatusMap){
+        return Game.builder()
+                .playerIds(gameDto.getPlayerIds())
+                .courtId(gameDto.getCourtId())
+                .startTime(gameDto.getStartTime())
+                .endTime(gameDto.getEndTime())
+                .chatRoomId(gameDto.getChatRoomId())
+                .rentalCost(gameDto.getRentalCost())
+                .scoreConfirmed(false)
+                .paymentStatus(paymentStatusMap)
+                .gameStatus(Game.GameStatus.PREGAME)
+                .build();
+    }
+
 }

@@ -6,6 +6,7 @@ import joluphosoin.tennisfunserver.business.data.entity.DayTimeSlot;
 import joluphosoin.tennisfunserver.business.repository.CourtRepository;
 import joluphosoin.tennisfunserver.business.repository.DayTimeSlotRepository;
 import joluphosoin.tennisfunserver.game.data.dto.GameCreationDto;
+import joluphosoin.tennisfunserver.game.data.dto.GameDetailsDto;
 import joluphosoin.tennisfunserver.game.service.GameService;
 import joluphosoin.tennisfunserver.match.data.dto.FeedbackReqDto;
 import joluphosoin.tennisfunserver.match.data.dto.MatchRequestDto;
@@ -19,6 +20,7 @@ import joluphosoin.tennisfunserver.payload.code.status.ErrorStatus;
 import joluphosoin.tennisfunserver.payload.exception.GeneralException;
 import joluphosoin.tennisfunserver.user.data.entity.User;
 import joluphosoin.tennisfunserver.user.repository.UserRepository;
+import joluphosoin.tennisfunserver.websocket.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +42,8 @@ public class MatchServiceImpl implements MatchService {
     private final DayTimeSlotRepository dayTimeSlotRepository;
 
     private final GameService gameService;
+    private final NotificationService notificationService;
+
     @Override
     public MatchRequestResDto getMatchRequest(String userId) {
 
@@ -178,6 +182,7 @@ public class MatchServiceImpl implements MatchService {
         matchResultRepository.save(matchResult);
 
         isCreateGame(userId, matchResult, feedback);
+
     }
 
     private void isCreateGame(String userId, MatchResult matchResult, Map<String, MatchResult.FeedbackStatus> feedback) throws ParseException {
@@ -190,7 +195,7 @@ public class MatchServiceImpl implements MatchService {
                 // 게임 생성
                 Court court = courtRepository.findById(matchResult.getMatchDetails().getCourtId())
                         .orElseThrow(() -> new GeneralException(ErrorStatus.COURT_NOT_FOUND));
-                gameService.createGame(GameCreationDto.toDto(matchResult,court));
+                GameDetailsDto gameDetailsDto = gameService.createGame(GameCreationDto.toDto(matchResult, court));
 
                 // 해당 타임 슬롯 가예약으로 변경..
                 setTimeSlotToPending(matchResult, court, matchDetails);
@@ -207,16 +212,9 @@ public class MatchServiceImpl implements MatchService {
                 matchResult.setIsConfirmed(true);
                 matchResultRepository.save(matchResult);
 
-                // 소켓 알림 전송
-//                User user = userRepository.findById(userId)
-//                        .orElseThrow(()->new GeneralException(ErrorStatus.USER_NOT_FOUND));
-//                String notification = "Both users liked the match. New game created.";
-//                if(user.getWebSocketId()!=null){
-//                    webSocketHandler.sendNotification(user.getWebSocketId(), notification); // sessionId에는 해당 세션의 ID를 넣어야 합니다.
-//                }
-//                else{
-//                    throw new GeneralException(ErrorStatus.WEBSOCKETID_NOT_FOUND);
-//                }
+                notificationService.sendMatchNotification(userId,gameDetailsDto);
+                notificationService.sendMatchNotification(getOpponent(userId, matchResult).getId(),gameDetailsDto);
+
             }
 
         }
@@ -233,13 +231,11 @@ public class MatchServiceImpl implements MatchService {
 
         List<TimeSlotDto> timeSlotDtos = dayTimeSlot.getTimeSlots();
 
-        Date startTime = isoFormat.parse(matchDetails.getStartTime().toString());
-        Date endTime = isoFormat.parse(matchDetails.getEndTime().toString());
-        boolean flag = false;
 
         for (int i = 0; i < timeSlotDtos.size(); i++) {
             TimeSlotDto currentSlot = timeSlotDtos.get(i);
             Date currentSlotStartTime = convertStringToDate(currentSlot.getStartTime());
+            System.out.println(currentSlotStartTime);
         }
 
         dayTimeSlot.setTimeSlots(timeSlotDtos);

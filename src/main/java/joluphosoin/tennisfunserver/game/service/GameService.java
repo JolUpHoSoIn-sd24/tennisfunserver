@@ -23,7 +23,7 @@ public class GameService {
     private final CourtBusinessService courtBusinessService;
 
 
-    public void createGame(GameCreationDto gameDto) {
+    public GameDetailsDto createGame(GameCreationDto gameDto) {
 
         if (checkPlayerInAnyGame(gameDto.getPlayerIds())) {
             throw new CreateGameException("One or more players are already in an existing game");
@@ -33,22 +33,15 @@ public class GameService {
         for (String playerId : gameDto.getPlayerIds()) {
             paymentStatusMap.put(playerId, false);
         }
+        Game game = Game.toEntity(gameDto, paymentStatusMap);
 
-        Game game = Game.builder()
-                .playerIds(gameDto.getPlayerIds())
-                .courtId(gameDto.getCourtId())
-                .startTime(gameDto.getStartTime())
-                .endTime(gameDto.getEndTime())
-                .chatRoomId(gameDto.getChatRoomId())
-                .rentalCost(gameDto.getRentalCost())
-                .scores(gameDto.getScores() != null ? mapScores(gameDto.getScores()) : null)
-                .scoreConfirmed(false)
-                .paymentStatus(paymentStatusMap)
-                .gameStatus(Game.GameStatus.PREGAME)
-                .ntrpFeedbacks(gameDto.getNtrpFeedbacks() != null ? mapNTRPFeedbacks(gameDto.getNtrpFeedbacks()) : null)
-                .mannerFeedbacks(gameDto.getMannerFeedbacks() != null ? mapMannerFeedbacks(gameDto.getMannerFeedbacks()) : null)
-                .build();
+        game.setScores(gameDto.getScores() != null ? mapScores(gameDto.getScores()) : null);
+        game.setNtrpFeedbacks(gameDto.getNtrpFeedbacks() != null ? mapNTRPFeedbacks(gameDto.getNtrpFeedbacks()) : null);
+        game.setMannerFeedbacks(gameDto.getMannerFeedbacks() != null ? mapMannerFeedbacks(gameDto.getMannerFeedbacks()) : null);
+
         gameRepository.save(game);
+
+        return transformGameToDto(game);
     }
 
     public Game findGameByUserId(String userId) {
@@ -80,7 +73,7 @@ public class GameService {
         return gameRepository.findByPlayerIdsIn(playerIds).stream().anyMatch(game -> !game.getPlayerIds().isEmpty());
     }
 
-    private List<Game.Score> mapScores(List<ScoreDto> scoreDtos) {
+    public List<Game.Score> mapScores(List<ScoreDto> scoreDtos) {
         return scoreDtos.stream().map(dto -> {
             Game.Score score = new Game.Score();
             score.setUserId(dto.getUserId());
