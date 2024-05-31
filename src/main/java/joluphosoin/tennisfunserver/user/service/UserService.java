@@ -24,11 +24,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static joluphosoin.tennisfunserver.user.data.entity.User.calculateAge;
 
 @Service
 @RequiredArgsConstructor
@@ -91,21 +88,12 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new LocationUpdateException("User not found with ID"));
 
-        user.setLocation(locationUpdateDto.getLocation());
-        user.setMaxDistance(locationUpdateDto.getMaxDistance());
+        user.updateLocation(locationUpdateDto);
         userRepository.save(user);
     }
 
     private void updateUser(User user, RegistrationDto registrationDto) throws UserRegistrationException {
-        user.setName(registrationDto.getName());
-        user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
-        user.setNtrp(registrationDto.getNtrp());
-        user.setAge(calculateAge(registrationDto.getBirthDate()));
-        user.setGender(registrationDto.getGender());
-
-        user.setEmailVerificationToken(UUID.randomUUID().toString());
-        user.setEmailVerified(false);
-
+        user.setEntity(registrationDto, passwordEncoder);
         userRepository.save(user);
         sendVerificationEmail(user.getEmailId(), user.getEmailVerificationToken());
     }
@@ -166,4 +154,19 @@ public class UserService {
         return UserResDto.toDto(user);
 
     }
+
+    public boolean registerWebSocketId(String userId, String webSocketId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+        user.setWebSocketId(webSocketId);
+        userRepository.save(user);
+        return true;
+    }
+
+    public String deleteWebSocketId(String webSocketId){
+        User user = userRepository.findByWebSocketId(webSocketId).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+        user.setWebSocketId(webSocketId);
+        userRepository.save(user);
+        return user.getId();
+    }
+
 }

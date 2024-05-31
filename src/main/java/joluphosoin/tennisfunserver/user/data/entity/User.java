@@ -1,6 +1,8 @@
 package joluphosoin.tennisfunserver.user.data.entity;
 
 
+import joluphosoin.tennisfunserver.match.data.entity.MatchRequest;
+import joluphosoin.tennisfunserver.user.data.dto.LocationUpdateDto;
 import joluphosoin.tennisfunserver.user.data.dto.RegistrationDto;
 import lombok.*;
 import org.springframework.data.geo.Point;
@@ -21,7 +23,6 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-@Setter
 public class User {
 
     @MongoId
@@ -52,10 +53,12 @@ public class User {
 
     private List<String> clubIds;
 
+    @Setter
     private boolean emailVerified;
 
     private String emailVerificationToken;
 
+    @Setter
     private String webSocketId;
 
     public static User toEntity(RegistrationDto registrationDto,
@@ -73,8 +76,7 @@ public class User {
                 .emailVerificationToken(UUID.randomUUID().toString())
                 .emailVerified(false)
                 .mannerScore(36.5)
-                .maxDistance(5.5)
-                .location(new Point(127.0443767,37.2843727))
+                .maxDistance(4.5)
                 .build();
     }
 
@@ -83,6 +85,29 @@ public class User {
             return null;
         }
         return Period.between(birthDate, LocalDate.now()).getYears();
+    }
+
+    public User setEntity(RegistrationDto registrationDto, PasswordEncoder passwordEncoder){
+
+        this.name = registrationDto.getName();
+        this.password = passwordEncoder.encode(registrationDto.getPassword());
+        this.ntrp = registrationDto.getNtrp();
+        this.age = calculateAge(registrationDto.getBirthDate());
+        this.gender = registrationDto.getGender();
+        this.emailVerificationToken = UUID.randomUUID().toString();
+        this.emailVerified = false;
+        return this;
+    }
+    public User updateMatchInfo(MatchRequest matchRequest){
+        this.dislikedCourts = matchRequest.getDislikedCourts();
+        this.maxDistance = matchRequest.getMaxDistance();
+        this.location = matchRequest.getLocation();
+        return this;
+    }
+    public User updateLocation(LocationUpdateDto locationUpdateDto){
+        this.maxDistance = locationUpdateDto.getMaxDistance();
+        this.location = locationUpdateDto.getLocation();
+        return this;
     }
 
 

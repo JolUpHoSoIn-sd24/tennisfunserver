@@ -9,7 +9,7 @@ import joluphosoin.tennisfunserver.game.data.dto.GameCreationDto;
 import joluphosoin.tennisfunserver.game.service.GameService;
 import joluphosoin.tennisfunserver.match.data.dto.FeedbackReqDto;
 import joluphosoin.tennisfunserver.match.data.dto.MatchRequestDto;
-import joluphosoin.tennisfunserver.match.data.dto.MatchResponseDto;
+import joluphosoin.tennisfunserver.match.data.dto.MatchRequestResDto;
 import joluphosoin.tennisfunserver.match.data.dto.MatchResultResDto;
 import joluphosoin.tennisfunserver.match.data.entity.MatchRequest;
 import joluphosoin.tennisfunserver.match.data.entity.MatchResult;
@@ -41,16 +41,16 @@ public class MatchServiceImpl implements MatchService {
 
     private final GameService gameService;
     @Override
-    public MatchResponseDto getMatchRequest(String userId) {
+    public MatchRequestResDto getMatchRequest(String userId) {
 
         MatchRequest matchRequest = matchRequestRepository.findByUserId(userId).orElseThrow(() -> new GeneralException(ErrorStatus.MATCHREQ_NOT_FOUND));
 
-        return MatchResponseDto.toDto(matchRequest,userId);
+        return MatchRequestResDto.toDto(matchRequest,userId);
     }
 
     @Override
     @Transactional
-    public MatchResponseDto registerMatchRequest(MatchRequestDto matchRequestDto, String userId) {
+    public MatchRequestResDto registerMatchRequest(MatchRequestDto matchRequestDto, String userId) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
@@ -61,22 +61,20 @@ public class MatchServiceImpl implements MatchService {
 
         if(optionalMatchRequest.isPresent()){
             matchRequest = optionalMatchRequest.get();
-            matchRequest.setEntity(matchRequestDto, user);
+            matchRequest.setEntity(matchRequestDto);
         }
         else{
-            matchRequest = matchRequestDto.toEntity(user);
+            matchRequest = MatchRequest.toEntity(matchRequestDto, user);
         }
 
         saveMatchRequestAndUser(matchRequest, user);
 
-        return MatchResponseDto.toDto(matchRequest,userId);
+        return MatchRequestResDto.toDto(matchRequest,userId);
     }
 
     private void saveMatchRequestAndUser(MatchRequest matchRequest, User user) {
         matchRequestRepository.save(matchRequest);
-
-        user.setDislikedCourts(matchRequest.getDislikedCourts());
-
+        user.updateMatchInfo(matchRequest);
         userRepository.save(user);
     }
 
@@ -90,18 +88,18 @@ public class MatchServiceImpl implements MatchService {
 
     @Override
     @Transactional
-    public MatchResponseDto updateMatchRequest(MatchRequestDto matchRequestDto, String userId) {
+    public MatchRequestResDto updateMatchRequest(MatchRequestDto matchRequestDto, String userId) {
         MatchRequest matchRequest = matchRequestRepository.findByUserId(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.MATCHREQ_NOT_FOUND));
 
         User user = userRepository.findById(matchRequest.getUserId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
-        MatchRequest updateMatchRequest = matchRequest.setEntity(matchRequestDto,user);
+        MatchRequest updateMatchRequest = matchRequest.setEntity(matchRequestDto);
 
         saveMatchRequestAndUser(updateMatchRequest, user);
 
-        return MatchResponseDto.toDto(matchRequest,userId);
+        return MatchRequestResDto.toDto(matchRequest,userId);
     }
 
     @Override
@@ -242,24 +240,6 @@ public class MatchServiceImpl implements MatchService {
         for (int i = 0; i < timeSlotDtos.size(); i++) {
             TimeSlotDto currentSlot = timeSlotDtos.get(i);
             Date currentSlotStartTime = convertStringToDate(currentSlot.getStartTime());
-            System.out.println("for문 들어왔습니다");
-
-            System.out.println(startTime);
-            System.out.println(currentSlotStartTime);
-            if(currentSlotStartTime.equals(startTime)){
-                System.out.println("flag 들어왔습니다");
-                flag = true;
-            }
-
-            if(flag){
-                currentSlot.setStatus(DayTimeSlot.ReservationStatus.PENDING);
-                System.out.println("pending 설정!");
-
-                if (currentSlotStartTime.equals(endTime)) {
-                    System.out.println("종료합니다");
-                    break;
-                }
-            }
         }
 
         dayTimeSlot.setTimeSlots(timeSlotDtos);

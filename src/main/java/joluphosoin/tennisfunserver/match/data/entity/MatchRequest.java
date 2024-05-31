@@ -30,7 +30,7 @@ public class MatchRequest {
 
     private Boolean isSingles; // 단복식 여부 (Singles, Doubles)
 
-    private MatchObjective objective; // 경기 목적: 경기(빡겜), 경기(즐겜), 경기(상관없음), 랠리, 서브연습
+    private MatchObjective objective; // 경기 목적: 경기(빡겜), 경기(즐겜)
 
     @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
     private Point location; // 사용자의 위치 정보
@@ -42,6 +42,8 @@ public class MatchRequest {
     private Integer minTime;
 
     private Integer maxTime;
+
+    private Boolean isReserved;
 
     // 사전예약 관련 정보
     private String reservationCourtId;
@@ -58,20 +60,45 @@ public class MatchRequest {
         FUN, // 부담없이
         ANY; // 다 좋아요
     }
+    public static MatchRequest toEntity(MatchRequestDto matchRequestDto, User user){
 
-    public MatchRequest setEntity(MatchRequestDto matchRequestDto, User user){
+        Point location = new Point(matchRequestDto.getX(), matchRequestDto.getY());
+        MatchRequest.MatchRequestBuilder builder = MatchRequest.builder()
+                .userId(user.getId())
+                .startTime(matchRequestDto.getStartTime())
+                .endTime(matchRequestDto.getEndTime())
+                .isSingles(matchRequestDto.getIsSingles())
+                .objective(matchRequestDto.getObjective())
+                .location(location)
+                .maxDistance(matchRequestDto.getMaxDistance())
+                .dislikedCourts(matchRequestDto.getDislikedCourts())
+                .minTime(matchRequestDto.getMinTime())
+                .maxTime(matchRequestDto.getMaxTime())
+                .description(matchRequestDto.getDescription())
+                .isReserved(matchRequestDto.getIsReserved());
 
+        if (Boolean.TRUE.equals(matchRequestDto.getIsReserved())) {
+            builder.reservationDate(matchRequestDto.getReservationDate())
+                    .rentalCost(matchRequestDto.getRentalCost())
+                    .reservationCourtId(matchRequestDto.getReservationCourtId());
+        }
+
+        return builder.build();
+    }
+    public MatchRequest setEntity(MatchRequestDto matchRequestDto){
+
+        Point location = new Point(matchRequestDto.getX(), matchRequestDto.getY());
         this.startTime = matchRequestDto.getStartTime();
         this.endTime = matchRequestDto.getEndTime();
         this.isSingles = matchRequestDto.getIsSingles();
         this.objective = matchRequestDto.getObjective();
-        this.maxDistance = user.getMaxDistance();
+        this.maxDistance = matchRequestDto.getMaxDistance();
         this.dislikedCourts = matchRequestDto.getDislikedCourts();
         this.description = matchRequestDto.getDescription();
-        this.location = user.getLocation();
+        this.location = location;
         this.minTime = matchRequestDto.getMinTime();
         this.maxTime = matchRequestDto.getMaxTime();
-        if (reservationDate != null && rentalCost != null) {
+        if (Boolean.TRUE.equals(matchRequestDto.getIsReserved())) {
             this.reservationCourtId= matchRequestDto.getReservationCourtId();
             this.reservationDate = matchRequestDto.getReservationDate();
             this.rentalCost = matchRequestDto.getRentalCost();
