@@ -28,10 +28,9 @@ public class BusinessController {
         return ApiResult.onSuccess(SuccessStatus.BUSINESSINFO_CREATED,businessService.registerBusiness(businessReqDto));
     }
 
-    @PostMapping("/account")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ApiResult<BusinessResDto> registerAccount(@RequestBody @Valid AccountReqDto accountReqDto){
-        return ApiResult.onSuccess(SuccessStatus.ACCOUNTINFO_CREATED,businessService.registerAccount(accountReqDto));
+    @PutMapping("/account")
+    public ApiResult<BusinessResDto> updateAccount(@RequestBody @Valid AccountReqDto accountReqDto){
+        return ApiResult.onSuccess(SuccessStatus.ACCOUNTINFO_CREATED,businessService.updateAccount(accountReqDto));
     }
     @GetMapping("/verify-email")
     public ResponseEntity<String> verifyEmail(@RequestParam String token) {

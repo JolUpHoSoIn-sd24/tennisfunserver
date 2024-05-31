@@ -55,7 +55,7 @@ public class BusinessService {
     }
 
     @Transactional
-    public BusinessResDto registerAccount(AccountReqDto accountReqDto) {
+    public BusinessResDto updateAccount(AccountReqDto accountReqDto) {
 
         Business business = businessRepository.findById(accountReqDto.getBusinessInfoId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.BUSINESS_NOT_FOUND));
@@ -66,7 +66,6 @@ public class BusinessService {
         businessRepository.save(business);
 
         return BusinessResDto.toDto(business);
-
     }
     public void verifyEmail(String token) throws EmailVerificationException {
 
