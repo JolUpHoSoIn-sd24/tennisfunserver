@@ -1,33 +1,34 @@
 package joluphosoin.tennisfunserver.user.service;
 
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import joluphosoin.tennisfunserver.game.data.dto.GameDetailsDto;
 import joluphosoin.tennisfunserver.payload.code.status.ErrorStatus;
 import joluphosoin.tennisfunserver.payload.exception.GeneralException;
 import joluphosoin.tennisfunserver.user.data.dto.LocationUpdateDto;
+import joluphosoin.tennisfunserver.user.data.dto.RegistrationDto;
 import joluphosoin.tennisfunserver.user.data.dto.UserResDto;
 import joluphosoin.tennisfunserver.user.data.entity.User;
-import joluphosoin.tennisfunserver.user.data.dto.RegistrationDto;
 import joluphosoin.tennisfunserver.user.exception.EmailVerificationException;
 import joluphosoin.tennisfunserver.user.exception.LocationUpdateException;
 import joluphosoin.tennisfunserver.user.exception.UserLoginException;
 import joluphosoin.tennisfunserver.user.exception.UserRegistrationException;
 import joluphosoin.tennisfunserver.user.repository.UserRepository;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.geo.Point;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static joluphosoin.tennisfunserver.user.data.entity.User.calculateAge;
 
 @Service
 @RequiredArgsConstructor
@@ -99,7 +100,7 @@ public class UserService {
         user.setName(registrationDto.getName());
         user.setPassword(passwordEncoder.encode(registrationDto.getPassword()));
         user.setNtrp(registrationDto.getNtrp());
-        user.setAge(registrationDto.getAge());
+        user.setAge(calculateAge(registrationDto.getBirthDate()));
         user.setGender(registrationDto.getGender());
 
         user.setEmailVerificationToken(UUID.randomUUID().toString());
@@ -110,22 +111,9 @@ public class UserService {
     }
 
     private void createUser(RegistrationDto registrationDto) {
-        User newUser = User.builder()
-                .emailId(registrationDto.getEmail())
-                .name(registrationDto.getName())
-                .password(passwordEncoder.encode(registrationDto.getPassword()))
-                .ntrp(registrationDto.getNtrp())
-                .age(registrationDto.getAge())
-                .gender(registrationDto.getGender())
-                .emailVerificationToken(UUID.randomUUID().toString())
-                .emailVerified(false)
-                .mannerScore(36.5)
-                .maxDistance(5.5)
-                .location(new Point(127.0443767,37.2843727))
-                .build();
-
-        userRepository.save(newUser);
-        sendVerificationEmail(newUser.getEmailId(), newUser.getEmailVerificationToken());
+        User user = User.toEntity(registrationDto, passwordEncoder);
+        userRepository.save(user);
+        sendVerificationEmail(user.getEmailId(), user.getEmailVerificationToken());
     }
 
     private void sendVerificationEmail(String email, String token) {

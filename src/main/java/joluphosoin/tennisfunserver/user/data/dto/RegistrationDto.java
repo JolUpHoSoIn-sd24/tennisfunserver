@@ -1,12 +1,19 @@
 package joluphosoin.tennisfunserver.user.data.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.time.LocalDate;
+
+@Getter
 public class RegistrationDto {
     @NotBlank(message = "Email is required")
     @Email(message = "Email should be valid")
     private String email;
 
+    @Setter
     @NotBlank(message = "Name is required")
     private String name;
 
@@ -20,59 +27,12 @@ public class RegistrationDto {
     private double ntrp;
 
     @NotNull(message = "Age is required")
-    @Min(value = 18, message = "Must be at least 18 years old")
-    @Max(value = 100, message = "Must be at most 100 years old")
-    private int age;
+    @Schema(example = "1999-04-17") 
+    private LocalDate birthDate;
 
     @NotBlank(message = "Gender is required")
     @Pattern(regexp = "MALE|FEMALE", message = "Gender must be either MALE or FEMALE")
     private String gender;
 
-    public String getEmail() {
-        return email;
-    }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public double getNtrp() {
-        return ntrp;
-    }
-
-    public void setNtrp(double ntrp) {
-        this.ntrp = ntrp;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
 }
