@@ -10,11 +10,11 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 import java.util.ArrayList;
 import java.util.List;
 
-@Document(collection = "businessInfo")
+@Document(collection = "business")
 @Getter
 @AllArgsConstructor
 @Builder
-public class BusinessInfo {
+public class Business {
 
     @MongoId
     private String id;

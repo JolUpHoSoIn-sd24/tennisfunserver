@@ -1,14 +1,11 @@
 package joluphosoin.tennisfunserver.business.data.dto;
 
 
-import joluphosoin.tennisfunserver.business.data.entity.BusinessInfo;
+import joluphosoin.tennisfunserver.business.data.entity.Business;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -26,25 +23,25 @@ public class BusinessInfoResDto {
 
     private String accountNumber;
 
-    private BusinessInfo.RegistrationStatus registrationStatus; // 가입 상태
+    private Business.RegistrationStatus registrationStatus; // 가입 상태
 
 
-    public static BusinessInfoResDto toDto(BusinessInfo businessInfo){
+    public static BusinessInfoResDto toDto(Business business){
         BusinessInfoResDtoBuilder businessInfoResDtoBuilder = BusinessInfoResDto.builder()
-                .id(businessInfo.getId())
-                .businessRegistrationNumber(businessInfo.getBusinessRegistrationNumber())
-                .registrationStatus(businessInfo.getRegistrationStatus());
+                .id(business.getId())
+                .businessRegistrationNumber(business.getBusinessRegistrationNumber())
+                .registrationStatus(business.getRegistrationStatus());
 
-        if (businessInfo.getBank() != null) {
-            businessInfoResDtoBuilder.bank(businessInfo.getBank());
+        if (business.getBank() != null) {
+            businessInfoResDtoBuilder.bank(business.getBank());
         }
 
-        if (businessInfo.getAccountNumber() != null) {
-            businessInfoResDtoBuilder.accountNumber(businessInfo.getAccountNumber());
+        if (business.getAccountNumber() != null) {
+            businessInfoResDtoBuilder.accountNumber(business.getAccountNumber());
         }
 
-        if (businessInfo.getDocuments() != null) {
-            businessInfoResDtoBuilder.documents(businessInfo.getDocuments());
+        if (business.getDocuments() != null) {
+            businessInfoResDtoBuilder.documents(business.getDocuments());
         }
 
         return businessInfoResDtoBuilder.build();

@@ -3,7 +3,7 @@ package joluphosoin.tennisfunserver.business.service;
 import joluphosoin.tennisfunserver.business.data.dto.*;
 import joluphosoin.tennisfunserver.business.data.entity.Court;
 import joluphosoin.tennisfunserver.business.data.entity.DayTimeSlot;
-import joluphosoin.tennisfunserver.business.repository.BusinessInfoRepository;
+import joluphosoin.tennisfunserver.business.repository.BusinessRepository;
 import joluphosoin.tennisfunserver.business.repository.CourtRepository;
 import joluphosoin.tennisfunserver.business.repository.DayTimeSlotRepository;
 import joluphosoin.tennisfunserver.game.data.dto.GameDetailsDto;
@@ -21,14 +21,14 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class CourtBusinessService {
 
-    private final BusinessInfoRepository businessInfoRepository;
+    private final BusinessRepository businessRepository;
     private final CourtRepository courtRepository;
     private final DayTimeSlotRepository dayTimeSlotRepository;
 
     @Transactional
     public CourtResDto registerCourt(CourtReqDto courtReqDto) {
 
-        businessInfoRepository.findById(courtReqDto.getOwnerId())
+        businessRepository.findById(courtReqDto.getOwnerId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.BUSINESS_NOT_FOUND));
 
         if(courtRepository.findByOwnerIdAndCourtName(courtReqDto.getOwnerId(), courtReqDto.getCourtName()).isPresent()){

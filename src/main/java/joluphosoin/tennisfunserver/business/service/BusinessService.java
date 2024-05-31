@@ -3,8 +3,8 @@ package joluphosoin.tennisfunserver.business.service;
 import joluphosoin.tennisfunserver.business.data.dto.AccountReqDto;
 import joluphosoin.tennisfunserver.business.data.dto.BusinessInfoReqDto;
 import joluphosoin.tennisfunserver.business.data.dto.BusinessInfoResDto;
-import joluphosoin.tennisfunserver.business.data.entity.BusinessInfo;
-import joluphosoin.tennisfunserver.business.repository.BusinessInfoRepository;
+import joluphosoin.tennisfunserver.business.data.entity.Business;
+import joluphosoin.tennisfunserver.business.repository.BusinessRepository;
 import joluphosoin.tennisfunserver.payload.code.status.ErrorStatus;
 import joluphosoin.tennisfunserver.payload.exception.GeneralException;
 import lombok.RequiredArgsConstructor;
@@ -15,30 +15,30 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class BusinessService {
 
-    private final BusinessInfoRepository businessInfoRepository;
+    private final BusinessRepository businessRepository;
 
     @Transactional
     public BusinessInfoResDto registerBusinessInfo(BusinessInfoReqDto businessInfoReqDto) {
 
-        BusinessInfo businessInfo = businessInfoReqDto.toEntity();
+        Business business = businessInfoReqDto.toEntity();
 
-        businessInfoRepository.save(businessInfo);
+        businessRepository.save(business);
 
-        return BusinessInfoResDto.toDto(businessInfo);
+        return BusinessInfoResDto.toDto(business);
     }
 
     @Transactional
     public BusinessInfoResDto registerAccount(AccountReqDto accountReqDto) {
 
-        BusinessInfo businessInfo = businessInfoRepository.findById(accountReqDto.getBusinessInfoId())
+        Business business = businessRepository.findById(accountReqDto.getBusinessInfoId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.BUSINESS_NOT_FOUND));
 
-        businessInfo.setBank(accountReqDto.getBank());
-        businessInfo.setAccountNumber(accountReqDto.getAccountNumber());
+        business.setBank(accountReqDto.getBank());
+        business.setAccountNumber(accountReqDto.getAccountNumber());
 
-        businessInfoRepository.save(businessInfo);
+        businessRepository.save(business);
 
-        return BusinessInfoResDto.toDto(businessInfo);
+        return BusinessInfoResDto.toDto(business);
 
     }
 }
