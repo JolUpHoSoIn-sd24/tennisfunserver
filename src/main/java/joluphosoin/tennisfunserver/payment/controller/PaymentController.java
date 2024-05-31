@@ -3,6 +3,7 @@ package joluphosoin.tennisfunserver.payment.controller;
 import jakarta.servlet.http.HttpSession;
 import joluphosoin.tennisfunserver.game.data.entity.Game;
 import joluphosoin.tennisfunserver.game.repository.GameRepository;
+import joluphosoin.tennisfunserver.payment.data.dto.PaymentVerificationRequestDto;
 import joluphosoin.tennisfunserver.payment.exception.PaymentServiceException;
 import joluphosoin.tennisfunserver.payment.service.PaymentService;
 import joluphosoin.tennisfunserver.response.ApiResponse;
@@ -42,6 +43,18 @@ public class PaymentController {
         try {
             Map<String, Object> paymentInfo = paymentService.getPaymentInfo(selectedGame);
             return ResponseEntity.ok(new ApiResponse(true, "PAY200", "Payment information retrieved successfully.", paymentInfo));
+        } catch (PaymentServiceException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    new ApiResponse(false, "INTERNAL_SERVER_ERROR", e.getMessage(), null)
+            );
+        }
+    }
+
+    @PostMapping(value = "/verify", produces = "application/json")
+    public ResponseEntity<ApiResponse> verifyPayment(@RequestBody PaymentVerificationRequestDto requestDto) {
+        try {
+            Map<String, Object> verificationResult = paymentService.verifyPayment(requestDto);
+            return ResponseEntity.ok(new ApiResponse(true, "VERIFY200", "Payment verified successfully.", verificationResult));
         } catch (PaymentServiceException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                     new ApiResponse(false, "INTERNAL_SERVER_ERROR", e.getMessage(), null)

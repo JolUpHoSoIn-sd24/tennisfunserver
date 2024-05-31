@@ -1,6 +1,7 @@
 package joluphosoin.tennisfunserver.payment.service;
 
 import joluphosoin.tennisfunserver.game.data.entity.Game;
+import joluphosoin.tennisfunserver.payment.data.dto.PaymentVerificationRequestDto;
 import joluphosoin.tennisfunserver.payment.exception.PaymentServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,6 +53,28 @@ public class PaymentService {
                     .block();
         } catch (WebClientResponseException e) {
             throw new PaymentServiceException("Failed to get payment info: " + e.getResponseBodyAsString(), e);
+        }
+    }
+
+    public Map<String, Object> verifyPayment(PaymentVerificationRequestDto requestDto) {
+        MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
+        requestBody.add("cid", "TC0ONETIME");
+        requestBody.add("tid", requestDto.getTid());
+        requestBody.add("partner_order_id", "partner_order_id");
+        requestBody.add("partner_user_id", "partner_user_id");
+        requestBody.add("pg_token", requestDto.getPgToken());
+
+        try {
+            return webClient.post()
+                    .uri("https://kapi.kakao.com/v1/payment/approve")
+                    .header("Authorization", "KakaoAK " + kakaoApiKey)
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .bodyValue(requestBody)
+                    .retrieve()
+                    .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                    .block();
+        } catch (WebClientResponseException e) {
+            throw new PaymentServiceException("Failed to verify payment: " + e.getResponseBodyAsString(), e);
         }
     }
 }

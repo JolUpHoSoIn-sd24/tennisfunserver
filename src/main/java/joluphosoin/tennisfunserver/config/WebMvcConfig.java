@@ -23,9 +23,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/auth/expired",
                         "/api/business/register",
                         "/api/business/login,",
-                        "/success",
-                        "/fail",
-                        "/cancel");
+                        "/success.html",
+                        "/fail.hmtl",
+                        "/cancel.html");
     }
 
 }
