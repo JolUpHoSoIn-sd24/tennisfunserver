@@ -47,6 +47,10 @@ public class Game {
 
     private Map<String, Boolean> paymentStatus;
 
+    public void setGameStatus(GameStatus status) {
+        gameStatus = status;
+    }
+
     public enum GameStatus {
         PREGAME, INPLAY, POSTGAME
     }

@@ -3,34 +3,42 @@ package joluphosoin.tennisfunserver.payment.data.entity;
 import joluphosoin.tennisfunserver.game.data.entity.Game;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.Date;
+import java.util.Map;
 
 @Document(collection = "paymentInfo")
-@Getter
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class PaymentInfo {
 
-    @MongoId
+    @Id
     private String id;
 
     @DBRef
-    private Game game; // 참조하는 게임 정보, Game 문서 참조
+    private Game game; // Reference to the game information
 
-    private String tid; // 카카오페이 거래 ID
-    private String nextRedirectPcUrl; // 결제 페이지 URL
-    private Date createdAt; // 결제 요청 시간
-    private Double amount; // 결제 금액
-    private PaymentStatus status; // 결제 상태
+    private String userId; // ID of the user who made the payment
+    private String transactionId; // Unique transaction ID (e.g., KakaoPay TID)
+    private String paymentMethodType; // Payment method type
+    private String itemName; // Item name
+    private int quantity; // Quantity
+    private Map<String, Integer> amount; // Payment amount details
+    private Date createdAt; // When the payment request was made
+    private Date approvedAt; // When the payment was approved
+    private PaymentStatus status; // Current status of the payment
 
     public enum PaymentStatus {
-        Pending, // 결제 대기 중
-        Approved, // 결제 승인됨
-        Cancelled // 결제 취소됨
+        PENDING, // Payment is pending
+        APPROVED, // Payment approved
+        FAILED, // Payment failed
+        CANCELLED // Payment cancelled
     }
 }

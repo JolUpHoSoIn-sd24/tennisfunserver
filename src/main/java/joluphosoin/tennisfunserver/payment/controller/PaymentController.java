@@ -51,9 +51,16 @@ public class PaymentController {
     }
 
     @PostMapping(value = "/verify", produces = "application/json")
-    public ResponseEntity<ApiResponse> verifyPayment(@RequestBody PaymentVerificationRequestDto requestDto) {
+    public ResponseEntity<ApiResponse> verifyPayment(HttpSession session, @RequestBody PaymentVerificationRequestDto requestDto) {
+        String userId = (String) session.getAttribute("id");
+        if (userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    new ApiResponse(false, "AUTH001", "User is not logged in", null)
+            );
+        }
+
         try {
-            Map<String, Object> verificationResult = paymentService.verifyPayment(requestDto);
+            Map<String, Object> verificationResult = paymentService.verifyPayment(userId, requestDto);
             return ResponseEntity.ok(new ApiResponse(true, "VERIFY200", "Payment verified successfully.", verificationResult));
         } catch (PaymentServiceException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
