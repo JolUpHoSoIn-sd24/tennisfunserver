@@ -1,8 +1,12 @@
 package joluphosoin.tennisfunserver.payment.service;
 
 import joluphosoin.tennisfunserver.game.data.entity.Game;
+import joluphosoin.tennisfunserver.game.repository.GameRepository;
+import joluphosoin.tennisfunserver.payment.data.dto.PaymentVerificationRequestDto;
+import joluphosoin.tennisfunserver.payment.data.entity.PaymentInfo;
 import joluphosoin.tennisfunserver.payment.exception.PaymentServiceException;
-import org.springframework.beans.factory.annotation.Autowired;
+import joluphosoin.tennisfunserver.payment.repository.PaymentInfoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
@@ -11,20 +15,24 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class PaymentService {
 
     private final WebClient webClient;
+    private final GameRepository gameRepository;
+    private final PaymentInfoRepository paymentInfoRepository;
 
     @Value("${kakao.api.key}")
     private String kakaoApiKey;
-
-    @Autowired
-    public PaymentService(WebClient webClient) {
-        this.webClient = webClient;
-    }
 
     public Map<String, Object> getPaymentInfo(Game game) {
         int amount = (int) Math.round(game.getRentalCost());
@@ -37,9 +45,9 @@ public class PaymentService {
         requestBody.add("total_amount", Integer.toString(amount));
         requestBody.add("vat_amount", "0");
         requestBody.add("tax_free_amount", "0");
-        requestBody.add("approval_url", "https://tennisfun-rrrlqvarua-du.a.run.app/success");
-        requestBody.add("fail_url", "https://tennisfun-rrrlqvarua-du.a.run.app/fail");
-        requestBody.add("cancel_url", "https://tennisfun-rrrlqvarua-du.a.run.app/cancel");
+        requestBody.add("approval_url", "https://tennisfun-rrrlqvarua-du.a.run.app/success.html");
+        requestBody.add("fail_url", "https://tennisfun-rrrlqvarua-du.a.run.app/fail.html");
+        requestBody.add("cancel_url", "https://tennisfun-rrrlqvarua-du.a.run.app/cancel.html");
 
         try {
             return webClient.post()
@@ -52,6 +60,67 @@ public class PaymentService {
                     .block();
         } catch (WebClientResponseException e) {
             throw new PaymentServiceException("Failed to get payment info: " + e.getResponseBodyAsString(), e);
+        }
+    }
+
+    public Map<String, Object> verifyPayment(String userId, PaymentVerificationRequestDto requestDto) {
+        MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
+        requestBody.add("cid", "TC0ONETIME");
+        requestBody.add("tid", requestDto.getTid());
+        requestBody.add("partner_order_id", "partner_order_id");
+        requestBody.add("partner_user_id", "partner_user_id");
+        requestBody.add("pg_token", requestDto.getPgToken());
+
+        try {
+            Map<String, Object> response = webClient.post()
+                    .uri("https://kapi.kakao.com/v1/payment/approve")
+                    .header("Authorization", "KakaoAK " + kakaoApiKey)
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .bodyValue(requestBody)
+                    .retrieve()
+                    .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                    .block();
+
+            Collection<Game> games = gameRepository.findByPlayerIdsContaining(userId);
+            if (games.isEmpty()) {
+                throw new PaymentServiceException("No game found for user: " + userId);
+            }
+
+            Game game = games.iterator().next();
+            game.getPaymentStatus().put(userId, true);
+
+            boolean allPaid = game.getPaymentStatus().values().stream().allMatch(status -> status);
+
+            if (allPaid) {
+                game.setGameStatus(Game.GameStatus.INPLAY);
+            }
+
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+            LocalDateTime createdAt = LocalDateTime.parse((String) response.get("created_at"), formatter);
+            LocalDateTime approvedAt = LocalDateTime.parse((String) response.get("approved_at"), formatter);
+
+            PaymentInfo paymentInfo = PaymentInfo.builder()
+                    .game(game)
+                    .userId(userId)
+                    .transactionId((String) response.get("tid"))
+                    .paymentMethodType((String) response.get("payment_method_type"))
+                    .itemName((String) response.get("item_name"))
+                    .quantity((Integer) response.get("quantity"))
+                    .amount((Map<String, Integer>) response.get("amount"))
+                    .createdAt(Date.from(createdAt.atZone(ZoneId.systemDefault()).toInstant()))
+                    .approvedAt(Date.from(approvedAt.atZone(ZoneId.systemDefault()).toInstant()))
+                    .status(PaymentInfo.PaymentStatus.APPROVED)
+                    .build();
+            paymentInfoRepository.save(paymentInfo);
+
+            gameRepository.save(game);
+            //TODO: Send socket notification to all players in the game @김관주
+
+            Map<String, Object> res = new HashMap<>();
+            res.put("updatedGame", game);
+            return res;
+        } catch (WebClientResponseException e) {
+            throw new PaymentServiceException("Failed to verify payment: " + e.getResponseBodyAsString(), e);
         }
     }
 }
