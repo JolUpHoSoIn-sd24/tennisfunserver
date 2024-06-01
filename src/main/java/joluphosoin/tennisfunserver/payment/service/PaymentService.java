@@ -34,6 +34,9 @@ public class PaymentService {
     @Value("${kakao.api.key}")
     private String kakaoApiKey;
 
+    @Value("${app.base-url}")
+    private String baseUrl;
+
     public Map<String, Object> getPaymentInfo(Game game) {
         int amount = (int) Math.round(game.getRentalCost());
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
@@ -45,9 +48,9 @@ public class PaymentService {
         requestBody.add("total_amount", Integer.toString(amount));
         requestBody.add("vat_amount", "0");
         requestBody.add("tax_free_amount", "0");
-        requestBody.add("approval_url", "https://tennisfun-rrrlqvarua-du.a.run.app/success.html");
-        requestBody.add("fail_url", "https://tennisfun-rrrlqvarua-du.a.run.app/fail.html");
-        requestBody.add("cancel_url", "https://tennisfun-rrrlqvarua-du.a.run.app/cancel.html");
+        requestBody.add("approval_url", baseUrl+"/success.html");
+        requestBody.add("fail_url", baseUrl+ "/fail.html");
+        requestBody.add("cancel_url", baseUrl+"/cancel.html");
 
         try {
             return webClient.post()
