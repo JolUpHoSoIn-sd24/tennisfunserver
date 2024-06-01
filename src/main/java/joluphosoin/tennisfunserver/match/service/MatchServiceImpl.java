@@ -29,7 +29,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static joluphosoin.tennisfunserver.business.data.dto.TimeSlotDto.convertStringToDate;
 
 @Service
 @RequiredArgsConstructor
@@ -185,12 +184,11 @@ public class MatchServiceImpl implements MatchService {
 
     }
 
-    private void isCreateGame(String userId, MatchResult matchResult, Map<String, MatchResult.FeedbackStatus> feedback) throws ParseException {
+    private void isCreateGame(String userId, MatchResult matchResult, Map<String, MatchResult.FeedbackStatus> feedback) {
         if(matchResult.getFeedback().size()==2){
             boolean allLike = feedback.values().stream().allMatch(status -> status == MatchResult.FeedbackStatus.LIKE);
 
             if (allLike) {
-                MatchResult.MatchDetails matchDetails = matchResult.getMatchDetails();
 
                 // 게임 생성
                 Court court = courtRepository.findById(matchResult.getMatchDetails().getCourtId())
@@ -198,7 +196,7 @@ public class MatchServiceImpl implements MatchService {
                 GameDetailsDto gameDetailsDto = gameService.createGame(GameCreationDto.toDto(matchResult, court));
 
                 // 해당 타임 슬롯 가예약으로 변경..
-                setTimeSlotToPending(matchResult, court, matchDetails);
+                setTimeSlotToPending(matchResult, court);
 
                 // matchRequest 각자 삭제
                 Map<String, String> userAndMatchRequests = matchResult.getUserAndMatchRequests();
@@ -220,24 +218,38 @@ public class MatchServiceImpl implements MatchService {
         }
     }
 
-    private void setTimeSlotToPending(MatchResult matchResult, Court court, MatchResult.MatchDetails matchDetails) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    private void setTimeSlotToPending(MatchResult matchResult, Court court){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         DayTimeSlot dayTimeSlot = dayTimeSlotRepository
                 .findByCourtIdAndDate(court.getId(),
-                        sdf.format(matchResult.getMatchDetails().getStartTime()))
+                        dateFormat.format(matchResult.getMatchDetails().getStartTime()))
                 .orElseThrow(() -> new GeneralException(ErrorStatus.TIMESLOT_NOT_FOUND));
 
         List<TimeSlotDto> timeSlotDtos = dayTimeSlot.getTimeSlots();
 
+        String startTime = sdf.format(matchResult.getMatchDetails().getStartTime());
+        String endTime = sdf.format(matchResult.getMatchDetails().getEndTime());
+
+        boolean changeStatus = false;
 
         for (int i = 0; i < timeSlotDtos.size(); i++) {
             TimeSlotDto currentSlot = timeSlotDtos.get(i);
-            Date currentSlotStartTime = convertStringToDate(currentSlot.getStartTime());
-            System.out.println(currentSlotStartTime);
-        }
+            if (currentSlot.getStartTime().equals(startTime)) {
+                changeStatus = true;
+            }
 
+            if (changeStatus) {
+                currentSlot.setStatus(DayTimeSlot.ReservationStatus.PENDING);
+                timeSlotDtos.set(i, currentSlot);
+            }
+
+            if (currentSlot.getStartTime().equals(endTime)) {
+                break;
+            }
+        }
         dayTimeSlot.setTimeSlots(timeSlotDtos);
         dayTimeSlotRepository.save(dayTimeSlot);
     }
