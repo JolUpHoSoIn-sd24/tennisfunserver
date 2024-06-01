@@ -237,6 +237,9 @@ public class MatchServiceImpl implements MatchService {
 
         for (int i = 0; i < timeSlotDtos.size(); i++) {
             TimeSlotDto currentSlot = timeSlotDtos.get(i);
+            if (currentSlot.getStartTime().equals(endTime)) {
+                break;
+            }
             if (currentSlot.getStartTime().equals(startTime)) {
                 changeStatus = true;
             }
@@ -246,9 +249,6 @@ public class MatchServiceImpl implements MatchService {
                 timeSlotDtos.set(i, currentSlot);
             }
 
-            if (currentSlot.getStartTime().equals(endTime)) {
-                break;
-            }
         }
         dayTimeSlot.setTimeSlots(timeSlotDtos);
         dayTimeSlotRepository.save(dayTimeSlot);
