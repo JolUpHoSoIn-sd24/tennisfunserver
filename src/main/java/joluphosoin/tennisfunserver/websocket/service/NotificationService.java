@@ -12,6 +12,9 @@ public class NotificationService {
     private SimpMessagingTemplate messagingTemplate;
 
     public void sendMatchNotification(String userId, GameDetailsDto gameDetailsDto) {
-        messagingTemplate.convertAndSend("/sub/match/"+userId , gameDetailsDto);
+        messagingTemplate.convertAndSend("/game/create/"+userId , gameDetailsDto);
+    }
+    public void sendGameNotification(String userId, GameDetailsDto gameDetailsDto) {
+        messagingTemplate.convertAndSend("/game/paid/"+userId , gameDetailsDto);
     }
 }
