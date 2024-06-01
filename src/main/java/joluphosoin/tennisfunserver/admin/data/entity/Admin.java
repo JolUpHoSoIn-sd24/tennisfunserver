@@ -1,35 +1,33 @@
 package joluphosoin.tennisfunserver.admin.data.entity;
 
+import joluphosoin.tennisfunserver.admin.data.dto.RegistrationDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.data.geo.Point;
-import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
-import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
+import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
-
-import java.time.LocalDateTime;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Document(collection = "admin")
 @Getter
+@Setter
 @AllArgsConstructor
 @Builder
 public class Admin {
 
     @MongoId
-    private String id;
+    private String emailId;
+    private String password;
+    private boolean emailVerified;
 
-    private String businessNumber;
-    private String accountNumber;
+    public static Admin toEntity(RegistrationDto registrationDto,
+                                 PasswordEncoder passwordEncoder){
 
-    @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
-    private Point location;
-
-    private String description;
-    private String courtCount;
-    private int revenue;
-
-    private LocalDateTime openTime;
-    private LocalDateTime closeTime;
+        return Admin.builder()
+                .emailId(registrationDto.getEmail())
+                .password(passwordEncoder.encode(registrationDto.getPassword()))
+                .emailVerified(false)
+                .build();
+    }
 }
