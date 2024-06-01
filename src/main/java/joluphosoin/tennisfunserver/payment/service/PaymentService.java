@@ -1,11 +1,16 @@
 package joluphosoin.tennisfunserver.payment.service;
 
+import joluphosoin.tennisfunserver.game.data.dto.GameDetailsDto;
 import joluphosoin.tennisfunserver.game.data.entity.Game;
 import joluphosoin.tennisfunserver.game.repository.GameRepository;
+import joluphosoin.tennisfunserver.game.service.GameService;
+import joluphosoin.tennisfunserver.payload.code.status.ErrorStatus;
+import joluphosoin.tennisfunserver.payload.exception.GeneralException;
 import joluphosoin.tennisfunserver.payment.data.dto.PaymentVerificationRequestDto;
 import joluphosoin.tennisfunserver.payment.data.entity.PaymentInfo;
 import joluphosoin.tennisfunserver.payment.exception.PaymentServiceException;
 import joluphosoin.tennisfunserver.payment.repository.PaymentInfoRepository;
+import joluphosoin.tennisfunserver.websocket.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -18,10 +23,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +32,9 @@ public class PaymentService {
     private final WebClient webClient;
     private final GameRepository gameRepository;
     private final PaymentInfoRepository paymentInfoRepository;
+
+    private final NotificationService notificationService;
+    private final GameService gameService;
 
     @Value("${kakao.api.key}")
     private String kakaoApiKey;
@@ -117,7 +122,17 @@ public class PaymentService {
             paymentInfoRepository.save(paymentInfo);
 
             gameRepository.save(game);
-            //TODO: Send socket notification to all players in the game @김관주
+
+            GameDetailsDto gameDetailsDto = gameService.transformGameToDto(game);
+            List<String> playerIds = game.getPlayerIds();
+            String opponentId = playerIds.stream()
+                    .filter(id -> !id.equals(userId)) // userId와 다른 ID만 필터링
+                    .findAny().orElseThrow(()->new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+            notificationService.sendGameNotification(userId,gameDetailsDto);
+
+            notificationService.sendGameNotification(opponentId,gameDetailsDto);
+
 
             Map<String, Object> res = new HashMap<>();
             res.put("updatedGame", game);
