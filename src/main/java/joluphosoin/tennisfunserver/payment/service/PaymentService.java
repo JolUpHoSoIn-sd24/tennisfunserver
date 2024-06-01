@@ -1,5 +1,8 @@
 package joluphosoin.tennisfunserver.payment.service;
 
+import joluphosoin.tennisfunserver.business.data.dto.TimeSlotDto;
+import joluphosoin.tennisfunserver.business.data.entity.DayTimeSlot;
+import joluphosoin.tennisfunserver.business.repository.DayTimeSlotRepository;
 import joluphosoin.tennisfunserver.game.data.dto.GameDetailsDto;
 import joluphosoin.tennisfunserver.game.data.entity.Game;
 import joluphosoin.tennisfunserver.game.repository.GameRepository;
@@ -20,6 +23,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -35,6 +39,8 @@ public class PaymentService {
 
     private final NotificationService notificationService;
     private final GameService gameService;
+
+    private final DayTimeSlotRepository dayTimeSlotRepository;
 
     @Value("${kakao.api.key}")
     private String kakaoApiKey;
@@ -101,6 +107,10 @@ public class PaymentService {
 
             if (allPaid) {
                 game.setGameStatus(Game.GameStatus.INPLAY);
+
+                setTimeSlotToConfirmed(game);
+
+                notificationToClient(userId, game);
             }
 
             DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
@@ -123,15 +133,7 @@ public class PaymentService {
 
             gameRepository.save(game);
 
-            GameDetailsDto gameDetailsDto = gameService.transformGameToDto(game);
-            List<String> playerIds = game.getPlayerIds();
-            String opponentId = playerIds.stream()
-                    .filter(id -> !id.equals(userId)) // userId와 다른 ID만 필터링
-                    .findAny().orElseThrow(()->new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
-            notificationService.sendGameNotification(userId,gameDetailsDto);
-
-            notificationService.sendGameNotification(opponentId,gameDetailsDto);
 
 
             Map<String, Object> res = new HashMap<>();
@@ -140,5 +142,51 @@ public class PaymentService {
         } catch (WebClientResponseException e) {
             throw new PaymentServiceException("Failed to verify payment: " + e.getResponseBodyAsString(), e);
         }
+    }
+
+    private void notificationToClient(String userId, Game game) {
+        GameDetailsDto gameDetailsDto = gameService.transformGameToDto(game);
+        List<String> playerIds = game.getPlayerIds();
+        String opponentId = playerIds.stream()
+                .filter(id -> !id.equals(userId)) // userId와 다른 ID만 필터링
+                .findAny().orElseThrow(()->new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        notificationService.sendGameNotification(userId,gameDetailsDto);
+        notificationService.sendGameNotification(opponentId,gameDetailsDto);
+    }
+
+    private void setTimeSlotToConfirmed(Game game) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        DayTimeSlot dayTimeSlot = dayTimeSlotRepository.findByCourtIdAndDate(game.getCourtId(),
+                        dateFormat.format(game.getStartTime()))
+                .orElseThrow(() -> new GeneralException(ErrorStatus.TIMESLOT_NOT_FOUND));
+
+        List<TimeSlotDto> timeSlotDtos = dayTimeSlot.getTimeSlots();
+
+        String startTime = sdf.format(game.getStartTime());
+        String endTime = sdf.format(game.getEndTime());
+
+        boolean changeStatus = false;
+
+        for (int i = 0; i < timeSlotDtos.size(); i++) {
+            TimeSlotDto currentSlot = timeSlotDtos.get(i);
+            if (currentSlot.getStartTime().equals(endTime)) {
+                break;
+            }
+            if (currentSlot.getStartTime().equals(startTime)) {
+                changeStatus = true;
+            }
+
+            if (changeStatus) {
+                currentSlot.setStatus(DayTimeSlot.ReservationStatus.CONFIRMED);
+                timeSlotDtos.set(i, currentSlot);
+            }
+
+        }
+        dayTimeSlot.setTimeSlots(timeSlotDtos);
+        dayTimeSlotRepository.save(dayTimeSlot);
     }
 }
