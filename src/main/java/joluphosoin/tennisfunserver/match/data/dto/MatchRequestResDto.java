@@ -65,11 +65,11 @@ public class MatchRequestResDto {
     @Schema(example = "테니스 랠리 연습을 위한 매치 요청")
     private String description;
 
-    public static MatchRequestResDto toDto(MatchRequest matchRequest, String userId) {
+    public static MatchRequestResDto toDto(MatchRequest matchRequest) {
 
         MatchRequestResDto.MatchRequestResDtoBuilder builder = MatchRequestResDto.builder()
                 .id(matchRequest.getId())
-                .userId(userId)
+                .userId(matchRequest.getUserId())
                 .startTime(matchRequest.getStartTime())
                 .endTime(matchRequest.getEndTime())
                 .objective(matchRequest.getObjective())

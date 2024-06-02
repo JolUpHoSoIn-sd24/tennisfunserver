@@ -24,7 +24,13 @@ public enum SuccessStatus implements BaseCode {
 
     // 사업자 관련 응답
     BUSINESSINFO_CREATED(HttpStatus.CREATED, "BUSINESSINFO201", "사업자 정보가 성공적으로 제출되었습니다. 관리자의 승인을 기다려주세요."),
-    ACCOUNTINFO_CREATED(HttpStatus.CREATED, "ACCOUNTINFO201", "계좌 정보가 성공적으로 등록되었습니다.");
+    ACCOUNTINFO_CREATED(HttpStatus.CREATED, "ACCOUNTINFO201", "계좌 정보가 성공적으로 등록되었습니다."),
+
+    // 앱 관리자 관련 응답
+    USERS_RETRIEVED(HttpStatus.OK, "USERS_RETRIEVED200", "All users retrieved successfully"),
+    GAMES_RETRIEVED(HttpStatus.OK, "GAMES_RETRIEVED200", "All games retrieved successfully"),
+    MATCH_REQUESTS_RETRIEVED(HttpStatus.OK, "MATCH_REQUESTS_RETRIEVED200", "All users retrieved successfully"),
+    PAYMENTS_RETRIEVED(HttpStatus.OK, "PAYMENTS_RETRIEVED200", "All payment information retrieved successfully");
 
     private final HttpStatus httpStatus;
     private final String code;

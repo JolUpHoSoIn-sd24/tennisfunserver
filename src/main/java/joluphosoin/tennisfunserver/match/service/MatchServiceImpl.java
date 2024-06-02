@@ -48,7 +48,7 @@ public class MatchServiceImpl implements MatchService {
 
         MatchRequest matchRequest = matchRequestRepository.findByUserId(userId).orElseThrow(() -> new GeneralException(ErrorStatus.MATCHREQ_NOT_FOUND));
 
-        return MatchRequestResDto.toDto(matchRequest,userId);
+        return MatchRequestResDto.toDto(matchRequest);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class MatchServiceImpl implements MatchService {
 
         saveMatchRequestAndUser(matchRequest, user);
 
-        return MatchRequestResDto.toDto(matchRequest,userId);
+        return MatchRequestResDto.toDto(matchRequest);
     }
 
     private void saveMatchRequestAndUser(MatchRequest matchRequest, User user) {
@@ -102,7 +102,7 @@ public class MatchServiceImpl implements MatchService {
 
         saveMatchRequestAndUser(updateMatchRequest, user);
 
-        return MatchRequestResDto.toDto(matchRequest,userId);
+        return MatchRequestResDto.toDto(matchRequest);
     }
 
     @Override

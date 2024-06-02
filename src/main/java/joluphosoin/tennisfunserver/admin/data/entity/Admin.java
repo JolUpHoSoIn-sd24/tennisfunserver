@@ -1,6 +1,6 @@
 package joluphosoin.tennisfunserver.admin.data.entity;
 
-import joluphosoin.tennisfunserver.admin.data.dto.RegistrationDto;
+import joluphosoin.tennisfunserver.admin.data.dto.AdminRegistrationDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,17 +17,28 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class Admin {
 
     @MongoId
+    private String id;
+
     private String emailId;
+
     private String password;
+
     private boolean emailVerified;
 
-    public static Admin toEntity(RegistrationDto registrationDto,
+    public static Admin toEntity(AdminRegistrationDto adminRegistrationDto,
                                  PasswordEncoder passwordEncoder){
 
         return Admin.builder()
-                .emailId(registrationDto.getEmail())
-                .password(passwordEncoder.encode(registrationDto.getPassword()))
+                .emailId(adminRegistrationDto.getEmail())
+                .password(passwordEncoder.encode(adminRegistrationDto.getPassword()))
                 .emailVerified(false)
                 .build();
+    }
+
+    public Admin setEntity(AdminRegistrationDto adminRegistrationDto, PasswordEncoder passwordEncoder){
+        this.emailId = adminRegistrationDto.getEmail();
+        this.password = passwordEncoder.encode(adminRegistrationDto.getPassword());
+        this.emailVerified = false;
+        return this;
     }
 }

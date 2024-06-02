@@ -16,9 +16,10 @@ public class LoginCheckInterceptor implements HandlerInterceptor {
 
         String userId = (String) session.getAttribute("id");
         String businessId = (String) session.getAttribute("businessId");
+        String adminId = (String) session.getAttribute("adminId");
 
         // 2. 회원 정보 체크
-        if (userId == null && businessId == null) {
+        if (userId == null && businessId == null && adminId == null ) {
             response.sendRedirect("/auth/expired");
             return false;
         }

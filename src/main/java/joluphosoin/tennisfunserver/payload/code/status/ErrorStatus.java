@@ -53,7 +53,10 @@ public enum ErrorStatus implements BaseErrorCode {
     // FILE 응답
     INVALID_URL(HttpStatus.BAD_REQUEST,"FILE4000","URL형식이 올바르지 않습니다."),
 
-    WEBSOCKETID_NOT_FOUND(HttpStatus.NOT_FOUND,"SOCKET404","웹 소켓 아이디가 존재하지 않습니다");
+    // ADMIN 응답
+    ADMIN_NOT_FOUND(HttpStatus.NOT_FOUND, "ADMIN404", "해당 email을 가진 admin를 찾을 수 없습니다."),
+    MATCH_REQUESTS_RETRIEVED_FAILED(HttpStatus.BAD_REQUEST, "MATCH_REQUESTS_RETRIEVED400", "Failed to retrieve match requests");
+
 
 
     private final HttpStatus httpStatus;
