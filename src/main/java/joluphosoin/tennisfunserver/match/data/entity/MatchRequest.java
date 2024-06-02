@@ -50,8 +50,6 @@ public class MatchRequest {
 
     private Date reservationDate; // 예약 날짜
 
-    private Integer rentalCost; // 코트 대여 비용
-
     private String description; // 한줄 메시지
     
     @Getter
@@ -79,7 +77,6 @@ public class MatchRequest {
 
         if (Boolean.TRUE.equals(matchRequestDto.getIsReserved())) {
             builder.reservationDate(matchRequestDto.getReservationDate())
-                    .rentalCost(matchRequestDto.getRentalCost())
                     .reservationCourtId(matchRequestDto.getReservationCourtId());
         }
 
@@ -101,7 +98,6 @@ public class MatchRequest {
         if (Boolean.TRUE.equals(matchRequestDto.getIsReserved())) {
             this.reservationCourtId= matchRequestDto.getReservationCourtId();
             this.reservationDate = matchRequestDto.getReservationDate();
-            this.rentalCost = matchRequestDto.getRentalCost();
         }
         return this;
 

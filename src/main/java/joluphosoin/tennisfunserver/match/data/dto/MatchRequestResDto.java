@@ -59,9 +59,6 @@ public class MatchRequestResDto {
     @Schema(example = "2024-05-01")
     private Date reservationDate;
 
-    @Schema(example = "20000")
-    private Integer rentalCost;
-
     @Schema(example = "테니스 랠리 연습을 위한 매치 요청")
     private String description;
 
@@ -85,7 +82,6 @@ public class MatchRequestResDto {
 
         if (Boolean.TRUE.equals(matchRequest.getIsReserved())) {
             builder.reservationDate(matchRequest.getReservationDate())
-                    .rentalCost(matchRequest.getRentalCost())
                     .reservationCourtId(matchRequest.getReservationCourtId());
         }
         return builder.build();
