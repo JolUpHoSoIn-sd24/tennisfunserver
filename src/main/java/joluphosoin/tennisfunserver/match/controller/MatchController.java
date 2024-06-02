@@ -55,7 +55,7 @@ public class MatchController {
     @PostMapping("/results/{matchResultId}/feedback")
     public ApiResult<String> registerFeedback(@PathVariable String matchResultId,
                                               @RequestBody @Valid FeedbackReqDto feedbackReqDto,
-                                              @SessionAttribute("id") String userId
+                                              @SessionAttribute("id") @Parameter(hidden = true) String userId
     ) throws IOException, ParseException {
         matchService.registerFeedback(matchResultId,feedbackReqDto,userId);
         return ApiResult.onSuccess("Feedback submitted successfully.");
