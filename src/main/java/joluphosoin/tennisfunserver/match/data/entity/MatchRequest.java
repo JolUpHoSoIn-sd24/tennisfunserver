@@ -56,7 +56,6 @@ public class MatchRequest {
     public enum MatchObjective {
         INTENSE, // 진지하게
         FUN, // 부담없이
-        ANY // 무관심
     }
     public static MatchRequest toEntity(MatchRequestDto matchRequestDto, User user){
 
