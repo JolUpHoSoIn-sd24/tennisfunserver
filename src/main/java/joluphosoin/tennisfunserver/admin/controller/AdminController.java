@@ -21,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/admin", produces = "application/json; charset=utf-8")
+@RequestMapping(value = "/api/admin")
 public class AdminController {
 
     private final AdminService adminService;
@@ -39,23 +39,23 @@ public class AdminController {
         return ApiResult.onSuccess(SuccessStatus.LOGIN_OK, AdminResDto.toDto(admin));
     }
 
-    @GetMapping("/users")
+    @GetMapping(value = "/users", produces = "application/json; charset=utf-8")
     public ApiResult<List<UserResDto>> getAllUsers() {
         return ApiResult.onSuccess(SuccessStatus.USERS_RETRIEVED,adminService.getAllUsers());
     }
 
-    @GetMapping("/games")
+    @GetMapping(value = "/games", produces = "application/json; charset=utf-8")
     public ApiResult<List<GameDetailsDto>> getAllGames() {
         return ApiResult.onSuccess(SuccessStatus.GAMES_RETRIEVED, adminService.getAllGames());
     }
 
-    @GetMapping("/match-requests")
+    @GetMapping(value = "/match-requests", produces = "application/json; charset=utf-8")
     public ApiResult<List<MatchRequestResDto>> getAllMatchRequests() {
         return ApiResult.onSuccess(SuccessStatus.MATCH_REQUESTS_RETRIEVED,
                 adminService.getAllMatchRequests());
     }
 
-    @GetMapping("/payments")
+    @GetMapping(value = "/payments", produces = "application/json; charset=utf-8")
     public ApiResult<List<PaymentInfo>> getAllPayments() {
         return ApiResult.onSuccess(SuccessStatus.PAYMENTS_RETRIEVED, adminService.getAllPayments());
     }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/business/courts", produces = "application/json; charset=utf-8")
+@RequestMapping(value = "/api/business/courts")
 public class CourtBusinessController {
     private final CourtBusinessService courtBusinessService;
 

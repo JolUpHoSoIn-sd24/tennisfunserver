@@ -17,12 +17,12 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/payment",produces = "application/json; charset=utf-8")
+@RequestMapping(value = "/api/payment")
 public class PaymentController {
     private final PaymentService paymentService;
     private final GameRepository gameRepository;
 
-    @GetMapping("")
+    @GetMapping(value = "", produces = "application/json; charset=utf-8")
     public ResponseEntity<ApiResponse> getPayment(HttpSession session) {
         String userId = (String) session.getAttribute("id");
         if (userId == null) {

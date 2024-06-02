@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/api/user",produces = "application/json; charset=utf-8")
+@RequestMapping(value = "/api/user")
 public class UserController {
 
     private final UserService userService;
@@ -90,7 +90,7 @@ public class UserController {
             );
         }
     }
-    @GetMapping("")
+    @GetMapping(value = "", produces = "application/json; charset=utf-8")
     public ApiResult<UserResDto> getUserInfo(@SessionAttribute("id")String userId){
         return ApiResult.onSuccess(userService.getUserInfo(userId));
     }
