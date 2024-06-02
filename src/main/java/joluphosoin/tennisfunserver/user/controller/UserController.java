@@ -21,12 +21,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/user")
+@RequestMapping(value = "/api/user",produces = "application/json; charset=utf-8")
 public class UserController {
 
     private final UserService userService;
 
-    @PostMapping(value = "/register", produces = "application/json")
+    @PostMapping(value = "/register")
     public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody RegistrationDto registrationDto) {
         try {
             userService.registerUser(registrationDto);
@@ -44,7 +44,7 @@ public class UserController {
         }
     }
 
-    @PostMapping(value = "/login", produces = "application/json")
+    @PostMapping(value = "/login")
     public ApiResult<UserResDto> loginUser(@Valid @RequestBody LoginDto loginDto, HttpSession session) {
         User user = userService.loginUser(loginDto.getEmail(), loginDto.getPassword());
         session.setAttribute("id", user.getId());

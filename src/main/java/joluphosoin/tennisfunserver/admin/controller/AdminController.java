@@ -21,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin")
+@RequestMapping(value = "/api/admin", produces = "application/json; charset=utf-8")
 public class AdminController {
 
     private final AdminService adminService;

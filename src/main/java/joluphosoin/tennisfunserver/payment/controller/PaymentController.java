@@ -17,12 +17,12 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/payment")
+@RequestMapping(value = "/api/payment",produces = "application/json; charset=utf-8")
 public class PaymentController {
     private final PaymentService paymentService;
     private final GameRepository gameRepository;
 
-    @GetMapping(value = "", produces = "application/json")
+    @GetMapping("")
     public ResponseEntity<ApiResponse> getPayment(HttpSession session) {
         String userId = (String) session.getAttribute("id");
         if (userId == null) {
@@ -50,7 +50,7 @@ public class PaymentController {
         }
     }
 
-    @PostMapping(value = "/verify", produces = "application/json")
+    @PostMapping( "/verify")
     public ResponseEntity<ApiResponse> verifyPayment(HttpSession session, @RequestBody PaymentVerificationRequestDto requestDto) {
         String userId = (String) session.getAttribute("id");
         if (userId == null) {

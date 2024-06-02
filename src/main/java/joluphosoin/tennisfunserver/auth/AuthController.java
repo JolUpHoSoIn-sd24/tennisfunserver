@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping(value = "/auth", produces = "application/json; charset=utf-8")
 public class AuthController {
     @GetMapping("/expired")
     public void expired() {

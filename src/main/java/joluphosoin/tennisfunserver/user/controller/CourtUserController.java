@@ -14,7 +14,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/user/courts")
+@RequestMapping(value = "/api/user/courts",produces = "application/json; charset=utf-8")
 public class CourtUserController {
 
     private final CourtUserService courtUserService;

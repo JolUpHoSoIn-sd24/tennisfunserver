@@ -53,6 +53,9 @@ public enum ErrorStatus implements BaseErrorCode {
     // FILE 응답
     INVALID_URL(HttpStatus.BAD_REQUEST,"FILE4000","URL형식이 올바르지 않습니다."),
 
+    // GAME 응답
+    GAME_HISTORY_NO_CONTENT(HttpStatus.NO_CONTENT, "GAME204" , "참여중인 게임이 없습니다"),
+
     // ADMIN 응답
     ADMIN_NOT_FOUND(HttpStatus.NOT_FOUND, "ADMIN404", "해당 email을 가진 admin를 찾을 수 없습니다."),
     MATCH_REQUESTS_RETRIEVED_FAILED(HttpStatus.BAD_REQUEST, "MATCH_REQUESTS_RETRIEVED400", "Failed to retrieve match requests");

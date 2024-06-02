@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/match")
+@RequestMapping(value = "/api/match",produces = "application/json; charset=utf-8")
 public class MatchController {
 
     private final MatchService matchService;

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/business")
+@RequestMapping(value = "/api/business", produces = "application/json; charset=utf-8")
 public class BusinessController {
 
     private final BusinessService businessService;

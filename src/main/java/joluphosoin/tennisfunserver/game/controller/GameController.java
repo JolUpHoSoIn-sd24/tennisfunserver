@@ -1,6 +1,7 @@
 package joluphosoin.tennisfunserver.game.controller;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import joluphosoin.tennisfunserver.game.data.dto.GameCreationDto;
 import joluphosoin.tennisfunserver.game.data.dto.GameDetailsDto;
 import joluphosoin.tennisfunserver.game.data.entity.Game;
@@ -13,20 +14,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/game")
+@RequestMapping(value = "/api/game", produces = "application/json; charset=utf-8")
 public class GameController {
 
     private final GameService gameService;
     private final GameRepository gameRepository;
 
-    @PostMapping(value = "", produces = "application/json")
+    @PostMapping(value = "")
     public ResponseEntity<ApiResponse> createGame(@Valid @RequestBody GameCreationDto gameDto) {
         try {
             gameService.createGame(gameDto);
@@ -44,7 +44,7 @@ public class GameController {
         }
     }
 
-    @DeleteMapping(value = "", produces = "application/json")
+    @DeleteMapping(value = "")
     public ResponseEntity<ApiResponse> deleteGames(HttpSession session) {
         String userId = (String) session.getAttribute("id");
         if (userId == null) {
@@ -63,7 +63,7 @@ public class GameController {
         }
     }
 
-    @GetMapping(value = "", produces = "application/json; charset=utf-8")
+    @GetMapping(value = "")
     public ResponseEntity<ApiResponse> getGameDetails(HttpSession session) {
         String userId = (String) session.getAttribute("id");
         if (userId == null) {
@@ -101,4 +101,9 @@ public class GameController {
             );
         }
     }
+//
+//    @GetMapping("/history")
+//    public ApiResult<?> getGameHistory(@SessionAttribute("id") String userId){
+//        return ApiResult.onSuccess(gameService.getGameHistory(userId));
+//    }
 }
