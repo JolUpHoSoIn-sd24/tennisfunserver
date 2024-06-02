@@ -29,9 +29,11 @@ public class MatchRequestDto {
     private Boolean isSingles;
 
     @Schema(example = "126.887847771379")
+    @NotNull
     private Double x;
 
     @Schema(example = "37.5204279064529")
+    @NotNull
     private Double y;
 
     @Schema(example = "4.5")
@@ -41,11 +43,9 @@ public class MatchRequestDto {
     private List<String> dislikedCourts;
 
     @Schema(example ="30")
-    @NotNull
     private Integer minTime;
 
     @Schema(example ="120")
-    @NotNull
     private Integer maxTime;
 
     @Schema(example = "false")
