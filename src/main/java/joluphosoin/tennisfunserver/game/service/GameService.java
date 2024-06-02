@@ -6,6 +6,8 @@ import joluphosoin.tennisfunserver.game.data.entity.Game;
 import joluphosoin.tennisfunserver.game.exception.CreateGameException;
 import joluphosoin.tennisfunserver.game.exception.GetGameException;
 import joluphosoin.tennisfunserver.game.repository.GameRepository;
+import joluphosoin.tennisfunserver.payload.code.status.ErrorStatus;
+import joluphosoin.tennisfunserver.payload.exception.GeneralException;
 import joluphosoin.tennisfunserver.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -110,4 +112,22 @@ public class GameService {
                 dto.getComments()
         )).toList();
     }
+
+    public List<HistoryResDto> getGameHistory(String userId) {
+        List<Game> games = gameRepository.findByUserIdContainingPlayerIds(userId)
+                .orElseThrow(() -> new GeneralException(ErrorStatus.GAME_HISTORY_NO_CONTENT));
+
+        return games.stream()
+                .map(game -> {
+                    String opponentId = game.getPlayerIds().stream()
+                            .filter(playerId -> !playerId.equals(userId))
+                            .findFirst()
+                            .orElse(null);
+                    return HistoryResDto.toDto(game, userService.getUserInfo(opponentId));
+                })
+                .toList();
+    }
+
+
+
 }

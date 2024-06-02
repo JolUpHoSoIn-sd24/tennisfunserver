@@ -34,6 +34,10 @@ public class Game {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
     private Date endTime;
 
+    // 새로 추가된 게임 생성 일시 필드
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "UTC")
+    private Date creationTime;
+
     private String chatRoomId;
 
     private Double rentalCost;
@@ -103,6 +107,7 @@ public class Game {
                 .scoreConfirmed(false)
                 .paymentStatus(paymentStatusMap)
                 .gameStatus(Game.GameStatus.PREGAME)
+                .creationTime(new Date())
                 .build();
     }
 
