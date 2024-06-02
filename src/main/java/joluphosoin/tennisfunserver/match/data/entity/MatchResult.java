@@ -45,7 +45,8 @@ public class MatchResult {
         @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
         private Point location;
         private String courtId;
-        private String courtType; // 코트 타입
-
+        private String courtType;
+        private MatchRequest.MatchObjective objective;
+        private boolean isSingles;
     }
 }
