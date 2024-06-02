@@ -21,28 +21,31 @@ public class CourtReqDto {
     @Min(-90)
     @Max(90)
     @NotNull
-    @Schema(example = "37.5204279064529")
+    @Schema(example = "37.2840931")
     private Double latitude;
 
     @Min(-180)
     @Max(180)
     @NotNull
-    @Schema(example = "126.887847771379")
+    @Schema(example = "127.0453753")
     private Double longitude;
 
     private String description;
 
     @NotBlank
+    @Schema(example = "665b1cc00b8df7460a248bf0")
     private String ownerId;
 
     @NotNull
     private Court.CourtType courtType;
 
     @NotBlank
+    @Schema(example = "수원시 아주대학교 1코트")
     private String courtName;
 
     private List<CourtHoursDto> businessHours;
 
+    @Schema(example = "7000")
     private Double rentalCostPerHalfHour;
 
     public Court toEntity(){
