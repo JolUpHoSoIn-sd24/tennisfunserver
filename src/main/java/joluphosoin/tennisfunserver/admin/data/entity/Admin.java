@@ -1,6 +1,7 @@
 package joluphosoin.tennisfunserver.admin.data.entity;
 
 import joluphosoin.tennisfunserver.admin.data.dto.AdminRegistrationDto;
+import joluphosoin.tennisfunserver.admin.data.dto.RegistrationDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,7 +26,7 @@ public class Admin {
 
     private boolean emailVerified;
 
-    public static Admin toEntity(AdminRegistrationDto adminRegistrationDto,
+    public static Admin toEntity(RegistrationDto adminRegistrationDto,
                                  PasswordEncoder passwordEncoder){
 
         return Admin.builder()
@@ -35,7 +36,7 @@ public class Admin {
                 .build();
     }
 
-    public Admin setEntity(AdminRegistrationDto adminRegistrationDto, PasswordEncoder passwordEncoder){
+    public Admin setEntity(RegistrationDto adminRegistrationDto, PasswordEncoder passwordEncoder){
         this.emailId = adminRegistrationDto.getEmail();
         this.password = passwordEncoder.encode(adminRegistrationDto.getPassword());
         this.emailVerified = false;
