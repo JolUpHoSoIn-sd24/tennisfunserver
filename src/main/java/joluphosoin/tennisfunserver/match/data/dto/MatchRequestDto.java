@@ -29,11 +29,11 @@ public class MatchRequestDto {
     private Boolean isSingles;
 
     @Schema(example = "126.887847771379")
-    @NotNull
+//    @NotNull
     private Double x;
 
     @Schema(example = "37.5204279064529")
-    @NotNull
+//    @NotNull
     private Double y;
 
     @Schema(example = "4.5")

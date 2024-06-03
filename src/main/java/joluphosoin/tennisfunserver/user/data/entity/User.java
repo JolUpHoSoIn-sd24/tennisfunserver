@@ -75,6 +75,7 @@ public class User {
                 .gender(registrationDto.getGender())
                 .emailVerificationToken(UUID.randomUUID().toString())
                 .emailVerified(false)
+                .location(new Point(127.0463409,37.2820187))
                 .mannerScore(36.5)
                 .maxDistance(4.5)
                 .build();
@@ -96,6 +97,7 @@ public class User {
         this.gender = registrationDto.getGender();
         this.emailVerificationToken = UUID.randomUUID().toString();
         this.emailVerified = false;
+        this.location = new Point(127.0463409, 37.2820187);
         return this;
     }
     public User updateMatchInfo(MatchRequest matchRequest){
