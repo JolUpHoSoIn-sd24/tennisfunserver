@@ -23,7 +23,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/api-docs/**",
                         "/v3/api-docs/**",
                         "/api/business/register",
-                        "/api/business/login,",
+                        "/api/business/login",
                         "/success.html",
                         "/fail.html",
                         "/cancel.html",
