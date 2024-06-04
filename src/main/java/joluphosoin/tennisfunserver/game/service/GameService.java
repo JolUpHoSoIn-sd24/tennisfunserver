@@ -61,6 +61,7 @@ public class GameService {
         dto.setCourt(courtBusinessService.getCourtDetails(game.getCourtId()));
         dto.setStartTime(game.getStartTime());
         dto.setEndTime(game.getEndTime());
+        dto.setPaymentStatus(game.getPaymentStatus());
         if(game.getChatRoomId()!=null){
             dto.setChatRoomId(game.getChatRoomId());
         }
@@ -128,6 +129,9 @@ public class GameService {
                 .toList();
     }
 
-
+//    public Game getCurrentGame(String userId) {
+////        gameRepository.findByGameStatusAndUserIdContainingPlayerIds();
+//        return null;
+//    }
 
 }
