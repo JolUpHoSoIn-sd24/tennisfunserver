@@ -11,8 +11,10 @@ import joluphosoin.tennisfunserver.payload.code.status.ErrorStatus;
 import joluphosoin.tennisfunserver.payload.exception.GeneralException;
 import joluphosoin.tennisfunserver.payment.data.dto.PaymentVerificationRequestDto;
 import joluphosoin.tennisfunserver.payment.data.entity.PaymentInfo;
+import joluphosoin.tennisfunserver.payment.data.entity.TempPayment;
 import joluphosoin.tennisfunserver.payment.exception.PaymentServiceException;
 import joluphosoin.tennisfunserver.payment.repository.PaymentInfoRepository;
+import joluphosoin.tennisfunserver.payment.repository.TempPaymentRepository;
 import joluphosoin.tennisfunserver.websocket.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,13 +44,15 @@ public class PaymentService {
 
     private final DayTimeSlotRepository dayTimeSlotRepository;
 
+    private final TempPaymentRepository tempPaymentRepository;
+
     @Value("${kakao.api.key}")
     private String kakaoApiKey;
 
     @Value("${app.base-url}")
     private String baseUrl;
 
-    public Map<String, Object> getPaymentInfo(Game game) {
+    public Map<String, Object> getPaymentInfo(Game game, String userId) {
         int amount = (int) Math.round(game.getRentalCost());
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
         requestBody.add("cid", "TC0ONETIME");
@@ -59,31 +63,45 @@ public class PaymentService {
         requestBody.add("total_amount", Integer.toString(amount));
         requestBody.add("vat_amount", "0");
         requestBody.add("tax_free_amount", "0");
-        requestBody.add("approval_url", baseUrl+"/success.html");
-        requestBody.add("fail_url", baseUrl+ "/fail.html");
-        requestBody.add("cancel_url", baseUrl+"/cancel.html");
+        requestBody.add("approval_url", baseUrl+"/api/payment/verify/" + userId + "/success");
+        requestBody.add("fail_url", baseUrl+ "/api/payment/verify/" + userId + "/fail");
+        requestBody.add("cancel_url", baseUrl+"/api/payment/verify/" + userId + "/cancel");
 
         try {
-            return webClient.post()
+            Map<String, Object> res = webClient.post()
                     .uri("https://kapi.kakao.com/v1/payment/ready")
                     .header("Authorization", "KakaoAK " + kakaoApiKey)
                     .header("Content-Type", "application/x-www-form-urlencoded")
                     .bodyValue(requestBody)
                     .retrieve()
-                    .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                    .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {
+                    })
                     .block();
+            Optional<TempPayment> existingPayment = tempPaymentRepository.findByUserId(userId);
+            TempPayment tempPayment = existingPayment.orElseGet(() -> TempPayment.builder()
+                    .game(game)
+                    .userId(userId)
+                    .build());
+
+            tempPayment.setTransactionId((String) res.get("tid"));
+            tempPayment.setStatus(TempPayment.PaymentStatus.PENDING);
+            tempPaymentRepository.save(tempPayment);
+
+            return res;
         } catch (WebClientResponseException e) {
             throw new PaymentServiceException("Failed to get payment info: " + e.getResponseBodyAsString(), e);
         }
     }
 
-    public Map<String, Object> verifyPayment(String userId, PaymentVerificationRequestDto requestDto) {
+    public Map<String, Object> verifyPayment(String userId, String pg_token) {
+        TempPayment tempPayment = tempPaymentRepository.findByUserId(userId)
+                .orElseThrow(() -> new PaymentServiceException("No payment found for user: " + userId));
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
         requestBody.add("cid", "TC0ONETIME");
-        requestBody.add("tid", requestDto.getTid());
+        requestBody.add("tid", tempPayment.getTransactionId());
         requestBody.add("partner_order_id", "partner_order_id");
         requestBody.add("partner_user_id", "partner_user_id");
-        requestBody.add("pg_token", requestDto.getPgToken());
+        requestBody.add("pg_token", pg_token);
 
         try {
             Map<String, Object> response = webClient.post()

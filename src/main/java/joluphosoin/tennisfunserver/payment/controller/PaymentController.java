@@ -5,6 +5,7 @@ import joluphosoin.tennisfunserver.game.data.entity.Game;
 import joluphosoin.tennisfunserver.game.repository.GameRepository;
 import joluphosoin.tennisfunserver.payment.data.dto.PaymentVerificationRequestDto;
 import joluphosoin.tennisfunserver.payment.exception.PaymentServiceException;
+import joluphosoin.tennisfunserver.payment.repository.TempPaymentRepository;
 import joluphosoin.tennisfunserver.payment.service.PaymentService;
 import joluphosoin.tennisfunserver.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,7 @@ public class PaymentController {
         Game selectedGame = games.iterator().next();
 
         try {
-            Map<String, Object> paymentInfo = paymentService.getPaymentInfo(selectedGame);
+            Map<String, Object> paymentInfo = paymentService.getPaymentInfo(selectedGame, userId);
             return ResponseEntity.ok(new ApiResponse(true, "PAY200", "Payment information retrieved successfully.", paymentInfo));
         } catch (PaymentServiceException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
@@ -50,18 +51,11 @@ public class PaymentController {
         }
     }
 
-    @PostMapping( "/verify")
-    public ResponseEntity<ApiResponse> verifyPayment(HttpSession session, @RequestBody PaymentVerificationRequestDto requestDto) {
-        String userId = (String) session.getAttribute("id");
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                    new ApiResponse(false, "AUTH001", "User is not logged in", null)
-            );
-        }
-
+    @GetMapping( "/verify/{userId}/success")
+    public ResponseEntity<ApiResponse> verifyPayment(@PathVariable String userId, @RequestParam String pg_token) {
         try {
-            Map<String, Object> verificationResult = paymentService.verifyPayment(userId, requestDto);
-            return ResponseEntity.ok(new ApiResponse(true, "VERIFY200", "Payment verified successfully.", verificationResult));
+            Map<String, Object> paymentInfo = paymentService.verifyPayment(userId, pg_token);
+            return ResponseEntity.ok(new ApiResponse(true, "PAY200", "Payment information retrieved successfully.", paymentInfo));
         } catch (PaymentServiceException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                     new ApiResponse(false, "INTERNAL_SERVER_ERROR", e.getMessage(), null)

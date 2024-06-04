@@ -27,7 +27,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         "/success.html",
                         "/fail.html",
                         "/cancel.html",
-                        "/api/admin/**");
+                        "/api/admin/**",
+                        "/api/payment/**");
     }
 
     @Override
