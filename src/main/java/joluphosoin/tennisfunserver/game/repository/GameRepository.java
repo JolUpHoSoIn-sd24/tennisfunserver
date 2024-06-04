@@ -20,4 +20,8 @@ public interface GameRepository extends MongoRepository<Game,String> {
     @Query("{ 'playerIds': ?0 }")
     Optional<List<Game>> findByUserIdContainingPlayerIds(String userId);
 
+    @Query(value = "{ 'status': ?0, 'playerIds': ?0 }")
+    Game findByGameStatusAndUserIdContainingPlayerIds(Game.GameStatus status, String userId);
+
+    Optional<List<Game>> findAllByCourtId(String courtId);
 }

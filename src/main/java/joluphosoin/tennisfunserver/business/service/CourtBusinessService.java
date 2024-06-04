@@ -1,14 +1,19 @@
 package joluphosoin.tennisfunserver.business.service;
 
 import joluphosoin.tennisfunserver.business.data.dto.*;
+import joluphosoin.tennisfunserver.business.data.entity.Business;
 import joluphosoin.tennisfunserver.business.data.entity.Court;
 import joluphosoin.tennisfunserver.business.data.entity.DayTimeSlot;
 import joluphosoin.tennisfunserver.business.repository.BusinessRepository;
 import joluphosoin.tennisfunserver.business.repository.CourtRepository;
 import joluphosoin.tennisfunserver.business.repository.DayTimeSlotRepository;
 import joluphosoin.tennisfunserver.game.data.dto.GameDetailsDto;
+import joluphosoin.tennisfunserver.game.data.entity.Game;
+import joluphosoin.tennisfunserver.game.repository.GameRepository;
 import joluphosoin.tennisfunserver.payload.code.status.ErrorStatus;
 import joluphosoin.tennisfunserver.payload.exception.GeneralException;
+import joluphosoin.tennisfunserver.user.data.entity.User;
+import joluphosoin.tennisfunserver.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +29,8 @@ public class CourtBusinessService {
     private final BusinessRepository businessRepository;
     private final CourtRepository courtRepository;
     private final DayTimeSlotRepository dayTimeSlotRepository;
-
+    private final GameRepository gameRepository;
+    private final UserRepository userRepository;
     @Transactional
     public CourtResDto registerCourt(CourtReqDto courtReqDto) {
 
@@ -162,15 +168,26 @@ public class CourtBusinessService {
         return CourtResDto.toDTO(court);
     }
 
+    public List<SimpleCourtResDto> getPendingReservationCourts(String businessId) {
+        List<Court> courts = courtRepository.findAllByOwnerId(businessId).orElseThrow(() -> new GeneralException(ErrorStatus.COURT_NOT_FOUND));
 
-//    public SimpleCourtResDto getReservationCourts(String courtId) {
-//
-//        List<TimeSlot> timeSlots = timeSlotRepository.findAllByCourtIdAndStatus(courtId, TimeSlot.ReservationStatus.CONFIRMED)
-//                .orElseThrow(()->new GeneralException(ErrorStatus.TIMESLOT_NOT_FOUND));
-//
-//        return SimpleCourtResDto.toDto(courtId, timeSlots);
-//    }
-//
+        List<SimpleCourtResDto> simpleCourtResDtos = new ArrayList<>();
+
+        courts.forEach(court -> {
+            List<Game> games = gameRepository.findAllByCourtId(court.getId()).orElseThrow(() -> new RuntimeException("game not found"));
+            games.forEach(game -> {
+                List<String> playerIds = game.getPlayerIds();
+                List<String> userNames = new ArrayList<>();
+                playerIds.forEach(playerId->{
+                    User user = userRepository.findById(playerId).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+                    userNames.add(user.getName());
+                });
+                simpleCourtResDtos.add(SimpleCourtResDto.toDto(court.getCourtName(),SimpleCustomerDto.toDto(game,userNames)));
+            });
+        });
+        return simpleCourtResDtos;
+    }
+
 //    public SimpleCourtResDto getPendingReservationCourts(String courtId) {
 //
 //        List<TimeSlot> timeSlots = timeSlotRepository.findAllByCourtIdAndStatus(courtId, TimeSlot.ReservationStatus.PENDING)

@@ -4,12 +4,15 @@ import jakarta.validation.Valid;
 import joluphosoin.tennisfunserver.business.data.dto.AutoMatchApplyDto;
 import joluphosoin.tennisfunserver.business.data.dto.CourtReqDto;
 import joluphosoin.tennisfunserver.business.data.dto.CourtResDto;
+import joluphosoin.tennisfunserver.business.data.dto.SimpleCourtResDto;
 import joluphosoin.tennisfunserver.business.service.CourtBusinessService;
 import joluphosoin.tennisfunserver.payload.ApiResult;
 import joluphosoin.tennisfunserver.payload.code.status.SuccessStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,10 +43,10 @@ public class CourtBusinessController {
         courtBusinessService.applyAutoMatching(autoMatchApplyDto);
         return ApiResult.onSuccess("코트 예약 자동 매칭이 성공적으로 신청되었습니다.");
     }
-//    @GetMapping("/reservations")
-//    public ApiResult<SimpleCourtResDto> getReservationCourts(@RequestParam @Valid String courtId){
-//        return ApiResult.onSuccess(courtService.getReservationCourts(courtId));
-//    }
+    @GetMapping(value = "/reservations",produces ="application/json; charset=utf-8")
+    public ApiResult<List<SimpleCourtResDto>> getPendingReservationCourts(@SessionAttribute String businessId){
+        return ApiResult.onSuccess(courtBusinessService.getPendingReservationCourts(businessId));
+    }
 //    @GetMapping("/reservations/pending")
 //    public ApiResult<SimpleCourtResDto> getPendingReservationCourts(@RequestParam @Valid String courtId){
 //        return ApiResult.onSuccess(courtService.getPendingReservationCourts(courtId));
