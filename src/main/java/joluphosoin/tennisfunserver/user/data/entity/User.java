@@ -58,9 +58,6 @@ public class User {
 
     private String emailVerificationToken;
 
-    @Setter
-    private String webSocketId;
-
     public static User toEntity(RegistrationDto registrationDto,
                                 PasswordEncoder passwordEncoder){
 

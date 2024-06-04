@@ -150,23 +150,13 @@ public class UserService {
 
     public UserResDto getUserInfo(String userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
-
         return UserResDto.toDto(user);
-
     }
 
-    public boolean registerWebSocketId(String userId, String webSocketId){
-        User user = userRepository.findById(userId).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
-        user.setWebSocketId(webSocketId);
-        userRepository.save(user);
-        return true;
-    }
+//    public MyPageDto getUserPage(String userId) {
+//        User user = userRepository.findById(userId).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+//        return MyPageDto.toDto(user.getName(),null);
+//    }
 
-    public String deleteWebSocketId(String webSocketId){
-        User user = userRepository.findByWebSocketId(webSocketId).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
-        user.setWebSocketId(webSocketId);
-        userRepository.save(user);
-        return user.getId();
-    }
 
 }

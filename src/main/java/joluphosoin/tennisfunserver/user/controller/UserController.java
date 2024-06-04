@@ -5,10 +5,7 @@ import jakarta.validation.Valid;
 import joluphosoin.tennisfunserver.payload.ApiResult;
 import joluphosoin.tennisfunserver.payload.code.status.SuccessStatus;
 import joluphosoin.tennisfunserver.response.ApiResponse;
-import joluphosoin.tennisfunserver.user.data.dto.LocationUpdateDto;
-import joluphosoin.tennisfunserver.user.data.dto.LoginDto;
-import joluphosoin.tennisfunserver.user.data.dto.RegistrationDto;
-import joluphosoin.tennisfunserver.user.data.dto.UserResDto;
+import joluphosoin.tennisfunserver.user.data.dto.*;
 import joluphosoin.tennisfunserver.user.data.entity.User;
 import joluphosoin.tennisfunserver.user.exception.EmailVerificationException;
 import joluphosoin.tennisfunserver.user.exception.UserRegistrationException;
@@ -94,4 +91,8 @@ public class UserController {
     public ApiResult<UserResDto> getUserInfo(@SessionAttribute("id")String userId){
         return ApiResult.onSuccess(userService.getUserInfo(userId));
     }
+//    @GetMapping(value = "/me", produces = "application/json; charset=utf-8")
+//    public ApiResult<MyPageDto> getUserPage(@SessionAttribute("id")String userId){
+//        return ApiResult.onSuccess(userService.getUserPage(userId));
+//    }
 }
