@@ -25,7 +25,7 @@ public class BusinessController {
 
     private final BusinessService businessService;
 
-    @GetMapping("")
+    @GetMapping(value = "",produces = "application/json; charset=utf-8")
     public ApiResult<SimpleBusinessResDto> getBusinessInfo(@SessionAttribute String businessId){
         return ApiResult.onSuccess(businessService.getBusinessInfo(businessId));
     }
