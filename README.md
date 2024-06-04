@@ -62,7 +62,7 @@ AI, 프론트엔드, 백엔드 레포지토리를 아래 링크에서 확인하�
 |이름|역할| email              |github|
 |---|---|--------------------|---|
 |김관주|백엔드 개발| kkj6235@gmail.com  |https://github.com/kkj6235|
-|한승훈|백엔드 개발| dev.shhan@gmail.com |https://github.com/shhan730|
+|한승훈|백엔드 개발| hsh1223@ajou.ac.kr |https://github.com/shhan730|
 
 
 <br/>
