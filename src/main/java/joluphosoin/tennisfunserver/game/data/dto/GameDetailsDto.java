@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -17,7 +18,7 @@ public class GameDetailsDto {
     private Date endTime;
     private String chatRoomId;
     private Double rentalCost;
-
+    private Map<String, Boolean> paymentStatus;
     @Getter
     @Setter
     public static class PlayerDetail {

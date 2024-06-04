@@ -89,7 +89,7 @@ public class GameController {
             result.put("startTime", gameDetails.getStartTime());
             result.put("endTime", gameDetails.getEndTime());
             result.put("rentalCost", gameDetails.getRentalCost());
-
+            result.put("paymentStatus", gameDetails.getPaymentStatus());
             if(gameDetails.getChatRoomId()!=null){
                 result.put("chatRoomId", gameDetails.getChatRoomId());
             }
