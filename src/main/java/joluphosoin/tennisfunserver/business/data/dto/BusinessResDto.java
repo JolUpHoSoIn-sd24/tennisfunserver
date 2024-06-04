@@ -49,6 +49,9 @@ public class BusinessResDto {
     @Schema(example = "{\"x\": 127.07134, \"y\": 37.251521}")
     private Point location;
 
+    @Schema(example = "")
+    private String address;
+
     public static BusinessResDto toDto(Business business){
         BusinessResDtoBuilder businessInfoResDtoBuilder = BusinessResDto.builder()
                 .id(business.getId())
@@ -60,7 +63,8 @@ public class BusinessResDto {
                 .name(business.getName())
                 .birthDate(business.getBirthDate())
                 .shopName(business.getShopName())
-                .location(business.getLocation());
+                .location(business.getLocation())
+                .address(business.getAddress());
 
         if (business.getDocumentUrls() != null) {
             businessInfoResDtoBuilder.documentUrls(business.getDocumentUrls());

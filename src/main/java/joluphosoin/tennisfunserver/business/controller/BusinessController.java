@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import joluphosoin.tennisfunserver.business.data.dto.AccountReqDto;
 import joluphosoin.tennisfunserver.business.data.dto.BusinessReqDto;
 import joluphosoin.tennisfunserver.business.data.dto.BusinessResDto;
+import joluphosoin.tennisfunserver.business.data.dto.SimpleBusinessResDto;
 import joluphosoin.tennisfunserver.business.service.BusinessService;
 import joluphosoin.tennisfunserver.payload.ApiResult;
 import joluphosoin.tennisfunserver.payload.code.status.SuccessStatus;
@@ -24,6 +25,10 @@ public class BusinessController {
 
     private final BusinessService businessService;
 
+    @GetMapping("")
+    public ApiResult<SimpleBusinessResDto> getBusinessInfo(@SessionAttribute String businessId){
+        return ApiResult.onSuccess(businessService.getBusinessInfo(businessId));
+    }
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public ApiResult<BusinessResDto> registerBusinessInfo(@RequestBody @Valid BusinessReqDto businessReqDto) throws MessagingException {

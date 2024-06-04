@@ -61,6 +61,8 @@ public class Business {
     @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
     private Point location;
 
+    private String address;
+
     public enum RegistrationStatus {
         PRE_APPROVAL, // 승인 전
         APPROVED // 승인 완료
@@ -78,7 +80,8 @@ public class Business {
                 .accountNumber(businessReqDto.getAccountNumber())
                 .registrationStatus(RegistrationStatus.PRE_APPROVAL)
                 .shopName(businessReqDto.getShopName())
-                .location(businessReqDto.getLocation());
+                .location(businessReqDto.getLocation())
+                .address(businessReqDto.getAddress());
 
         if(!businessReqDto.getDocumentUrls().isEmpty()){
             businessBuilder.documentUrls(businessReqDto.getDocumentUrls());

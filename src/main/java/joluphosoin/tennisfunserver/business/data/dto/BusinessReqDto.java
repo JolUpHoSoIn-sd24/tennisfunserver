@@ -54,4 +54,7 @@ public class BusinessReqDto {
     @NotNull
     private Point location;
 
+    @Schema(example = "경기도 수원시 장안구 만석로 65")
+    private String address;
+
 }

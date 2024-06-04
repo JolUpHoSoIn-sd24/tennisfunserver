@@ -162,6 +162,7 @@ public class CourtBusinessService {
         return CourtResDto.toDTO(court);
     }
 
+
 //    public SimpleCourtResDto getReservationCourts(String courtId) {
 //
 //        List<TimeSlot> timeSlots = timeSlotRepository.findAllByCourtIdAndStatus(courtId, TimeSlot.ReservationStatus.CONFIRMED)

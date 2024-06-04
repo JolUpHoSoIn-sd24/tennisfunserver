@@ -1,7 +1,9 @@
 package joluphosoin.tennisfunserver.business.controller;
 
 import jakarta.validation.Valid;
-import joluphosoin.tennisfunserver.business.data.dto.*;
+import joluphosoin.tennisfunserver.business.data.dto.AutoMatchApplyDto;
+import joluphosoin.tennisfunserver.business.data.dto.CourtReqDto;
+import joluphosoin.tennisfunserver.business.data.dto.CourtResDto;
 import joluphosoin.tennisfunserver.business.service.CourtBusinessService;
 import joluphosoin.tennisfunserver.payload.ApiResult;
 import joluphosoin.tennisfunserver.payload.code.status.SuccessStatus;

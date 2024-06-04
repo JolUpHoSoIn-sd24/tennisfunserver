@@ -2,11 +2,11 @@ package joluphosoin.tennisfunserver.business.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
-import joluphosoin.tennisfunserver.business.data.dto.AccountReqDto;
-import joluphosoin.tennisfunserver.business.data.dto.BusinessReqDto;
-import joluphosoin.tennisfunserver.business.data.dto.BusinessResDto;
+import joluphosoin.tennisfunserver.business.data.dto.*;
 import joluphosoin.tennisfunserver.business.data.entity.Business;
+import joluphosoin.tennisfunserver.business.data.entity.Court;
 import joluphosoin.tennisfunserver.business.repository.BusinessRepository;
+import joluphosoin.tennisfunserver.business.repository.CourtRepository;
 import joluphosoin.tennisfunserver.payload.code.status.ErrorStatus;
 import joluphosoin.tennisfunserver.payload.exception.GeneralException;
 import joluphosoin.tennisfunserver.user.exception.EmailVerificationException;
@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -32,6 +33,8 @@ public class BusinessService {
     private final BusinessRepository businessRepository;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
+
+    private final CourtRepository courtRepository;
     @Transactional
     public BusinessResDto registerBusiness(BusinessReqDto businessReqDto) throws MessagingException{
         validatePassword(businessReqDto.getPassword());
@@ -117,5 +120,19 @@ public class BusinessService {
             throw new GeneralException(ErrorStatus.EMAIL_NOT_VAILD);
         }
         return BusinessResDto.toDto(business);
+    }
+
+    public SimpleBusinessResDto getBusinessInfo(String businessId) {
+        Business business = businessRepository.findById(businessId).orElseThrow(() -> new GeneralException(ErrorStatus.BUSINESS_NOT_FOUND));
+
+        List<Court> courts = courtRepository.findAllByOwnerId(businessId).orElseThrow(() -> new GeneralException(ErrorStatus.COURT_NOT_FOUND));
+
+
+        List<CourtResDto> courtResDtos = courts.stream()
+                .map(CourtResDto::toDTO)
+                .toList();
+
+        return SimpleBusinessResDto.toDto(business,courtResDtos);
+
     }
 }

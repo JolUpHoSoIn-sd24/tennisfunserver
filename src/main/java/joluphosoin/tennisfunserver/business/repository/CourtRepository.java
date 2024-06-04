@@ -9,5 +9,7 @@ import java.util.Optional;
 public interface CourtRepository extends MongoRepository<Court,String> {
     Optional<Court> findByOwnerIdAndCourtName(String ownerId, String courtName);
 
+    Optional<List<Court>> findAllByOwnerId(String ownerId);
+
     Optional<List<Court>> findAllByCourtNameContaining(String courtName);
 }
