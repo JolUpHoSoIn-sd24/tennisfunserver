@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -60,7 +61,6 @@ public class MatchRequest {
     }
     public static MatchRequest toEntity(MatchRequestDto matchRequestDto, User user){
 
-//        Point location = new Point(matchRequestDto.getX(), matchRequestDto.getY());
         MatchRequest.MatchRequestBuilder builder = MatchRequest.builder()
                 .userId(user.getId())
                 .startTime(matchRequestDto.getStartTime())
@@ -69,7 +69,7 @@ public class MatchRequest {
                 .objective(matchRequestDto.getObjective())
                 .location(user.getLocation())
                 .maxDistance(user.getMaxDistance())
-                .dislikedCourts(matchRequestDto.getDislikedCourts())
+                .dislikedCourts(matchRequestDto.getDislikedCourts()==null?new ArrayList<>():matchRequestDto.getDislikedCourts())
                 .minTime(matchRequestDto.getMinTime())
                 .maxTime(matchRequestDto.getMaxTime())
                 .description(matchRequestDto.getDescription())
@@ -84,13 +84,12 @@ public class MatchRequest {
     }
     public MatchRequest setEntity(MatchRequestDto matchRequestDto,User user){
 
-        Point location = new Point(matchRequestDto.getX(), matchRequestDto.getY());
         this.startTime = matchRequestDto.getStartTime();
         this.endTime = matchRequestDto.getEndTime();
         this.isSingles = matchRequestDto.getIsSingles();
         this.objective = matchRequestDto.getObjective();
         this.maxDistance = user.getMaxDistance();
-        this.dislikedCourts = matchRequestDto.getDislikedCourts();
+        this.dislikedCourts = matchRequestDto.getDislikedCourts()==null?new ArrayList<>():matchRequestDto.getDislikedCourts();
         this.description = matchRequestDto.getDescription();
         this.location = user.getLocation();
         this.minTime = matchRequestDto.getMinTime();
