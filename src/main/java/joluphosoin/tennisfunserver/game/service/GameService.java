@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -64,10 +63,10 @@ public class GameService {
         dto.setStartTime(game.getMatchDetails().getStartTime());
         dto.setEndTime(game.getMatchDetails().getEndTime());
         dto.setPaymentStatus(game.getPaymentStatus());
-        if(game.getChatRoomId()!=null){
+        if (game.getChatRoomId() != null) {
             dto.setChatRoomId(game.getChatRoomId());
         }
-        if(game.getRentalCost()!=null){
+        if (game.getRentalCost() != null) {
             dto.setRentalCost(game.getRentalCost());
         }
 
@@ -96,33 +95,29 @@ public class GameService {
 
     public FeedbackResDto registerFeedback(FeedbackDto feedbackDto, String userId) {
 
-        Optional<Game> gameOptional = gameRepository.findByPlayerIdsContaining(userId)
+        Game game = gameRepository.findByPlayerIdsContaining(userId)
                 .stream()
-                .findFirst();
-        PostGame postGame;
-        if(gameOptional.isPresent()){
-            postGame = PostGame.toEntity(gameOptional.get());
-            gameRepository.delete(gameOptional.get());
-        }
-        else{
-            postGame = postGameRepository.findByPlayerIdsContaining(userId, feedbackDto.getOpponentId())
-                    .orElseThrow(()->new GeneralException(ErrorStatus.GAME_NOT_FOUND));
-        }
-        postGame.addFeedback(feedbackDto,userId);
-        postGame.addScore(feedbackDto.getScoreDetailDto(),userId);
+                .findFirst()
+                .orElseThrow(() -> new GeneralException(ErrorStatus.GAME_NOT_FOUND));
+        String opponentId = game.getPlayerIds().stream().filter(id -> !id.equals(userId)).findFirst().orElseThrow();
 
-        User opponent = userRepository.findById(feedbackDto.getOpponentId())
+        game.addFeedback(feedbackDto, userId,opponentId);
+        game.addScore(feedbackDto.getScoreDetailDto(), userId);
+
+        User opponent = userRepository.findById(opponentId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
         opponent.updateFeedback(feedbackDto);
 
-        postGameRepository.save(postGame);
-        return FeedbackResDto.toDto(feedbackDto,opponent,postGame);
+        if (game.getFeedbacks().size() == game.getPlayerIds().size()) {
+            PostGame postGame = PostGame.toEntity(game);
+            postGameRepository.save(postGame);
+            gameRepository.delete(game);
+            return FeedbackResDto.toDto(feedbackDto, opponent, postGame);
+        }
+        gameRepository.save(game);
+        return FeedbackResDto.toDto(feedbackDto, opponent, game);
     }
 
-//    public Game getCurrentGame(String userId) {
-////        gameRepository.findByGameStatusAndUserIdContainingPlayerIds();
-//        return null;
-//    }
 
 }

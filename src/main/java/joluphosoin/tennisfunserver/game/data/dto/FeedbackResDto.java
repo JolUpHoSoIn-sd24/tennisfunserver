@@ -43,14 +43,29 @@ public class FeedbackResDto {
     @Schema(example = "Very respectful and fair play.")
     private String comments;
 
-    public static FeedbackResDto toDto(FeedbackDto feedbackDto, User opponent, PostGame postGame){
+    public static FeedbackResDto toDto(FeedbackDto feedbackDto, User opponent, Game game){
 
         return FeedbackResDto.builder()
                 .opponentId(opponent.getId())
                 .opponentName(opponent.getName())
-                .startTime(postGame.getMatchDetails().getStartTime())
-                .endTime(postGame.getMatchDetails().getEndTime())
-                .isSingles(postGame.getMatchDetails().isSingles())
+                .startTime(game.getMatchDetails().getStartTime())
+                .endTime(game.getMatchDetails().getEndTime())
+                .isSingles(game.getMatchDetails().isSingles())
+                .scoreDetailDto(feedbackDto.getScoreDetailDto())
+                .mannersRating(feedbackDto.getMannersRating())
+                .suggestedNTRP(feedbackDto.getSuggestedNTRP())
+                .comments(feedbackDto.getComments())
+                .build();
+    }
+
+    public static FeedbackResDto toDto(FeedbackDto feedbackDto, User opponent, PostGame game){
+
+        return FeedbackResDto.builder()
+                .opponentId(opponent.getId())
+                .opponentName(opponent.getName())
+                .startTime(game.getMatchDetails().getStartTime())
+                .endTime(game.getMatchDetails().getEndTime())
+                .isSingles(game.getMatchDetails().isSingles())
                 .scoreDetailDto(feedbackDto.getScoreDetailDto())
                 .mannersRating(feedbackDto.getMannersRating())
                 .suggestedNTRP(feedbackDto.getSuggestedNTRP())

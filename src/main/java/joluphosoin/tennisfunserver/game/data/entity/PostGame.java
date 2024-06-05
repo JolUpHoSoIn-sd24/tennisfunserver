@@ -43,56 +43,27 @@ public class PostGame{
 
     private List<Feedback> feedbacks;
 
-
-
     public enum PostGameStatus {
-        AWAIT_FEEDBACK,
         AWAIT_SCORE_CONFIRM,
-        POST,
+        POSTGAME,
     }
 
     public static PostGame toEntity(Game game){
         return PostGame.builder()
                 .gameId(game.getGameId())
-                .postGameStatus(PostGameStatus.AWAIT_FEEDBACK)
+                .postGameStatus(PostGameStatus.AWAIT_SCORE_CONFIRM)
                 .playerIds(game.getPlayerIds())
                 .creationTime(game.getCreationTime())
                 .chatRoomId(game.getChatRoomId())
                 .rentalCost(game.getRentalCost())
                 .paymentStatus(game.getPaymentStatus())
                 .matchDetails(game.getMatchDetails())
-                .scores(new ArrayList<>())
-                .feedbacks(new ArrayList<>())
+                .scores(game.getScores())
+                .feedbacks(game.getFeedbacks())
                 .scoreConfirmed(false)
                 .build();
     }
-    public void addFeedback(FeedbackDto feedbackDto, String userId) {
-        Optional<Feedback> existingFeedback = this.feedbacks.stream()
-                .filter(feedback -> feedback.getEvaluatorId().equals(userId))
-                .findFirst();
 
-        if (existingFeedback.isPresent()) {
-            existingFeedback.get().setEntity(feedbackDto);
-        } else {
-            this.feedbacks.add(Feedback.toEntity(feedbackDto, userId));
-        }
-    }
-
-
-    public void addScore(ScoreDetailDto scoreDetailDto, String userId) {
-        Optional<Score> existingScore = this.scores.stream()
-                .filter(score -> score.getUserId().equals(userId))
-                .findFirst();
-
-        if (existingScore.isPresent()) {
-            existingScore.get().setScoreDetailDto(scoreDetailDto);  // 기존 점수 업데이트
-        } else {
-            this.scores.add(Score.toEntity(scoreDetailDto, userId));  // 새 점수 추가
-        }
-        if(this.scores.size()==this.playerIds.size()){
-            this.postGameStatus = PostGameStatus.AWAIT_SCORE_CONFIRM;
-        }
-    }
 
 }
 

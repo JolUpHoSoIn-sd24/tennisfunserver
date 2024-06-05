@@ -135,7 +135,7 @@ public class UserService {
     public List<GameDetailsDto.PlayerDetail> getPlayerDetails(List<String> playerIds) {
         return userRepository.findByIdIn(playerIds).stream()
                 .map(this::transformToPlayerDetail)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private GameDetailsDto.PlayerDetail transformToPlayerDetail(User user) {
@@ -152,11 +152,6 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
         return UserResDto.toDto(user);
     }
-
-//    public MyPageDto getUserPage(String userId) {
-//        User user = userRepository.findById(userId).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
-//        return MyPageDto.toDto(user.getName(),null);
-//    }
 
 
 }

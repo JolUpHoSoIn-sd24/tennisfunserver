@@ -11,9 +11,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class FeedbackDto {
 
-    @Schema(example = "663c6230d2b544d88a6a2968")
-    private String opponentId;
-
     @Schema(example = "{ \"userScore\" : 6, \"opponentScore\" : 8}")
     private ScoreDetailDto scoreDetailDto;
 

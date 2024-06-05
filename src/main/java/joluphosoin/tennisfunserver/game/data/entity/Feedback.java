@@ -21,16 +21,17 @@ public class Feedback {
     private double suggestedNTRP;
 
     private String comments;
+
     public enum MannersRating {
         POOR,
         AVERAGE,
         EXCELLENT
     }
-    public static Feedback toEntity(FeedbackDto feedbackDto,String userId){
+    public static Feedback toEntity(FeedbackDto feedbackDto,String userId,String opponentId){
 
         return Feedback.builder()
                 .evaluatorId(userId)
-                .evaluatedId(feedbackDto.getOpponentId())
+                .evaluatedId(opponentId)
                 .suggestedNTRP(feedbackDto.getSuggestedNTRP())
                 .mannersRating(feedbackDto.getMannersRating())
                 .comments(feedbackDto.getComments())

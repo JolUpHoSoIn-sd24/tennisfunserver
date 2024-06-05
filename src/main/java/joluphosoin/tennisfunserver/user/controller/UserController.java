@@ -91,8 +91,5 @@ public class UserController {
     public ApiResult<UserResDto> getUserInfo(@SessionAttribute("id")String userId){
         return ApiResult.onSuccess(userService.getUserInfo(userId));
     }
-//    @GetMapping(value = "/me", produces = "application/json; charset=utf-8")
-//    public ApiResult<MyPageDto> getUserPage(@SessionAttribute("id")String userId){
-//        return ApiResult.onSuccess(userService.getUserPage(userId));
-//    }
+
 }
