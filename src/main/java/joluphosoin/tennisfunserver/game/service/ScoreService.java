@@ -1,6 +1,7 @@
 package joluphosoin.tennisfunserver.game.service;
 
 import joluphosoin.tennisfunserver.game.data.dto.ConfirmDto;
+import joluphosoin.tennisfunserver.game.data.dto.ScoreUpdateDto;
 import joluphosoin.tennisfunserver.game.data.entity.PostGame;
 import joluphosoin.tennisfunserver.game.data.entity.Score;
 import joluphosoin.tennisfunserver.game.repository.PostGameRepository;
@@ -40,4 +41,19 @@ public class ScoreService {
         postGameRepository.save(postGame);
         return postGame.getScores();
     }
+
+    public List<Score> updateScore(ScoreUpdateDto scoreUpdateDto, String userId) {
+        PostGame postGame = postGameRepository.findById(scoreUpdateDto.getGameId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.GAME_NOT_FOUND));
+
+        List<Score> scores = postGame.getScores();
+
+        scores.stream()
+                .filter(score -> score.getUserId().equals(userId))
+                .forEach(score -> score.setScoreDetailDto(scoreUpdateDto.getScoreDetailDto()));
+
+        postGameRepository.save(postGame);
+        return scores;
+    }
+
 }
