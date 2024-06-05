@@ -4,6 +4,7 @@ import joluphosoin.tennisfunserver.game.data.dto.ScoreDetailDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Builder
@@ -14,7 +15,11 @@ public class Score {
 
     private ScoreDetailDto scoreDetailDto;
 
+
     private int disagreementCount;
+
+    @Setter
+    private boolean isAgreement;
 
     public Score setScoreDetailDto(ScoreDetailDto  scoreDetailDto){
         this.scoreDetailDto = scoreDetailDto;
@@ -26,6 +31,10 @@ public class Score {
                 .userId(userId)
                 .scoreDetailDto(scoreDetailDto)
                 .disagreementCount(0)
+                .isAgreement(false)
                 .build();
+    }
+    public void disagreement(){
+        this.disagreementCount++;
     }
 }

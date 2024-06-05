@@ -39,9 +39,11 @@ public class PostGame{
     @Setter
     private List<Score> scores;
 
+    @Setter
     private boolean scoreConfirmed;
 
     private List<Feedback> feedbacks;
+
 
     public enum PostGameStatus {
         AWAIT_SCORE_CONFIRM,
