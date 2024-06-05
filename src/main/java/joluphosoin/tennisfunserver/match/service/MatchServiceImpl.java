@@ -64,7 +64,7 @@ public class MatchServiceImpl implements MatchService {
 
         if(optionalMatchRequest.isPresent()){
             matchRequest = optionalMatchRequest.get();
-            matchRequest.setEntity(matchRequestDto);
+            matchRequest.setEntity(matchRequestDto,user);
         }
         else{
             matchRequest = MatchRequest.toEntity(matchRequestDto, user);
@@ -98,7 +98,7 @@ public class MatchServiceImpl implements MatchService {
         User user = userRepository.findById(matchRequest.getUserId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
 
-        MatchRequest updateMatchRequest = matchRequest.setEntity(matchRequestDto);
+        MatchRequest updateMatchRequest = matchRequest.setEntity(matchRequestDto,user);
 
         saveMatchRequestAndUser(updateMatchRequest, user);
 

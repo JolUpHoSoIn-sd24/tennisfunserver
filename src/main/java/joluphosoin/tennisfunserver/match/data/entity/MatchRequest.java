@@ -68,7 +68,7 @@ public class MatchRequest {
                 .isSingles(matchRequestDto.getIsSingles())
                 .objective(matchRequestDto.getObjective())
                 .location(user.getLocation())
-                .maxDistance(matchRequestDto.getMaxDistance())
+                .maxDistance(user.getMaxDistance())
                 .dislikedCourts(matchRequestDto.getDislikedCourts())
                 .minTime(matchRequestDto.getMinTime())
                 .maxTime(matchRequestDto.getMaxTime())
@@ -82,17 +82,17 @@ public class MatchRequest {
 
         return builder.build();
     }
-    public MatchRequest setEntity(MatchRequestDto matchRequestDto){
+    public MatchRequest setEntity(MatchRequestDto matchRequestDto,User user){
 
         Point location = new Point(matchRequestDto.getX(), matchRequestDto.getY());
         this.startTime = matchRequestDto.getStartTime();
         this.endTime = matchRequestDto.getEndTime();
         this.isSingles = matchRequestDto.getIsSingles();
         this.objective = matchRequestDto.getObjective();
-        this.maxDistance = matchRequestDto.getMaxDistance();
+        this.maxDistance = user.getMaxDistance();
         this.dislikedCourts = matchRequestDto.getDislikedCourts();
         this.description = matchRequestDto.getDescription();
-        this.location = location;
+        this.location = user.getLocation();
         this.minTime = matchRequestDto.getMinTime();
         this.maxTime = matchRequestDto.getMaxTime();
         if (Boolean.TRUE.equals(matchRequestDto.getIsReserved())) {
