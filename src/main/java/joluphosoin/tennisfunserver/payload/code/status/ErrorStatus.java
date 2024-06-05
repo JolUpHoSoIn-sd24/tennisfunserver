@@ -59,7 +59,7 @@ public enum ErrorStatus implements BaseErrorCode {
     GAME_PAYMENT_REQUIRED(HttpStatus.UNPROCESSABLE_ENTITY, "GAME422", "게임이 아직 결제되지 않았습니다."),
     // SCORE 응답
     SCORE_NOT_FOUND(HttpStatus.NOT_FOUND, "SCORE404", "등록된 점수를 찾을 수 없습니다"),
-
+    SCORE_UPDATE_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "SCORE400", "점수 확정이 완료되었습니다. 업데이트가 불가합니다"),
     // ADMIN 응답
     ADMIN_NOT_FOUND(HttpStatus.NOT_FOUND, "ADMIN404", "해당 email을 가진 admin를 찾을 수 없습니다."),
     MATCH_REQUESTS_RETRIEVED_FAILED(HttpStatus.BAD_REQUEST, "MATCH_REQUESTS_RETRIEVED400", "Failed to retrieve match requests");

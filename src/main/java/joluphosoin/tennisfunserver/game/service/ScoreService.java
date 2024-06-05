@@ -43,9 +43,13 @@ public class ScoreService {
     }
 
     public List<Score> updateScore(ScoreUpdateDto scoreUpdateDto, String userId) {
+
         PostGame postGame = postGameRepository.findById(scoreUpdateDto.getGameId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.GAME_NOT_FOUND));
 
+        if(postGame.isScoreConfirmed()){
+            throw new GeneralException(ErrorStatus.SCORE_UPDATE_NOT_ALLOWED);
+        }
         List<Score> scores = postGame.getScores();
 
         scores.stream()
