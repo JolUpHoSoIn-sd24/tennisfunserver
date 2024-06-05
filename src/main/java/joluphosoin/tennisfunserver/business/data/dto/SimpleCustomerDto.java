@@ -20,7 +20,7 @@ public class SimpleCustomerDto {
     public static SimpleCustomerDto toDto(Game game,List<String> userName){
         return SimpleCustomerDto.builder()
                 .userName(userName)
-                .reservationDate(game.getStartTime())
+                .reservationDate(game.getMatchDetails().getStartTime())
                 .build();
     }
 

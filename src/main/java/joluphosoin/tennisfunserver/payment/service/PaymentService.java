@@ -9,7 +9,6 @@ import joluphosoin.tennisfunserver.game.repository.GameRepository;
 import joluphosoin.tennisfunserver.game.service.GameService;
 import joluphosoin.tennisfunserver.payload.code.status.ErrorStatus;
 import joluphosoin.tennisfunserver.payload.exception.GeneralException;
-import joluphosoin.tennisfunserver.payment.data.dto.PaymentVerificationRequestDto;
 import joluphosoin.tennisfunserver.payment.data.entity.PaymentInfo;
 import joluphosoin.tennisfunserver.payment.data.entity.TempPayment;
 import joluphosoin.tennisfunserver.payment.exception.PaymentServiceException;
@@ -178,14 +177,14 @@ public class PaymentService {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
-        DayTimeSlot dayTimeSlot = dayTimeSlotRepository.findByCourtIdAndDate(game.getCourtId(),
-                        dateFormat.format(game.getStartTime()))
+        DayTimeSlot dayTimeSlot = dayTimeSlotRepository.findByCourtIdAndDate(game.getMatchDetails().getCourtId(),
+                        dateFormat.format(game.getMatchDetails().getStartTime()))
                 .orElseThrow(() -> new GeneralException(ErrorStatus.TIMESLOT_NOT_FOUND));
 
         List<TimeSlotDto> timeSlotDtos = dayTimeSlot.getTimeSlots();
 
-        String startTime = sdf.format(game.getStartTime());
-        String endTime = sdf.format(game.getEndTime());
+        String startTime = sdf.format(game.getMatchDetails().getStartTime());
+        String endTime = sdf.format(game.getMatchDetails().getEndTime());
 
         boolean changeStatus = false;
 

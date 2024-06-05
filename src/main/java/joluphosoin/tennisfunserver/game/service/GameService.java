@@ -3,11 +3,15 @@ package joluphosoin.tennisfunserver.game.service;
 import joluphosoin.tennisfunserver.business.service.CourtBusinessService;
 import joluphosoin.tennisfunserver.game.data.dto.*;
 import joluphosoin.tennisfunserver.game.data.entity.Game;
+import joluphosoin.tennisfunserver.game.data.entity.PostGame;
 import joluphosoin.tennisfunserver.game.exception.CreateGameException;
 import joluphosoin.tennisfunserver.game.exception.GetGameException;
 import joluphosoin.tennisfunserver.game.repository.GameRepository;
+import joluphosoin.tennisfunserver.game.repository.PostGameRepository;
 import joluphosoin.tennisfunserver.payload.code.status.ErrorStatus;
 import joluphosoin.tennisfunserver.payload.exception.GeneralException;
+import joluphosoin.tennisfunserver.user.data.entity.User;
+import joluphosoin.tennisfunserver.user.repository.UserRepository;
 import joluphosoin.tennisfunserver.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +28,8 @@ public class GameService {
     private final GameRepository gameRepository;
     private final UserService userService;
     private final CourtBusinessService courtBusinessService;
-
+    private final UserRepository userRepository;
+    private final PostGameRepository postGameRepository;
 
     public GameDetailsDto createGame(GameCreationDto gameDto) {
 
@@ -36,10 +42,6 @@ public class GameService {
             paymentStatusMap.put(playerId, false);
         }
         Game game = Game.toEntity(gameDto, paymentStatusMap);
-
-        game.setScores(gameDto.getScores() != null ? mapScores(gameDto.getScores()) : null);
-        game.setNtrpFeedbacks(gameDto.getNtrpFeedbacks() != null ? mapNTRPFeedbacks(gameDto.getNtrpFeedbacks()) : null);
-        game.setMannerFeedbacks(gameDto.getMannerFeedbacks() != null ? mapMannerFeedbacks(gameDto.getMannerFeedbacks()) : null);
 
         gameRepository.save(game);
 
@@ -58,9 +60,9 @@ public class GameService {
         dto.setGameId(game.getGameId());
         dto.setState(game.getGameStatus().name());
         dto.setPlayers(userService.getPlayerDetails(game.getPlayerIds()));
-        dto.setCourt(courtBusinessService.getCourtDetails(game.getCourtId()));
-        dto.setStartTime(game.getStartTime());
-        dto.setEndTime(game.getEndTime());
+        dto.setCourt(courtBusinessService.getCourtDetails(game.getMatchDetails().getCourtId()));
+        dto.setStartTime(game.getMatchDetails().getStartTime());
+        dto.setEndTime(game.getMatchDetails().getEndTime());
         dto.setPaymentStatus(game.getPaymentStatus());
         if(game.getChatRoomId()!=null){
             dto.setChatRoomId(game.getChatRoomId());
@@ -76,43 +78,6 @@ public class GameService {
         return gameRepository.findByPlayerIdsIn(playerIds).stream().anyMatch(game -> !game.getPlayerIds().isEmpty());
     }
 
-    public List<Game.Score> mapScores(List<ScoreDto> scoreDtos) {
-        return scoreDtos.stream().map(dto -> {
-            Game.Score score = new Game.Score();
-            score.setUserId(dto.getUserId());
-            score.setScoreDetails(mapScoreDetails(dto.getScoreDetails()));
-            return score;
-        }).toList();
-    }
-
-    private Map<String, Game.ScoreDetail> mapScoreDetails(List<ScoreDetailDto> details) {
-        Map<String, Game.ScoreDetail> scoreDetails = new HashMap<>();
-        for (ScoreDetailDto detail : details) {
-            Game.ScoreDetail scoreDetail = new Game.ScoreDetail();
-            scoreDetail.setUserScore(detail.getUserScore());
-            scoreDetail.setOpponentScore(detail.getOpponentScore());
-            scoreDetails.put("detail", scoreDetail);
-        }
-        return scoreDetails;
-    }
-
-    private List<Game.NTRPFeedback> mapNTRPFeedbacks(List<NTRPFeedbackDto> feedbackDtos) {
-        return feedbackDtos.stream().map(dto -> new Game.NTRPFeedback(
-                dto.getUserId(),
-                dto.getOpponentUserId(),
-                dto.getNtrp(),
-                dto.getComments()
-        )).toList();
-    }
-
-    private List<Game.MannerFeedback> mapMannerFeedbacks(List<MannerFeedbackDto> feedbackDtos) {
-        return feedbackDtos.stream().map(dto -> new Game.MannerFeedback(
-                dto.getUserId(),
-                dto.getOpponentUserId(),
-                dto.getMannerScore(),
-                dto.getComments()
-        )).toList();
-    }
 
     public List<HistoryResDto> getGameHistory(String userId) {
         List<Game> games = gameRepository.findByUserIdContainingPlayerIds(userId)
@@ -127,6 +92,32 @@ public class GameService {
                     return HistoryResDto.toDto(game, userService.getUserInfo(opponentId));
                 })
                 .toList();
+    }
+
+    public FeedbackResDto registerFeedback(FeedbackDto feedbackDto, String userId) {
+
+        Optional<Game> gameOptional = gameRepository.findByPlayerIdsContaining(userId)
+                .stream()
+                .findFirst();
+        PostGame postGame;
+        if(gameOptional.isPresent()){
+            postGame = PostGame.toEntity(gameOptional.get());
+            gameRepository.delete(gameOptional.get());
+        }
+        else{
+            postGame = postGameRepository.findByPlayerIdsContaining(userId, feedbackDto.getOpponentId())
+                    .orElseThrow(()->new GeneralException(ErrorStatus.GAME_NOT_FOUND));
+        }
+        postGame.addFeedback(feedbackDto,userId);
+        postGame.addScore(feedbackDto.getScoreDetailDto(),userId);
+
+        User opponent = userRepository.findById(feedbackDto.getOpponentId())
+                .orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        opponent.updateFeedback(feedbackDto);
+
+        postGameRepository.save(postGame);
+        return FeedbackResDto.toDto(feedbackDto,opponent,postGame);
     }
 
 //    public Game getCurrentGame(String userId) {

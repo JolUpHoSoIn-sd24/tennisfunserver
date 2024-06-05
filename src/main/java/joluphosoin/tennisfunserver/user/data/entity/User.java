@@ -1,6 +1,8 @@
 package joluphosoin.tennisfunserver.user.data.entity;
 
 
+import joluphosoin.tennisfunserver.game.data.dto.FeedbackDto;
+import joluphosoin.tennisfunserver.game.data.entity.Feedback;
 import joluphosoin.tennisfunserver.match.data.entity.MatchRequest;
 import joluphosoin.tennisfunserver.user.data.dto.LocationUpdateDto;
 import joluphosoin.tennisfunserver.user.data.dto.RegistrationDto;
@@ -106,6 +108,19 @@ public class User {
     public User updateLocation(LocationUpdateDto locationUpdateDto){
         this.maxDistance = locationUpdateDto.getMaxDistance();
         this.location = locationUpdateDto.getLocation();
+        return this;
+    }
+
+    public User updateFeedback(FeedbackDto feedbackDto){
+        double suggestedNTRP = feedbackDto.getSuggestedNTRP();
+        this.ntrp -= 0.1 * (this.ntrp - suggestedNTRP);
+
+        if(feedbackDto.getMannersRating()== Feedback.MannersRating.POOR){
+            this.mannerScore = this.mannerScore - 0.1;
+        }
+        else if(feedbackDto.getMannersRating()== Feedback.MannersRating.EXCELLENT){
+            this.mannerScore = this.mannerScore + 0.1;
+        }
         return this;
     }
 

@@ -55,6 +55,8 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // GAME 응답
     GAME_HISTORY_NO_CONTENT(HttpStatus.NO_CONTENT, "GAME204" , "참여중인 게임이 없습니다"),
+    GAME_NOT_FOUND(HttpStatus.NOT_FOUND, "GAME404", "게임을 찾을 수 없습니다"),
+
 
     // ADMIN 응답
     ADMIN_NOT_FOUND(HttpStatus.NOT_FOUND, "ADMIN404", "해당 email을 가진 admin를 찾을 수 없습니다."),

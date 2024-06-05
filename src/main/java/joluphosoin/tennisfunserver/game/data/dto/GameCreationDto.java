@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import joluphosoin.tennisfunserver.business.data.entity.Court;
 import joluphosoin.tennisfunserver.game.data.entity.Game.GameStatus;
+import joluphosoin.tennisfunserver.game.data.entity.Score;
 import joluphosoin.tennisfunserver.match.data.entity.MatchResult;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,17 +45,7 @@ public class GameCreationDto {
     @Schema(example = "50.0")
     private Double rentalCost;
 
-    @Schema(description = "List of scores for each player in the game")
-    private List<ScoreDto> scores;
-
-    @Schema(example = "true")
-    private boolean scoreConfirmed;
-
-    @Schema(description = "List of NTRP feedbacks from players about each other")
-    private List<NTRPFeedbackDto> ntrpFeedbacks;
-
-    @Schema(description = "List of manner feedbacks from players about each other")
-    private List<MannerFeedbackDto> mannerFeedbacks;
+    private MatchResult.MatchDetails matchDetails;
 
     public static GameCreationDto toDto(MatchResult matchResult, Court court){
 
@@ -73,6 +64,7 @@ public class GameCreationDto {
                 .startTime(matchDetails.getStartTime())
                 .endTime(matchDetails.getEndTime())
                 .rentalCost(rentalCost) // 계산된 임대 비용 설정
+                .matchDetails(matchDetails)
                 .build();
     }
 

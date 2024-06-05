@@ -1,10 +1,9 @@
 package joluphosoin.tennisfunserver.game.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import joluphosoin.tennisfunserver.game.data.dto.GameCreationDto;
-import joluphosoin.tennisfunserver.game.data.dto.GameDetailsDto;
-import joluphosoin.tennisfunserver.game.data.dto.HistoryResDto;
+import joluphosoin.tennisfunserver.game.data.dto.*;
 import joluphosoin.tennisfunserver.game.data.entity.Game;
 import joluphosoin.tennisfunserver.game.exception.CreateGameException;
 import joluphosoin.tennisfunserver.game.exception.GetGameException;
@@ -108,5 +107,10 @@ public class GameController {
     @GetMapping(value = "/history", produces = "application/json; charset=utf-8")
     public ApiResult<List<HistoryResDto>> getGameHistory(@SessionAttribute("id") String userId){
         return ApiResult.onSuccess(gameService.getGameHistory(userId));
+    }
+
+    @PostMapping("/feedback")
+    public ApiResult<FeedbackResDto> registerFeedback(@RequestBody FeedbackDto feedbackDto, @SessionAttribute("id")@Parameter(hidden = true) String userId){
+        return ApiResult.onSuccess(gameService.registerFeedback(feedbackDto,userId));
     }
 }
