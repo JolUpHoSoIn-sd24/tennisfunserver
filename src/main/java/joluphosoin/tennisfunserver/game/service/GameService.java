@@ -99,6 +99,9 @@ public class GameService {
                 .stream()
                 .findFirst()
                 .orElseThrow(() -> new GeneralException(ErrorStatus.GAME_NOT_FOUND));
+        if(game.getGameStatus()== Game.GameStatus.PREGAME){
+            throw new GeneralException(ErrorStatus.GAME_PAYMENT_REQUIRED);
+        }
         String opponentId = game.getPlayerIds().stream().filter(id -> !id.equals(userId)).findFirst().orElseThrow();
 
         game.addFeedback(feedbackDto, userId,opponentId);
