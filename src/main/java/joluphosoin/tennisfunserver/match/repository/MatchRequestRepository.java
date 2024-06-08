@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface MatchRequestRepository extends MongoRepository<MatchRequest,String> {
     Optional<MatchRequest> findByUserId(String userId);
+
+    void deleteAllByUserId(String userId);
 }

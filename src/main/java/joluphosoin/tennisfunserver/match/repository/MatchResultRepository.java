@@ -10,4 +10,7 @@ public interface MatchResultRepository extends MongoRepository<MatchResult,Strin
     @Query("{ 'userAndMatchRequests.?0': { $exists: true } }")
     Optional<List<MatchResult>> findAllByUserAndMatchRequests(String matchRequestId);
 
+    @Query(value = "{ 'userAndMatchRequests.?0' : { $exists: true } }", delete = true)
+    long deleteAllByUserId(String userId);
+
 }

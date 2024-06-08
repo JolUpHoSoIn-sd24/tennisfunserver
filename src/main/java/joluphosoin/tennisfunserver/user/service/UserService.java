@@ -3,6 +3,8 @@ package joluphosoin.tennisfunserver.user.service;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import joluphosoin.tennisfunserver.game.data.dto.GameDetailsDto;
+import joluphosoin.tennisfunserver.match.repository.MatchRequestRepository;
+import joluphosoin.tennisfunserver.match.repository.MatchResultRepository;
 import joluphosoin.tennisfunserver.payload.code.status.ErrorStatus;
 import joluphosoin.tennisfunserver.payload.exception.GeneralException;
 import joluphosoin.tennisfunserver.user.data.dto.LocationUpdateDto;
@@ -25,7 +27,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +37,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender mailSender;
+
+    private final MatchRequestRepository matchRequestRepository;
+    private final MatchResultRepository matchResultRepository;
+
 
     public void registerUser(RegistrationDto registrationDto) throws UserRegistrationException {
         validatePassword(registrationDto.getPassword());
@@ -154,4 +159,13 @@ public class UserService {
     }
 
 
+    public UserResDto revoke(String userId) {
+        User user = userRepository.findById((userId)).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+
+        matchRequestRepository.deleteAllByUserId(userId);
+        matchResultRepository.deleteAllByUserId(userId);
+        userRepository.deleteById(userId);
+
+        return UserResDto.toDto(user);
+    }
 }
