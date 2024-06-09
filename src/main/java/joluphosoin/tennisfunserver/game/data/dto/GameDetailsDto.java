@@ -1,5 +1,7 @@
 package joluphosoin.tennisfunserver.game.data.dto;
 
+import joluphosoin.tennisfunserver.game.data.entity.Game;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,10 +10,11 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
-@Setter
+@Builder
 public class GameDetailsDto {
     private String gameId;
     private String state;
+    @Setter
     private List<PlayerDetail> players;
     private CourtDetail court;
     private Date startTime;
@@ -27,6 +30,7 @@ public class GameDetailsDto {
         private double ntrp;
         private int age;
         private String gender;
+        private boolean isFeedback;
     }
 
     @Getter
@@ -36,5 +40,22 @@ public class GameDetailsDto {
         private String name;
         private String location;
         private String surfaceType;
+    }
+
+    public static GameDetailsDto toDto(Game game,CourtDetail courtDetail){
+        GameDetailsDtoBuilder gameDetailsDtoBuilder = GameDetailsDto.builder()
+                .gameId(game.getGameId())
+                .state(game.getGameStatus().name())
+                .court(courtDetail)
+                .startTime(game.getMatchDetails().getStartTime())
+                .endTime(game.getMatchDetails().getEndTime())
+                .paymentStatus(game.getPaymentStatus());
+        if (game.getChatRoomId() != null) {
+            gameDetailsDtoBuilder.chatRoomId(game.getChatRoomId());
+        }
+        if (game.getRentalCost() != null) {
+            gameDetailsDtoBuilder.rentalCost(game.getRentalCost());
+        }
+        return gameDetailsDtoBuilder.build();
     }
 }

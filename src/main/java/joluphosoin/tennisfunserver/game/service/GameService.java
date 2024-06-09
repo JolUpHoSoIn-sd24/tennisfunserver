@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -44,7 +45,7 @@ public class GameService {
 
         gameRepository.save(game);
 
-        return transformGameToDto(game);
+        return GameDetailsDto.toDto(game, courtBusinessService.getCourtDetails(game.getMatchDetails().getCourtId()));
     }
 
     public Game findGameByUserId(String userId) {
@@ -54,24 +55,25 @@ public class GameService {
                 .orElseThrow(() -> new GetGameException("No game found for this user"));
     }
 
-    public GameDetailsDto transformGameToDto(Game game) {
-        GameDetailsDto dto = new GameDetailsDto();
-        dto.setGameId(game.getGameId());
-        dto.setState(game.getGameStatus().name());
-        dto.setPlayers(userService.getPlayerDetails(game.getPlayerIds()));
-        dto.setCourt(courtBusinessService.getCourtDetails(game.getMatchDetails().getCourtId()));
-        dto.setStartTime(game.getMatchDetails().getStartTime());
-        dto.setEndTime(game.getMatchDetails().getEndTime());
-        dto.setPaymentStatus(game.getPaymentStatus());
-        if (game.getChatRoomId() != null) {
-            dto.setChatRoomId(game.getChatRoomId());
-        }
-        if (game.getRentalCost() != null) {
-            dto.setRentalCost(game.getRentalCost());
-        }
+    public GameDetailsDto transformGameToDto(Game game,String userId) {
+        GameDetailsDto dto = GameDetailsDto.toDto(game,courtBusinessService.getCourtDetails(game.getMatchDetails().getCourtId()));
+
+        List<GameDetailsDto.PlayerDetail> playerDetails = userService.getPlayerDetails(game.getPlayerIds());
+
+        GameDetailsDto.PlayerDetail userDetail = playerDetails.stream()
+                .filter(playerDetail -> playerDetail.getUserId().equals(userId))
+                .findFirst().orElse(null);
+
+        boolean hasFeedback = game.getFeedbacks().stream()
+                .anyMatch(feedback -> Objects.equals(feedback.getEvaluatorId(), userId));
+
+        userDetail.setFeedback(hasFeedback);
+
+        dto.setPlayers(playerDetails);
 
         return dto;
     }
+
 
     private boolean checkPlayerInAnyGame(List<String> playerIds) {
         return gameRepository.findByPlayerIdsIn(playerIds).stream().anyMatch(game -> !game.getPlayerIds().isEmpty());

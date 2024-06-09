@@ -79,7 +79,7 @@ public class GameController {
             if (game == null) {
                 return ResponseEntity.noContent().build();
             }
-            GameDetailsDto gameDetails = gameService.transformGameToDto(game);
+            GameDetailsDto gameDetails = gameService.transformGameToDto(game,userId);
             Map<String, Object> result = new HashMap<>();
             result.put("gameId", gameDetails.getGameId());
             result.put("state", gameDetails.getState());
