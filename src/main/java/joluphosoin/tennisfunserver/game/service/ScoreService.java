@@ -16,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ScoreService {
     private final PostGameRepository postGameRepository;
+    private final GameService gameService;
     public List<Score> confirmScore(ConfirmDto confirmDto,String userId) {
         PostGame postGame = postGameRepository.findById(confirmDto.getGameId())
                 .orElseThrow(() -> new GeneralException(ErrorStatus.GAME_NOT_FOUND));
@@ -56,6 +57,7 @@ public class ScoreService {
                 .filter(score -> score.getUserId().equals(userId))
                 .forEach(score -> score.setScoreDetailDto(scoreUpdateDto.getScoreDetailDto()));
 
+        gameService.checkScoresMatch(postGame);
         postGameRepository.save(postGame);
         return scores;
     }

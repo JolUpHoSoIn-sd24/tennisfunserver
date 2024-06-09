@@ -120,7 +120,7 @@ public class GameService {
         return FeedbackResDto.toDto(feedbackDto, opponent, game);
     }
 
-    private static void checkScoresMatch(PostGame postGame) {
+    public void checkScoresMatch(PostGame postGame) {
         List<Score> scores = postGame.getScores();
 
         Score firstScore = scores.get(0);
