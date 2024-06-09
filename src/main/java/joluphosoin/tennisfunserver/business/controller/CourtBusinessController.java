@@ -32,32 +32,17 @@ public class CourtBusinessController {
         return ApiResult.onSuccess(SuccessStatus.COURT_CREATED, courtBusinessService.registerCourtTime(courtId));
     }
 
-//    @PostMapping("/availability")
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public ApiResult<CourtResDto> registerCourtTimeSlot(@RequestBody @Valid CourtTimeSlotReqDto courtTimeSlotReqDto){
-//        return ApiResult.onSuccess(SuccessStatus.COURTTIME_CREATED,courtService.registerCourtTimeSlot(courtTimeSlotReqDto));
-//    }
-
     @PostMapping("/auto-match")
     public ApiResult<String> applyAutoMatching(@RequestBody @Valid AutoMatchApplyDto autoMatchApplyDto){
         courtBusinessService.applyAutoMatching(autoMatchApplyDto);
         return ApiResult.onSuccess("코트 예약 자동 매칭이 성공적으로 신청되었습니다.");
     }
     @GetMapping(value = "/reservations",produces ="application/json; charset=utf-8")
+    public ApiResult<List<SimpleCourtResDto>> getReservationCourts(@SessionAttribute String businessId){
+        return ApiResult.onSuccess(courtBusinessService.getReservationCourts(businessId));
+    }
+    @GetMapping(value = "/reservations/pending",produces ="application/json; charset=utf-8")
     public ApiResult<List<SimpleCourtResDto>> getPendingReservationCourts(@SessionAttribute String businessId){
         return ApiResult.onSuccess(courtBusinessService.getPendingReservationCourts(businessId));
     }
-//    @GetMapping("/reservations/pending")
-//    public ApiResult<SimpleCourtResDto> getPendingReservationCourts(@RequestParam @Valid String courtId){
-//        return ApiResult.onSuccess(courtService.getPendingReservationCourts(courtId));
-//    }
-//    @DeleteMapping("/reservations/cancel")
-//    public ApiResult<String> cancelReservationCourts(@RequestBody SimpleTimeSlotDto timeSlotDto){
-//        return ApiResult.onSuccess(courtService.cancelReservationCourts(timeSlotDto));
-//    }
-//    @PatchMapping("/reservations/block-times")
-//    public ApiResult<String> blockReservationCourts(@RequestBody SimpleTimeSlotDto timeSlotDto){
-//        return ApiResult.onSuccess(courtService.blockReservationCourts(timeSlotDto));
-//    }
-
 }

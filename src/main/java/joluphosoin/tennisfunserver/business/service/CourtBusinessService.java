@@ -1,7 +1,6 @@
 package joluphosoin.tennisfunserver.business.service;
 
 import joluphosoin.tennisfunserver.business.data.dto.*;
-import joluphosoin.tennisfunserver.business.data.entity.Business;
 import joluphosoin.tennisfunserver.business.data.entity.Court;
 import joluphosoin.tennisfunserver.business.data.entity.DayTimeSlot;
 import joluphosoin.tennisfunserver.business.repository.BusinessRepository;
@@ -106,23 +105,6 @@ public class CourtBusinessService {
         }
     }
 
-//    @Transactional
-//    public CourtResDto registerCourtTimeSlot(CourtTimeSlotReqDto courtTimeSlotReqDto) {
-//
-//        Court court = courtRepository.findById(courtTimeSlotReqDto.getCourtId())
-//                .orElseThrow(() -> new GeneralException(ErrorStatus.COURT_NOT_FOUND));
-//
-//        List<TimeSlotDto> timeSlotDtos = courtTimeSlotReqDto.getTimeSlots();
-//        List<TimeSlot> timeSlots = new ArrayList<>();
-//        timeSlotDtos.forEach(timeSlotDto -> {
-//            TimeSlot timeSlot = TimeSlotDto.toEntity(timeSlotDto,court);
-//            timeSlots.add(timeSlot);
-//            timeSlotRepository.save(timeSlot);
-//        });
-//
-//        return CourtResDto.toDTO(court);
-//
-//    }
 
     public GameDetailsDto.CourtDetail getCourtDetails(String courtId) {
         Court court = courtRepository.findById(courtId)
@@ -168,14 +150,20 @@ public class CourtBusinessService {
         return CourtResDto.toDTO(court);
     }
 
-    public List<SimpleCourtResDto> getPendingReservationCourts(String businessId) {
+    public List<SimpleCourtResDto> getReservationCourts(String businessId) {
+        return getReservationCourtsByStatus(businessId, Game.GameStatus.INPLAY);
+    }
+
+    private List<SimpleCourtResDto> getReservationCourtsByStatus(String businessId, Game.GameStatus status) {
         List<Court> courts = courtRepository.findAllByOwnerId(businessId).orElseThrow(() -> new GeneralException(ErrorStatus.COURT_NOT_FOUND));
 
         List<SimpleCourtResDto> simpleCourtResDtos = new ArrayList<>();
 
+
         courts.forEach(court -> {
-            List<Game> games = gameRepository.findAllByCourtId(court.getId()).orElseThrow(() -> new RuntimeException("game not found"));
-            games.forEach(game -> {
+
+            List<Game> preGames = gameRepository.findByCourtIdAndGameStatus(court.getId(), status);
+            preGames.forEach(game -> {
                 List<String> playerIds = game.getPlayerIds();
                 List<String> userNames = new ArrayList<>();
                 playerIds.forEach(playerId->{
@@ -188,35 +176,8 @@ public class CourtBusinessService {
         return simpleCourtResDtos;
     }
 
-//    public SimpleCourtResDto getPendingReservationCourts(String courtId) {
-//
-//        List<TimeSlot> timeSlots = timeSlotRepository.findAllByCourtIdAndStatus(courtId, TimeSlot.ReservationStatus.PENDING)
-//                .orElseThrow(()->new GeneralException(ErrorStatus.TIMESLOT_NOT_FOUND));
-//
-//        return SimpleCourtResDto.toDto(courtId, timeSlots);
-//    }
-//
-//    @Transactional
-//    public String cancelReservationCourts(SimpleTimeSlotDto timeSlotDto) {
-//        List<String> timeSlotIds = timeSlotDto.getTimeSlotIds();
-//
-//        timeSlotIds.forEach(timeSlotId->{
-//            TimeSlot timeSlot = timeSlotRepository.findById(timeSlotId)
-//                    .orElseThrow(()->new GeneralException(ErrorStatus.TIMESLOT_NOT_FOUND));
-//
-//            if(timeSlot.getStatus()== TimeSlot.ReservationStatus.CONFIRMED){
-//                timeSlot.setStatus(TimeSlot.ReservationStatus.NOT_OPEN);
-//                timeSlotRepository.save(timeSlot);
-//            }
-//        });
-//        return null;
-//    }
-//
-//    public String cancelPendingReservationCourts(String courtId, String timeSlotId) {
-//        return null;
-//    }
-//
-//    public String blockReservationCourts(SimpleTimeSlotDto timeSlotDto) {
-//        return null;
-//    }
+    public List<SimpleCourtResDto> getPendingReservationCourts(String businessId) {
+        return getReservationCourtsByStatus(businessId, Game.GameStatus.PREGAME);
+    }
+
 }
