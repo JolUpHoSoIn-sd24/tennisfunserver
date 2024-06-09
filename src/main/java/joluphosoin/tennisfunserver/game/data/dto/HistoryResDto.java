@@ -28,13 +28,16 @@ public class HistoryResDto {
 
     private String elapsedTime; // "x일 전", "x시간 전", "x분 전" 등의 형식으로 표현
 
-    public static HistoryResDto toDto (PostGame game, UserResDto opponentResDto){
+    private String courtName;
+
+    public static HistoryResDto toDto (PostGame game, UserResDto opponentResDto,String courtName){
         return HistoryResDto.builder()
                 .game(game)
                 .gameId(game.getGameId())
                 .opponentId(opponentResDto.getId())
                 .opponentName(opponentResDto.getName())
                 .elapsedTime(calculateElapsedTime(game.getCreationTime()))
+                .courtName(courtName)
                 .build();
     }
 

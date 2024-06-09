@@ -80,7 +80,8 @@ public class GameService {
                             .filter(playerId -> !playerId.equals(userId))
                             .findFirst()
                             .orElse(null);
-                    return HistoryResDto.toDto(game, userService.getUserInfo(opponentId));
+                    GameDetailsDto.CourtDetail courtDetails = courtBusinessService.getCourtDetails(game.getMatchDetails().getCourtId());
+                    return HistoryResDto.toDto(game, userService.getUserInfo(opponentId),courtDetails.getName());
                 })
                 .toList();
     }
