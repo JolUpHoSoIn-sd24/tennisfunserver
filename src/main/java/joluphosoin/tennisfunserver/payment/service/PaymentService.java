@@ -52,7 +52,7 @@ public class PaymentService {
     private String baseUrl;
 
     public Map<String, Object> getPaymentInfo(Game game, String userId) {
-        int amount = (int) Math.round(game.getRentalCost());
+        int amount = (int) Math.round(game.getRentalCost()/game.getPlayerIds().size());
         MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
         requestBody.add("cid", "TC0ONETIME");
         requestBody.add("partner_order_id", "partner_order_id");
