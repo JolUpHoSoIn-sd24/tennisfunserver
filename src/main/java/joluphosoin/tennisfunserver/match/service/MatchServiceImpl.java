@@ -206,9 +206,8 @@ public class MatchServiceImpl implements MatchService {
                     matchRequestRepository.deleteById(matchRequestId);
                 }
 
-                // matchResult의 isConfirmed 값을 true로 변경
-                matchResult.setIsConfirmed(true);
-                matchResultRepository.save(matchResult);
+                // matchResult 삭제
+                matchResultRepository.delete(matchResult);
 
                 notificationService.sendMatchNotification(userId,gameDetailsDto);
                 notificationService.sendMatchNotification(getOpponent(userId, matchResult).getId(),gameDetailsDto);
