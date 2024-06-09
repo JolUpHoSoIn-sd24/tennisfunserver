@@ -46,6 +46,7 @@ public enum ErrorStatus implements BaseErrorCode {
 
     // 사업자 응답
     BUSINESS_NOT_FOUND(HttpStatus.NOT_FOUND, "BUSINESS404", "해당 id의 사업자를 찾을 수 없습니다."),
+    BUSINESS_NOT_VAILD(HttpStatus.UNAUTHORIZED,"BUSINESS401","관리자로부터 승인이 필요합니다"),
 
     // 코트 일정 관련 응답
     TIMESLOT_NOT_FOUND(HttpStatus.NOT_FOUND, "COURTTIMESLOT404", "이 코트에 할당 된 시간을 찾을 수 없습니다."),
@@ -57,6 +58,7 @@ public enum ErrorStatus implements BaseErrorCode {
     GAME_HISTORY_NO_CONTENT(HttpStatus.NO_CONTENT, "GAME204" , "참여중인 게임이 없습니다"),
     GAME_NOT_FOUND(HttpStatus.NOT_FOUND, "GAME404", "게임을 찾을 수 없습니다"),
     GAME_PAYMENT_REQUIRED(HttpStatus.UNPROCESSABLE_ENTITY, "GAME422", "게임이 아직 결제되지 않았습니다."),
+
     // 결제 정보 응답
     PAYINFO_NOT_FOUND(HttpStatus.NOT_FOUND, "PAYINFO404", "결제 정보를 찾을 수 없습니다"),
 
