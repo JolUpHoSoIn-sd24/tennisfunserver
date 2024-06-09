@@ -61,7 +61,10 @@ public class MatchRequest {
     }
     public static MatchRequest toEntity(MatchRequestDto matchRequestDto, User user){
 
-        Point location = new Point(matchRequestDto.getX(), matchRequestDto.getY());
+        Point location = (matchRequestDto.getX() == null || matchRequestDto.getY() == null) ?
+                user.getLocation() :
+                new Point(matchRequestDto.getX(), matchRequestDto.getY());
+
         MatchRequest.MatchRequestBuilder builder = MatchRequest.builder()
                 .userId(user.getId())
                 .startTime(matchRequestDto.getStartTime())
@@ -83,24 +86,26 @@ public class MatchRequest {
 
         return builder.build();
     }
-    public MatchRequest setEntity(MatchRequestDto matchRequestDto,User user){
-
+    public MatchRequest setEntity(MatchRequestDto matchRequestDto, User user) {
         this.startTime = matchRequestDto.getStartTime();
         this.endTime = matchRequestDto.getEndTime();
         this.isSingles = matchRequestDto.getIsSingles();
         this.objective = matchRequestDto.getObjective();
         this.maxDistance = user.getMaxDistance();
-        this.dislikedCourts = matchRequestDto.getDislikedCourts()==null?new ArrayList<>():matchRequestDto.getDislikedCourts();
+        this.dislikedCourts = matchRequestDto.getDislikedCourts() == null ? new ArrayList<>() : matchRequestDto.getDislikedCourts();
         this.description = matchRequestDto.getDescription();
-        this.location = user.getLocation();
         this.minTime = matchRequestDto.getMinTime();
         this.maxTime = matchRequestDto.getMaxTime();
+
+        // Simplified location logic using a ternary operator
+        this.location = (matchRequestDto.getX() == null || matchRequestDto.getY() == null) ? user.getLocation() : new Point(matchRequestDto.getX(), matchRequestDto.getY());
+
         if (Boolean.TRUE.equals(matchRequestDto.getIsReserved())) {
-            this.reservationCourtId= matchRequestDto.getReservationCourtId();
+            this.reservationCourtId = matchRequestDto.getReservationCourtId();
             this.reservationDate = matchRequestDto.getReservationDate();
         }
         return this;
-
     }
+
 
 }
