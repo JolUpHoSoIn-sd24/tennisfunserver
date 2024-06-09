@@ -79,10 +79,9 @@ public class GameService {
 
 
     public List<HistoryResDto> getGameHistory(String userId) {
-        List<Game> games = gameRepository.findByUserIdContainingPlayerIds(userId)
+        List<PostGame> postGames = postGameRepository.findByUserIdContainingPlayerIds(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.GAME_HISTORY_NO_CONTENT));
-
-        return games.stream()
+        return postGames.stream()
                 .map(game -> {
                     String opponentId = game.getPlayerIds().stream()
                             .filter(playerId -> !playerId.equals(userId))

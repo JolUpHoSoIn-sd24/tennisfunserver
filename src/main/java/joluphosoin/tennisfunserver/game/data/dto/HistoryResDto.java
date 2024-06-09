@@ -1,6 +1,7 @@
 package joluphosoin.tennisfunserver.game.data.dto;
 
 import joluphosoin.tennisfunserver.game.data.entity.Game;
+import joluphosoin.tennisfunserver.game.data.entity.PostGame;
 import joluphosoin.tennisfunserver.user.data.dto.UserResDto;
 import joluphosoin.tennisfunserver.user.data.entity.User;
 import lombok.AllArgsConstructor;
@@ -25,7 +26,7 @@ public class HistoryResDto {
 
     private String elapsedTime; // "x일 전", "x시간 전", "x분 전" 등의 형식으로 표현
 
-    public static HistoryResDto toDto (Game game, UserResDto opponentResDto){
+    public static HistoryResDto toDto (PostGame game, UserResDto opponentResDto){
         return HistoryResDto.builder()
                 .gameId(game.getGameId())
                 .opponentId(opponentResDto.getId())
