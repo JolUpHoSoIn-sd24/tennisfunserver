@@ -202,12 +202,11 @@ public class MatchServiceImpl implements MatchService {
                 Map<String, String> userAndMatchRequests = matchResult.getUserAndMatchRequests();
                 Collection<String> matchRequestIds = userAndMatchRequests.values();
 
-                for (String matchRequestId : matchRequestIds) {
-                    matchRequestRepository.deleteById(matchRequestId);
-                }
+                matchRequestIds.forEach(matchRequestRepository::deleteById);
 
-                // matchResult 삭제
-                matchResultRepository.delete(matchResult);
+                gameDetailsDto.getPlayers().stream()
+                        .map(GameDetailsDto.PlayerDetail::getUserId)
+                        .forEach(matchResultRepository::deleteAllByUserId);
 
                 notificationService.sendMatchNotification(userId,gameDetailsDto);
                 notificationService.sendMatchNotification(getOpponent(userId, matchResult).getId(),gameDetailsDto);
