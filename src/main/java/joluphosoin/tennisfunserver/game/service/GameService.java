@@ -74,6 +74,7 @@ public class GameService {
     public List<HistoryResDto> getGameHistory(String userId) {
         List<PostGame> postGames = postGameRepository.findByUserIdContainingPlayerIds(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.GAME_HISTORY_NO_CONTENT));
+
         return postGames.stream()
                 .map(game -> {
                     String opponentId = game.getPlayerIds().stream()
@@ -81,7 +82,7 @@ public class GameService {
                             .findFirst()
                             .orElse(null);
                     GameDetailsDto.CourtDetail courtDetails = courtBusinessService.getCourtDetails(game.getMatchDetails().getCourtId());
-                    return HistoryResDto.toDto(game, userService.getUserInfo(opponentId),courtDetails.getName());
+                    return HistoryResDto.toDto(game, userService.getUserInfo(opponentId),courtDetails);
                 })
                 .toList();
     }

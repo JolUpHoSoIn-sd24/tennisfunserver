@@ -18,7 +18,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class HistoryResDto {
 
-    private PostGame game;
+    private GameDetailsDto gameDetailsDto;
 
     private String gameId;
 
@@ -30,14 +30,16 @@ public class HistoryResDto {
 
     private String courtName;
 
-    public static HistoryResDto toDto (PostGame game, UserResDto opponentResDto,String courtName){
+    public static HistoryResDto toDto (PostGame game, UserResDto opponentResDto,
+                                       GameDetailsDto.CourtDetail courtDetail){
+        GameDetailsDto dto = GameDetailsDto.toDto(game, courtDetail);
         return HistoryResDto.builder()
-                .game(game)
+                .gameDetailsDto(dto)
                 .gameId(game.getGameId())
                 .opponentId(opponentResDto.getId())
                 .opponentName(opponentResDto.getName())
                 .elapsedTime(calculateElapsedTime(game.getCreationTime()))
-                .courtName(courtName)
+                .courtName(courtDetail.getName())
                 .build();
     }
 

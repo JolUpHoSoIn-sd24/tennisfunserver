@@ -1,6 +1,7 @@
 package joluphosoin.tennisfunserver.game.data.dto;
 
 import joluphosoin.tennisfunserver.game.data.entity.Game;
+import joluphosoin.tennisfunserver.game.data.entity.PostGame;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -46,6 +47,22 @@ public class GameDetailsDto {
         GameDetailsDtoBuilder gameDetailsDtoBuilder = GameDetailsDto.builder()
                 .gameId(game.getGameId())
                 .state(game.getGameStatus().name())
+                .court(courtDetail)
+                .startTime(game.getMatchDetails().getStartTime())
+                .endTime(game.getMatchDetails().getEndTime())
+                .paymentStatus(game.getPaymentStatus());
+        if (game.getChatRoomId() != null) {
+            gameDetailsDtoBuilder.chatRoomId(game.getChatRoomId());
+        }
+        if (game.getRentalCost() != null) {
+            gameDetailsDtoBuilder.rentalCost(game.getRentalCost());
+        }
+        return gameDetailsDtoBuilder.build();
+    }
+    public static GameDetailsDto toDto(PostGame game, CourtDetail courtDetail){
+        GameDetailsDtoBuilder gameDetailsDtoBuilder = GameDetailsDto.builder()
+                .gameId(game.getGameId())
+                .state(game.getPostGameStatus().name())
                 .court(courtDetail)
                 .startTime(game.getMatchDetails().getStartTime())
                 .endTime(game.getMatchDetails().getEndTime())
