@@ -57,6 +57,10 @@ public enum ErrorStatus implements BaseErrorCode {
     GAME_HISTORY_NO_CONTENT(HttpStatus.NO_CONTENT, "GAME204" , "참여중인 게임이 없습니다"),
     GAME_NOT_FOUND(HttpStatus.NOT_FOUND, "GAME404", "게임을 찾을 수 없습니다"),
     GAME_PAYMENT_REQUIRED(HttpStatus.UNPROCESSABLE_ENTITY, "GAME422", "게임이 아직 결제되지 않았습니다."),
+    // 결제 정보 응답
+    PAYINFO_NOT_FOUND(HttpStatus.NOT_FOUND, "PAYINFO404", "결제 정보를 찾을 수 없습니다"),
+
+
     // SCORE 응답
     SCORE_NOT_FOUND(HttpStatus.NOT_FOUND, "SCORE404", "등록된 점수를 찾을 수 없습니다"),
     SCORE_UPDATE_NOT_ALLOWED(HttpStatus.BAD_REQUEST, "SCORE400", "점수 확정이 완료되었습니다. 업데이트가 불가합니다"),

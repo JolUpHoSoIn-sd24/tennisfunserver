@@ -10,4 +10,7 @@ import java.util.Optional;
 public interface PostGameRepository extends MongoRepository<PostGame,String> {
     @Query("{ 'playerIds': ?0 }")
     Optional<List<PostGame>> findByUserIdContainingPlayerIds(String userId);
+
+    @Query("{ 'matchDetails.courtId': ?0 }")
+    Optional<List<PostGame>> findAllByCourtId(String courtId);
 }
