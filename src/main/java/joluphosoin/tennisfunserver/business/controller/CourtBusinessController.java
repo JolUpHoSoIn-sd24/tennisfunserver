@@ -38,11 +38,11 @@ public class CourtBusinessController {
         return ApiResult.onSuccess("코트 예약 자동 매칭이 성공적으로 신청되었습니다.");
     }
     @GetMapping(value = "/reservations",produces ="application/json; charset=utf-8")
-    public ApiResult<List<SimpleCourtResDto>> getReservationCourts(@SessionAttribute String businessId){
-        return ApiResult.onSuccess(courtBusinessService.getReservationCourts(businessId));
+    public ApiResult<List<SimpleCourtResDto>> getReservationCourts(@RequestParam String courtId){
+        return ApiResult.onSuccess(courtBusinessService.getReservationCourts(courtId));
     }
     @GetMapping(value = "/reservations/pending",produces ="application/json; charset=utf-8")
-    public ApiResult<List<SimpleCourtResDto>> getPendingReservationCourts(@SessionAttribute String businessId){
-        return ApiResult.onSuccess(courtBusinessService.getPendingReservationCourts(businessId));
+    public ApiResult<List<SimpleCourtResDto>> getPendingReservationCourts(@RequestParam String courtId){
+        return ApiResult.onSuccess(courtBusinessService.getPendingReservationCourts(courtId));
     }
 }

@@ -150,34 +150,31 @@ public class CourtBusinessService {
         return CourtResDto.toDTO(court);
     }
 
-    public List<SimpleCourtResDto> getReservationCourts(String businessId) {
-        return getReservationCourtsByStatus(businessId, Game.GameStatus.INPLAY);
+    public List<SimpleCourtResDto> getReservationCourts(String courtId) {
+        return getReservationCourtsByStatus(courtId, Game.GameStatus.INPLAY);
     }
 
-    private List<SimpleCourtResDto> getReservationCourtsByStatus(String businessId, Game.GameStatus status) {
-        List<Court> courts = courtRepository.findAllByOwnerId(businessId).orElseThrow(() -> new GeneralException(ErrorStatus.COURT_NOT_FOUND));
+    private List<SimpleCourtResDto> getReservationCourtsByStatus(String courtId, Game.GameStatus status) {
+
 
         List<SimpleCourtResDto> simpleCourtResDtos = new ArrayList<>();
 
-
-        courts.forEach(court -> {
-
-            List<Game> preGames = gameRepository.findByCourtIdAndGameStatus(court.getId(), status);
-            preGames.forEach(game -> {
-                List<String> playerIds = game.getPlayerIds();
-                List<String> userNames = new ArrayList<>();
-                playerIds.forEach(playerId->{
-                    User user = userRepository.findById(playerId).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
-                    userNames.add(user.getName());
-                });
-                simpleCourtResDtos.add(SimpleCourtResDto.toDto(court.getCourtName(),SimpleCustomerDto.toDto(game,userNames)));
+        Court court = courtRepository.findById(courtId).orElseThrow(() -> new GeneralException(ErrorStatus.COURT_NOT_FOUND));
+        List<Game> preGames = gameRepository.findByCourtIdAndGameStatus(court.getId(), status);
+        preGames.forEach(game -> {
+            List<String> playerIds = game.getPlayerIds();
+            List<String> userNames = new ArrayList<>();
+            playerIds.forEach(playerId->{
+                User user = userRepository.findById(playerId).orElseThrow(() -> new GeneralException(ErrorStatus.USER_NOT_FOUND));
+                userNames.add(user.getName());
             });
+            simpleCourtResDtos.add(SimpleCourtResDto.toDto(court.getCourtName(),SimpleCustomerDto.toDto(game,userNames)));
         });
         return simpleCourtResDtos;
     }
 
-    public List<SimpleCourtResDto> getPendingReservationCourts(String businessId) {
-        return getReservationCourtsByStatus(businessId, Game.GameStatus.PREGAME);
+    public List<SimpleCourtResDto> getPendingReservationCourts(String courtId) {
+        return getReservationCourtsByStatus(courtId, Game.GameStatus.PREGAME);
     }
 
 }
