@@ -18,6 +18,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class HistoryResDto {
 
+    private PostGame game;
+
     private String gameId;
 
     private String opponentId;
@@ -28,6 +30,7 @@ public class HistoryResDto {
 
     public static HistoryResDto toDto (PostGame game, UserResDto opponentResDto){
         return HistoryResDto.builder()
+                .game(game)
                 .gameId(game.getGameId())
                 .opponentId(opponentResDto.getId())
                 .opponentName(opponentResDto.getName())
