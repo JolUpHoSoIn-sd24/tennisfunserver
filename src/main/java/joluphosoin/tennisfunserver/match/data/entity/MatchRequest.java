@@ -61,14 +61,15 @@ public class MatchRequest {
     }
     public static MatchRequest toEntity(MatchRequestDto matchRequestDto, User user){
 
+        Point location = new Point(matchRequestDto.getX(), matchRequestDto.getY());
         MatchRequest.MatchRequestBuilder builder = MatchRequest.builder()
                 .userId(user.getId())
                 .startTime(matchRequestDto.getStartTime())
                 .endTime(matchRequestDto.getEndTime())
                 .isSingles(matchRequestDto.getIsSingles())
                 .objective(matchRequestDto.getObjective())
-                .location(user.getLocation())
-                .maxDistance(user.getMaxDistance())
+                .location(location)
+                .maxDistance(matchRequestDto.getMaxDistance())
                 .dislikedCourts(matchRequestDto.getDislikedCourts()==null?new ArrayList<>():matchRequestDto.getDislikedCourts())
                 .minTime(matchRequestDto.getMinTime())
                 .maxTime(matchRequestDto.getMaxTime())
