@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -55,19 +54,10 @@ public class GameService {
                 .orElseThrow(() -> new GetGameException("No game found for this user"));
     }
 
-    public GameDetailsDto transformGameToDto(Game game,String userId) {
+    public GameDetailsDto transformGameToDto(Game game) {
         GameDetailsDto dto = GameDetailsDto.toDto(game,courtBusinessService.getCourtDetails(game.getMatchDetails().getCourtId()));
 
-        List<GameDetailsDto.PlayerDetail> playerDetails = userService.getPlayerDetails(game.getPlayerIds());
-
-        GameDetailsDto.PlayerDetail userDetail = playerDetails.stream()
-                .filter(playerDetail -> playerDetail.getUserId().equals(userId))
-                .findFirst().orElse(null);
-
-        boolean hasFeedback = game.getFeedbacks().stream()
-                .anyMatch(feedback -> Objects.equals(feedback.getEvaluatorId(), userId));
-
-        userDetail.setFeedback(hasFeedback);
+        List<GameDetailsDto.PlayerDetail> playerDetails = userService.getPlayerDetails(game);
 
         dto.setPlayers(playerDetails);
 

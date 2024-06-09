@@ -142,7 +142,7 @@ public class PaymentService {
     }
 
     private void notificationToClient(String userId, Game game) {
-        GameDetailsDto gameDetailsDto = gameService.transformGameToDto(game,userId);
+        GameDetailsDto gameDetailsDto = gameService.transformGameToDto(game);
         List<String> playerIds = game.getPlayerIds();
         String opponentId = playerIds.stream()
                 .filter(id -> !id.equals(userId)) // userId와 다른 ID만 필터링

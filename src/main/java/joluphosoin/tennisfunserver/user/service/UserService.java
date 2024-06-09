@@ -3,6 +3,7 @@ package joluphosoin.tennisfunserver.user.service;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import joluphosoin.tennisfunserver.game.data.dto.GameDetailsDto;
+import joluphosoin.tennisfunserver.game.data.entity.Game;
 import joluphosoin.tennisfunserver.match.repository.MatchRequestRepository;
 import joluphosoin.tennisfunserver.match.repository.MatchResultRepository;
 import joluphosoin.tennisfunserver.payload.code.status.ErrorStatus;
@@ -25,6 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -137,19 +139,25 @@ public class UserService {
         }
     }
 
-    public List<GameDetailsDto.PlayerDetail> getPlayerDetails(List<String> playerIds) {
-        return userRepository.findByIdIn(playerIds).stream()
-                .map(this::transformToPlayerDetail)
+    public List<GameDetailsDto.PlayerDetail> getPlayerDetails(Game game) {
+        return userRepository.findByIdIn(game.getPlayerIds()).stream()
+                .map(user -> transformToPlayerDetail(user, game))  // 람다 표현식을 사용하여 Game 객체를 포함
                 .toList();
     }
 
-    private GameDetailsDto.PlayerDetail transformToPlayerDetail(User user) {
+    private GameDetailsDto.PlayerDetail transformToPlayerDetail(User user,Game game) {
         GameDetailsDto.PlayerDetail playerDetail = new GameDetailsDto.PlayerDetail();
         playerDetail.setUserId(user.getId());
         playerDetail.setName(user.getName());
         playerDetail.setNtrp(user.getNtrp());
         playerDetail.setAge(user.getAge());
         playerDetail.setGender(user.getGender());
+
+        boolean hasFeedback = game.getFeedbacks().stream()
+                .anyMatch(feedback -> Objects.equals(feedback.getEvaluatorId(), user.getId()));
+
+        playerDetail.setFeedback(hasFeedback);
+
         return playerDetail;
     }
 
