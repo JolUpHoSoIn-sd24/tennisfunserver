@@ -20,7 +20,7 @@ public class MatchRequestDto {
     @NotNull
     private Date endTime;
 
-    @Schema(example ="RALLY")
+    @Schema(example ="FUN")
     @NotNull
     private MatchRequest.MatchObjective objective;
 
@@ -37,15 +37,18 @@ public class MatchRequestDto {
     private Double y;
 
     @Schema(example = "4.5")
+    @NotNull
     private Double maxDistance; // 최대 이동 가능 거리
 
     @Schema(example ="[\"court1\", \"court2\"]")
     private List<String> dislikedCourts;
 
     @Schema(example ="30")
+    @NotNull
     private Integer minTime;
 
     @Schema(example ="120")
+    @NotNull
     private Integer maxTime;
 
     @Schema(example = "false")
