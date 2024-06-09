@@ -4,6 +4,7 @@ import joluphosoin.tennisfunserver.business.service.CourtBusinessService;
 import joluphosoin.tennisfunserver.game.data.dto.*;
 import joluphosoin.tennisfunserver.game.data.entity.Game;
 import joluphosoin.tennisfunserver.game.data.entity.PostGame;
+import joluphosoin.tennisfunserver.game.data.entity.Score;
 import joluphosoin.tennisfunserver.game.exception.CreateGameException;
 import joluphosoin.tennisfunserver.game.exception.GetGameException;
 import joluphosoin.tennisfunserver.game.repository.GameRepository;
@@ -103,14 +104,36 @@ public class GameService {
 
         opponent.updateFeedback(feedbackDto);
 
+
         if (game.getFeedbacks().size() == game.getPlayerIds().size()) {
             PostGame postGame = PostGame.toEntity(game);
-            postGameRepository.save(postGame);
+
             gameRepository.delete(game);
+
+            checkScoresMatch(postGame);
+
+            postGameRepository.save(postGame);
+
             return FeedbackResDto.toDto(feedbackDto, opponent, postGame);
         }
         gameRepository.save(game);
         return FeedbackResDto.toDto(feedbackDto, opponent, game);
+    }
+
+    private static void checkScoresMatch(PostGame postGame) {
+        List<Score> scores = postGame.getScores();
+
+        Score firstScore = scores.get(0);
+        Score secondScore = scores.get(1);
+
+        ScoreDetailDto firstScoreDetail = firstScore.getScoreDetailDto();
+        ScoreDetailDto secondScoreDetail = secondScore.getScoreDetailDto();
+
+        if (firstScoreDetail.getUserScore() == secondScoreDetail.getOpponentScore()
+                && firstScoreDetail.getOpponentScore() == secondScoreDetail.getUserScore()) {
+                postGame.setPostGameStatus(PostGame.PostGameStatus.POSTGAME);
+                postGame.setScoreConfirmed(true);
+        }
     }
 
 
