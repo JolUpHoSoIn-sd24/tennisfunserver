@@ -25,9 +25,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -130,28 +127,11 @@ public class PaymentService {
                 notificationToClient(userId, game);
             }
 
-            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-            LocalDateTime createdAt = LocalDateTime.parse((String) response.get("created_at"), formatter);
-            LocalDateTime approvedAt = LocalDateTime.parse((String) response.get("approved_at"), formatter);
+            PaymentInfo paymentInfo = PaymentInfo.toEntity(userId, response, game);
 
-            PaymentInfo paymentInfo = PaymentInfo.builder()
-                    .game(game)
-                    .userId(userId)
-                    .transactionId((String) response.get("tid"))
-                    .paymentMethodType((String) response.get("payment_method_type"))
-                    .itemName((String) response.get("item_name"))
-                    .quantity((Integer) response.get("quantity"))
-                    .amount((Map<String, Integer>) response.get("amount"))
-                    .createdAt(Date.from(createdAt.atZone(ZoneId.systemDefault()).toInstant()))
-                    .approvedAt(Date.from(approvedAt.atZone(ZoneId.systemDefault()).toInstant()))
-                    .status(PaymentInfo.PaymentStatus.APPROVED)
-                    .build();
             paymentInfoRepository.save(paymentInfo);
 
             gameRepository.save(game);
-
-
-
 
             Map<String, Object> res = new HashMap<>();
             res.put("updatedGame", game);

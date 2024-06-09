@@ -9,6 +9,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Map;
 
@@ -21,6 +24,8 @@ public class PaymentInfo {
 
     @Id
     private String id;
+
+    private String courtId;
 
     @DBRef
     private Game game; // Reference to the game information
@@ -40,5 +45,25 @@ public class PaymentInfo {
         APPROVED, // Payment approved
         FAILED, // Payment failed
         CANCELLED // Payment cancelled
+    }
+    public static PaymentInfo toEntity(String userId, Map<String, Object> response,Game game){
+
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+        LocalDateTime createdAt = LocalDateTime.parse((String) response.get("created_at"), formatter);
+        LocalDateTime approvedAt = LocalDateTime.parse((String) response.get("approved_at"), formatter);
+        return PaymentInfo.builder()
+                .game(game)
+                .userId(userId)
+                .courtId(game.getMatchDetails().getCourtId())
+                .transactionId((String) response.get("tid"))
+                .paymentMethodType((String) response.get("payment_method_type"))
+                .itemName((String) response.get("item_name"))
+                .quantity((Integer) response.get("quantity"))
+                .amount((Map<String, Integer>) response.get("amount"))
+                .createdAt(Date.from(createdAt.atZone(ZoneId.systemDefault()).toInstant()))
+                .approvedAt(Date.from(approvedAt.atZone(ZoneId.systemDefault()).toInstant()))
+                .status(PaymentInfo.PaymentStatus.APPROVED)
+                .build();
+
     }
 }
