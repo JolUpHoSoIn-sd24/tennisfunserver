@@ -91,7 +91,7 @@ public class MatchRequest {
         this.endTime = matchRequestDto.getEndTime();
         this.isSingles = matchRequestDto.getIsSingles();
         this.objective = matchRequestDto.getObjective();
-        this.maxDistance = user.getMaxDistance();
+        this.maxDistance = matchRequestDto.getMaxDistance();
         this.dislikedCourts = matchRequestDto.getDislikedCourts() == null ? new ArrayList<>() : matchRequestDto.getDislikedCourts();
         this.description = matchRequestDto.getDescription();
         this.minTime = matchRequestDto.getMinTime();
