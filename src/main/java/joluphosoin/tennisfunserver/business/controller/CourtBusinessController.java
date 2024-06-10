@@ -22,8 +22,8 @@ public class CourtBusinessController {
 
     @PostMapping("")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResult<CourtResDto> registerCourt(@RequestBody @Valid CourtReqDto courtReqDto){
-        return ApiResult.onSuccess(SuccessStatus.COURT_CREATED, courtBusinessService.registerCourt(courtReqDto));
+    public ApiResult<CourtResDto> registerCourt(@RequestBody @Valid CourtReqDto courtReqDto,@SessionAttribute String businessId){
+        return ApiResult.onSuccess(SuccessStatus.COURT_CREATED, courtBusinessService.registerCourt(courtReqDto,businessId));
     }
 
     @PostMapping("/timeslot")

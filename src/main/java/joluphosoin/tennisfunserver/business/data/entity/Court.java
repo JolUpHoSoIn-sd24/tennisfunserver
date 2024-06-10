@@ -1,6 +1,7 @@
 package joluphosoin.tennisfunserver.business.data.entity;
 
 import joluphosoin.tennisfunserver.business.data.dto.CourtHoursDto;
+import joluphosoin.tennisfunserver.business.data.dto.CourtReqDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,9 +37,21 @@ public class Court {
 
     private Double rentalCostPerHalfHour;
 
-
     public enum CourtType{
         HARD, CLAY, GRASS,
+    }
+
+    public static Court toEntity(CourtReqDto courtReqDto,Point location,String ownerId){
+
+        return Court.builder()
+                .ownerId(ownerId)
+                .location(location)
+                .courtType(courtReqDto.getCourtType())
+                .courtName(courtReqDto.getCourtName())
+                .businessHours(courtReqDto.getBusinessHours())
+                .description(courtReqDto.getDescription())
+                .rentalCostPerHalfHour(courtReqDto.getRentalCostPerHalfHour())
+                .build();
     }
 
 }
