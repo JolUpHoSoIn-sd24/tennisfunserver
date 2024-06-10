@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import joluphosoin.tennisfunserver.game.data.dto.GameDetailsDto;
 import joluphosoin.tennisfunserver.game.data.entity.Game;
+import joluphosoin.tennisfunserver.game.data.entity.PostGame;
 import joluphosoin.tennisfunserver.match.repository.MatchRequestRepository;
 import joluphosoin.tennisfunserver.match.repository.MatchResultRepository;
 import joluphosoin.tennisfunserver.payload.code.status.ErrorStatus;
@@ -144,8 +145,28 @@ public class UserService {
                 .map(user -> transformToPlayerDetail(user, game))  // 람다 표현식을 사용하여 Game 객체를 포함
                 .toList();
     }
+    public List<GameDetailsDto.PlayerDetail> getPlayerDetails(PostGame game) {
+        return userRepository.findByIdIn(game.getPlayerIds()).stream()
+                .map(user -> transformToPlayerDetail(user, game))  // 람다 표현식을 사용하여 Game 객체를 포함
+                .toList();
+    }
 
     private GameDetailsDto.PlayerDetail transformToPlayerDetail(User user,Game game) {
+        GameDetailsDto.PlayerDetail playerDetail = new GameDetailsDto.PlayerDetail();
+        playerDetail.setUserId(user.getId());
+        playerDetail.setName(user.getName());
+        playerDetail.setNtrp(user.getNtrp());
+        playerDetail.setAge(user.getAge());
+        playerDetail.setGender(user.getGender());
+
+        boolean hasFeedback = game.getFeedbacks().stream()
+                .anyMatch(feedback -> Objects.equals(feedback.getEvaluatorId(), user.getId()));
+
+        playerDetail.setFeedback(hasFeedback);
+
+        return playerDetail;
+    }
+    private GameDetailsDto.PlayerDetail transformToPlayerDetail(User user,PostGame game) {
         GameDetailsDto.PlayerDetail playerDetail = new GameDetailsDto.PlayerDetail();
         playerDetail.setUserId(user.getId());
         playerDetail.setName(user.getName());

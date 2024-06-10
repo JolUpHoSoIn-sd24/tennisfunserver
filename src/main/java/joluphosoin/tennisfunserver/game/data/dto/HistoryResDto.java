@@ -31,15 +31,14 @@ public class HistoryResDto {
     private String courtName;
 
     public static HistoryResDto toDto (PostGame game, UserResDto opponentResDto,
-                                       GameDetailsDto.CourtDetail courtDetail){
-        GameDetailsDto dto = GameDetailsDto.toDto(game, courtDetail);
+                                       GameDetailsDto gameDetailsDto){
         return HistoryResDto.builder()
-                .gameDetailsDto(dto)
+                .gameDetailsDto(gameDetailsDto)
                 .gameId(game.getGameId())
                 .opponentId(opponentResDto.getId())
                 .opponentName(opponentResDto.getName())
                 .elapsedTime(calculateElapsedTime(game.getCreationTime()))
-                .courtName(courtDetail.getName())
+                .courtName(gameDetailsDto.getCourt().getName())
                 .build();
     }
 

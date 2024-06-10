@@ -64,6 +64,15 @@ public class GameService {
 
         return dto;
     }
+    public GameDetailsDto transformGameToDto(PostGame game) {
+        GameDetailsDto dto = GameDetailsDto.toDto(game,courtBusinessService.getCourtDetails(game.getMatchDetails().getCourtId()));
+
+        List<GameDetailsDto.PlayerDetail> playerDetails = userService.getPlayerDetails(game);
+
+        dto.setPlayers(playerDetails);
+
+        return dto;
+    }
 
 
     private boolean checkPlayerInAnyGame(List<String> playerIds) {
@@ -81,8 +90,7 @@ public class GameService {
                             .filter(playerId -> !playerId.equals(userId))
                             .findFirst()
                             .orElse(null);
-                    GameDetailsDto.CourtDetail courtDetails = courtBusinessService.getCourtDetails(game.getMatchDetails().getCourtId());
-                    return HistoryResDto.toDto(game, userService.getUserInfo(opponentId),courtDetails);
+                    return HistoryResDto.toDto(game, userService.getUserInfo(opponentId),transformGameToDto(game));
                 })
                 .toList();
     }
