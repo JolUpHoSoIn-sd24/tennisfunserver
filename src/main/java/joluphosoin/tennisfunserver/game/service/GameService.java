@@ -17,9 +17,11 @@ import joluphosoin.tennisfunserver.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -84,16 +86,20 @@ public class GameService {
         List<PostGame> postGames = postGameRepository.findByUserIdContainingPlayerIds(userId)
                 .orElseThrow(() -> new GeneralException(ErrorStatus.GAME_HISTORY_NO_CONTENT));
 
-        return postGames.stream()
+        List<HistoryResDto> historyList = postGames.stream()
                 .map(game -> {
                     String opponentId = game.getPlayerIds().stream()
                             .filter(playerId -> !playerId.equals(userId))
                             .findFirst()
                             .orElse(null);
-                    return HistoryResDto.toDto(game, userService.getUserInfo(opponentId),transformGameToDto(game));
+                    return HistoryResDto.toDto(game, userService.getUserInfo(opponentId), transformGameToDto(game));
                 })
-                .toList();
+                .collect(Collectors.toList());
+
+        Collections.reverse(historyList);
+        return historyList;
     }
+
 
     public FeedbackResDto registerFeedback(FeedbackDto feedbackDto, String userId) {
 
