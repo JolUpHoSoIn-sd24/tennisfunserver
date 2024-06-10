@@ -2,6 +2,7 @@ package joluphosoin.tennisfunserver.game.data.dto;
 
 import joluphosoin.tennisfunserver.game.data.entity.Game;
 import joluphosoin.tennisfunserver.game.data.entity.PostGame;
+import joluphosoin.tennisfunserver.game.data.entity.Score;
 import joluphosoin.tennisfunserver.user.data.dto.UserResDto;
 import joluphosoin.tennisfunserver.user.data.entity.User;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Builder
@@ -30,6 +32,7 @@ public class HistoryResDto {
 
     private String courtName;
 
+    private List<Score> scores;
     public static HistoryResDto toDto (PostGame game, UserResDto opponentResDto,
                                        GameDetailsDto gameDetailsDto){
         return HistoryResDto.builder()
@@ -39,6 +42,7 @@ public class HistoryResDto {
                 .opponentName(opponentResDto.getName())
                 .elapsedTime(calculateElapsedTime(game.getCreationTime()))
                 .courtName(gameDetailsDto.getCourt().getName())
+                .scores(game.getScores())
                 .build();
     }
 
