@@ -45,7 +45,7 @@ public class GameService {
 
         gameRepository.save(game);
 
-        return GameDetailsDto.toDto(game, courtBusinessService.getCourtDetails(game.getMatchDetails().getCourtId()));
+        return transformGameToDto(game);
     }
 
     public Game findGameByUserId(String userId) {
