@@ -86,6 +86,9 @@ public class Business {
         if(!businessReqDto.getDocumentUrls().isEmpty()){
             businessBuilder.documentUrls(businessReqDto.getDocumentUrls());
         }
+        else{
+            businessBuilder.documentUrls(new ArrayList<>());
+        }
         return businessBuilder.build();
     }
 
