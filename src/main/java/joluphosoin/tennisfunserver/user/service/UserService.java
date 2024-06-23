@@ -103,13 +103,13 @@ public class UserService {
     private void updateUser(User user, RegistrationDto registrationDto) throws UserRegistrationException {
         user.setEntity(registrationDto, passwordEncoder);
         userRepository.save(user);
-        sendVerificationEmail(user.getEmailId(), user.getEmailVerificationToken());
+//        sendVerificationEmail(user.getEmailId(), user.getEmailVerificationToken());
     }
 
     private void createUser(RegistrationDto registrationDto) {
         User user = User.toEntity(registrationDto, passwordEncoder);
         userRepository.save(user);
-        sendVerificationEmail(user.getEmailId(), user.getEmailVerificationToken());
+//        sendVerificationEmail(user.getEmailId(), user.getEmailVerificationToken());
     }
 
     private void sendVerificationEmail(String email, String token) {

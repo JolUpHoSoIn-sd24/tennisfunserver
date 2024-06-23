@@ -39,6 +39,7 @@ public class MatchResult {
 
     // 매치 세부 정보 내부 클래스
     @Getter
+    @AllArgsConstructor
     public static class MatchDetails {
         private Date startTime; // 시작 시간
         private Date endTime; // 종료 시간

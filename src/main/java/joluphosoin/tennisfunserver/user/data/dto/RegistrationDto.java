@@ -8,6 +8,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 @Getter
+@Setter
 public class RegistrationDto {
     @NotBlank(message = "Email is required")
     @Email(message = "Email should be valid")

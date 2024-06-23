@@ -5,6 +5,7 @@ import joluphosoin.tennisfunserver.user.data.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
@@ -15,6 +16,7 @@ import java.util.List;
 @Builder
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserResDto {
     @MongoId
     @Schema(example ="6646cd0991733e1b2d1e8b53")

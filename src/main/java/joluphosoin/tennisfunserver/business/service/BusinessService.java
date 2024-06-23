@@ -119,9 +119,9 @@ public class BusinessService {
         if(!business.isEmailVerified()){
             throw new GeneralException(ErrorStatus.EMAIL_NOT_VAILD);
         }
-        if(business.getRegistrationStatus().equals(Business.RegistrationStatus.PRE_APPROVAL)){
-            throw new GeneralException(ErrorStatus.BUSINESS_NOT_VAILD);
-        }
+//        if(business.getRegistrationStatus().equals(Business.RegistrationStatus.PRE_APPROVAL)){
+//            throw new GeneralException(ErrorStatus.BUSINESS_NOT_VAILD);
+//        }
         return BusinessResDto.toDto(business);
     }
 

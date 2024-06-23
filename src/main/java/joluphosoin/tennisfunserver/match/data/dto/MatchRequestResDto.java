@@ -1,11 +1,13 @@
 package joluphosoin.tennisfunserver.match.data.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import joluphosoin.tennisfunserver.match.data.entity.MatchRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
@@ -13,8 +15,10 @@ import java.util.List;
 @Builder
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class MatchRequestResDto {
     @Schema(example = "662cda25e5c4314006800000")
+
     private String id;
     @Schema(example = "662cda25e5c4314e868188d3")
     private String userId;
